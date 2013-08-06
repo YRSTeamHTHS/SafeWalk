@@ -3,10 +3,12 @@
 ###
 
 express = require('express')
-routes = require('./routes')
-user = require('./routes/user')
 http = require('http')
 path = require('path')
+
+routes = require('./routes')
+user = require('./routes/user')
+report = require('./routes/report')
 
 app = express()
 
@@ -26,8 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env'))
   app.use(express.errorHandler());
 
-app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/', routes.index)
+app.get('/users', user.list)
+app.get('/report', report.reportform)
 
 http.createServer(app).listen(app.get('port'),() ->
   console.log('Express server listening on port ' + app.get('port'));
