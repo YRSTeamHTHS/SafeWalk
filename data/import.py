@@ -19,13 +19,11 @@ doc = etree.parse('map.osm')
 nodes_xml = doc.findall('node')
 nodes = {}
 node_ways = {}
-print "# Raw Nodes", len(nodes_xml)
 for node_xml in nodes_xml:
     data = {}
     data['lat'] = node_xml.attrib['lat']
     data['lon'] = node_xml.attrib['lon']
-    data['intersection'] = False
-    ref = node_xml.attrib['id']
+    ref = int(node_xml.attrib['id'])
     nodes[ref] = data
     node_ways[ref] = []
 
@@ -33,44 +31,43 @@ for node_xml in nodes_xml:
 ways = doc.findall('way')
 for way in ways:
     nds = way.findall('nd')
-    wayid = way.attrib['id']
+    wayid = int(way.attrib['id'])
     for nd in nds:
-        ref = nd.attrib['ref']
+        ref = int(nd.attrib['ref'])
         node_ways[ref].append(wayid)
         prev = ref
 
 # Find intersections, where multiple ways meet at a node
-intersections = []
+intersections = {}
 for ref, node in node_ways.iteritems():
     if len(node) > 1:
-        nodes[ref]['intersection'] = True
-        intersections.append({'id': ref, 'lat': nodes[ref]['lat'], 'lon': nodes[ref]['lon']})
+        intersections[ref] = nodes[ref]
 
 with open('intersections.json', 'w') as f:
     json.dump(intersections, f)
-print "# Intersections", len(intersections)
 
 # Find connections between intersections
 # TODO: store the distance along the road
-connections = []
+connections = {num: [] for num in intersections.keys()}
 for way in ways:
     nds = way.findall('nd')
-    wayid = way.attrib['id']
+    wayid = int(way.attrib['id'])
     prev = -1
     prev_intersection = -1
     prev_lat = -1
     prev_lon = -1
     length = 0
     for nd in nds:
-        ref = nd.attrib['ref']
+        ref = int(nd.attrib['ref'])
         lat = float(nodes[ref]['lat'])
         lon = float(nodes[ref]['lon'])
         length = 0
         if prev != -1:
             length = length + distance(prev_lat, prev_lon, lat, lon)
-        if nodes[ref]['intersection']:
+        if ref in intersections:
             if prev_intersection != -1:
-                connections.append({'from': prev_intersection, 'to': ref, 'length': length})
+                connections[ref].append({'id': prev_intersection, 'distance': length})
+                connections[prev_intersection].append({'id': ref, 'distance': length})
             prev_intersection = ref
             length = 0
         prev = ref
@@ -79,4 +76,3 @@ for way in ways:
 
 with open('connections.json', 'w') as f:
     json.dump(connections, f)
-print "# Connections", len(connections)

@@ -10,6 +10,7 @@ parseString = require('xml2js').parseString
 routes = require('./routes')
 user = require('./routes/user')
 report = require('./routes/report')
+navigate = require('./routes/navigate')
 
 app = express()
 
@@ -38,6 +39,7 @@ app.get('/', routes.index)
 app.get('/users', user.list)
 app.get('/report', report.index)
 app.post('/report/submit', report.submit)
+app.get('/navigate/nav', navigate.nav)
 
 app.get '/parse', (req, res) ->
   res.send 'abc'
