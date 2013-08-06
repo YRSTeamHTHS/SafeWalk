@@ -31,7 +31,7 @@ if ('development' == app.get('env'))
 
 app.get('/', routes.index)
 app.get('/users', user.list)
-app.get('/report', report.reportform)
+app.get('/report', report.index)
 
 app.get '/parse', (req, res) ->
   res.send 'abc'
