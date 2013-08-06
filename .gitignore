@@ -13,3 +13,11 @@ results
 
 npm-debug.log
 node_modules
+
+.idea
+
+*.map
+
+app.js
+routes/*.js
+views/*.js
