@@ -3,11 +3,13 @@
 ###
 
 express = require('express')
-routes = require('./routes')
-user = require('./routes/user')
 http = require('http')
 path = require('path')
 parseString = require('xml2js').parseString
+
+routes = require('./routes')
+user = require('./routes/user')
+report = require('./routes/report')
 
 app = express()
 
@@ -27,8 +29,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env'))
   app.use(express.errorHandler());
 
-app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/', routes.index)
+app.get('/users', user.list)
+app.get('/report', report.reportform)
 
 app.get '/parse', (req, res) ->
   res.send 'abc'
