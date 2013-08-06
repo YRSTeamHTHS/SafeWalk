@@ -35,11 +35,6 @@ app.configure('development', ()->
   app.use(express.errorHandler());
 )
 
-#setup server
-databaseUrl = "brittyscenes"; #"username:password@example.com/mydb"
-collections = ["reports"]
-db = require("mongojs").connect(databaseUrl, collections);
-
 #url definitions
 app.get('/', routes.index)
 app.get('/users', user.list)
