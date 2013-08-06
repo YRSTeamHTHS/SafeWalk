@@ -30,7 +30,7 @@ if ('development' == app.get('env'))
 
 app.get('/', routes.index)
 app.get('/users', user.list)
-app.get('/report', report.reportform)
+app.get('/report', report.index)
 
 http.createServer(app).listen(app.get('port'),() ->
   console.log('Express server listening on port ' + app.get('port'));
