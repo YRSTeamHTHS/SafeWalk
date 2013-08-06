@@ -10,6 +10,8 @@
     "ejs": "*",
     "less-middleware": "*",
     "xml2js": "~0.2.8",
+    "redis": "~0.8.4",
+    "coffee-script": "~1.6.3",
     "mongodb": ">= 0.9.6-7"
   }
 }
