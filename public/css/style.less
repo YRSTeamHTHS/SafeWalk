@@ -354,11 +354,36 @@ textarea, input[type="text"] {
 #map-content {
   -webkit-transition: width 0.5s ease;
 }
+
+#report-wrapper {
+  background-color: #aeaeae;
+  border-radius: 6px;
+  padding: 50px;
+  padding-bottom:40px;
+}
+#report-floater {
+  margin-bottom:-200px;
+  height:50%;
+}
+.report-page-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  top: 70px;
+  width: 100%;
+}
+#report-type-btn {
+  background-color: white;
+  color: #939393;
+  text-align: left;
+  padding-left:30px;
+}
+
 @media (min-width: 992px) {
   .map-wrapper {
     white-space: nowrap;
   }
-  .col-lg-9, .col-lg-3 {
+  #sidebar, #map-content {
     display: inline-block;
     float: none;
     white-space: normal;
@@ -391,5 +416,4 @@ textarea, input[type="text"] {
     padding-right: 0px;
     margin-left: -1px;
   }
-
 }
