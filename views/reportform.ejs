@@ -21,8 +21,8 @@
 
         <div class="col-lg-10">
             <select name="type" id="inputType">
-                <% types.forEach(function(type){ %>
-                <option value="<% type %>"><% type %></option>
+                <% for(var i=0; i<types.length; i++){ %>
+                <option value="<%= types[i] %>"><%= types[i] %></option>
                 <% } %>
             </select>
         </div>

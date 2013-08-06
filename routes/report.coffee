@@ -11,5 +11,4 @@
 ###
 exports.reportform = (req, res)->
   types = ['meow','moo','quack','ribbet','woof']
-  console.log('poop');
-  res.render('reportform', { types: 'types' })
+  res.render('reportform', { types: types })
