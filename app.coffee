@@ -10,6 +10,7 @@ parseString = require('xml2js').parseString
 routes = require('./routes')
 user = require('./routes/user')
 report = require('./routes/report')
+map = require('./routes/map')
 
 app = express()
 
@@ -36,6 +37,7 @@ app.configure('development', ()->
 #url definitions
 app.get('/', routes.index)
 app.get('/users', user.list)
+app.get('/map', map.index)
 app.get('/report', report.index)
 app.post('/report/submit', report.submit)
 
