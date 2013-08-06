@@ -22,3 +22,20 @@ exports.index = (req, res)->
 exports.submit = (req, res) ->
   code = req.body.code;
   type = req.body.type;
+  db.users.save(
+    code: code
+    type: "type",
+    (err, saved) ->
+      if( err || !saved )
+        console.log("User not saved");
+      else console.log("User saved");
+  )
+
+exports.getall = (req, res) ->
+  db.users.find({sex: "female"}, (err, users) ->
+    if( err || !users)
+      console.log("No female users found");
+    else users.forEach( (femaleUser) ->
+      console.log(femaleUser);
+    )
+  )
