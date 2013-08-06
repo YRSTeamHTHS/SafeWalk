@@ -24,6 +24,7 @@ for node_xml in nodes_xml:
     data = {}
     data['lat'] = node_xml.attrib['lat']
     data['lon'] = node_xml.attrib['lon']
+    data['intersection'] = False
     ref = node_xml.attrib['id']
     nodes[ref] = data
     node_ways[ref] = []
@@ -42,7 +43,8 @@ for way in ways:
 intersections = []
 for ref, node in node_ways.iteritems():
     if len(node) > 1:
-        intersections.append(ref)
+        nodes[ref]['intersection'] = True
+        intersections.append({'id': ref, 'lat': nodes[ref]['lat'], 'lon': nodes[ref]['lon']})
 
 with open('intersections.json', 'w') as f:
     json.dump(intersections, f)
@@ -66,9 +68,9 @@ for way in ways:
         length = 0
         if prev != -1:
             length = length + distance(prev_lat, prev_lon, lat, lon)
-        if ref in intersections:
+        if nodes[ref]['intersection']:
             if prev_intersection != -1:
-                connections.append([prev_intersection, ref, length])
+                connections.append({'from': prev_intersection, 'to': ref, 'length': length})
             prev_intersection = ref
             length = 0
         prev = ref
