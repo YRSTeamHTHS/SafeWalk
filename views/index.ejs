@@ -1,13 +1,68 @@
 <!DOCTYPE html>
-<html>
-  <head>
-  <% include header %>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-    <% include footer %>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/main.js"></script>
+</head>
+
+<body class="home">
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Project name</a>
+        <div class="nav-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+<div class="container home-nav">
+    <div class="row">
+        <div class=" tabbar col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
+            <ul class="nav nav-tabs">
+                <li id="tab-search" class="active"><a><span class="nav-icon">&#xf002;</span>Search</a></li>
+                <li id="tab-directions"><a><span class="nav-icon">&#xf124;</span>Directions</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="tabcontent col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
+                <div id="tab-search-content">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Project...">
+                        <span class="input-group-btn">
+                          <button class="btn search" type="button">&#xf002;</button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div>
+
+                <div id="tab-directions-content" style="display:none;">
+                    <input id="directions-start" type="text" class="form-control" placeholder="Start Location...">
+                    <input id="directions-end" type="text" class="form-control" placeholder="End Location..." style="margin-bottom: 20px;">
+                    <button class="btn" id="directions-btn">Show Directions</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+</body>
 </html>
