@@ -1,14 +1,14 @@
 @font-face {
   font-family: NewNeue;
-  src: url("../font/HelveticaNeueLight.ttf");
+  src: url("/font/HelveticaNeueLight.ttf");
 }
 @font-face {
   font-family: FontAwesome;
-  src: url("../font/fontawesome-webfont.ttf");
+  src: url("/font/fontawesome-webfont.ttf");
 }
 @font-face {
   font-family: Entypo;
-  src: url("../font/entypo.ttf");
+  src: url("/font/entypo.ttf");
 }
 body {
   padding-top: 70px;
@@ -27,7 +27,7 @@ body {
   text-shadow: none;
 }
 .home {
-  background-image: url("../img/home-background.png");
+  background-image: url("/img/home-background.png");
   background-size: 1500px 1000px;
   background-position: 0 -100px;
 }
