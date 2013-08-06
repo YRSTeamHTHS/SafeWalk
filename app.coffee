@@ -7,9 +7,11 @@ http = require('http')
 path = require('path')
 parseString = require('xml2js').parseString
 
+#controller files
 routes = require('./routes')
 user = require('./routes/user')
 report = require('./routes/report')
+map = require('./routes/map')
 navigate = require('./routes/navigate')
 
 app = express()
@@ -34,16 +36,24 @@ app.configure('development', ()->
   app.use(express.errorHandler());
 )
 
+#setup server
+databaseUrl = "brittyscenes"; #"username:password@example.com/mydb"
+collections = ["reports"]
+db = require("mongojs").connect(databaseUrl, collections);
+
 #url definitions
 app.get('/', routes.index)
 app.get('/users', user.list)
+app.get('/map', map.index)
 app.get('/report', report.index)
 app.post('/report/submit', report.submit)
 app.get('/navigate/nav', navigate.nav)
 
+###
 app.get '/parse', (req, res) ->
   res.send 'abc'
   res.send 'def'
+###
 
 http.createServer(app).listen(
   app.get('port')

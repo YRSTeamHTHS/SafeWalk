@@ -1,13 +1,32 @@
-<!DOCTYPE html>
-<html>
-  <head>
-  <% include header %>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-    <% include footer %>
-  </body>
-</html>
+<% include header %>
+
+<div class="container home-nav">
+    <div class="row">
+        <div class=" tabbar col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
+            <ul class="nav nav-tabs">
+                <li id="tab-search" class="active"><a><span class="nav-icon">&#xf002;</span>Search</a></li>
+                <li id="tab-directions"><a><span class="nav-icon">&#xf124;</span>Directions</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="tabcontent col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
+                <div id="tab-search-content">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Project...">
+                        <span class="input-group-btn">
+                          <button class="btn search" type="button">&#xf002;</button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div>
+
+                <div id="tab-directions-content" style="display:none;">
+                    <input id="directions-start" type="text" class="form-control" placeholder="Start Location...">
+                    <input id="directions-end" type="text" class="form-control" placeholder="End Location..." style="margin-bottom: 20px;">
+                    <button class="btn" id="directions-btn">Show Directions</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+<% include footer %>
