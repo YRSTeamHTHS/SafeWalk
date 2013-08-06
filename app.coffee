@@ -31,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.configure('development', ()->
   app.use(express.errorHandler());
+)
 
 #url definitions
 app.get('/', routes.index)
@@ -42,6 +43,8 @@ app.get '/parse', (req, res) ->
   res.send 'abc'
   res.send 'def'
 
-http.createServer(app).listen(app.get('port'),() ->
-  console.log('Express server listening on port ' + app.get('port'));
+http.createServer(app).listen(
+  app.get('port')
+  () ->
+    console.log('Express server listening on port ' + app.get('port'));
 )
