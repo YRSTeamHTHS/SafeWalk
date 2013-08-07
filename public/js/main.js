@@ -36,11 +36,11 @@ $(document).ready(function() {
         $("#feed").fadeIn();
     });
 
-    setInterval(function() {
+    ("#report-submit-btn").click(function() {
         if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
-            $("#report-submit-btn").prop("disabled", false);
+            $(this).prop("disabled", false);
         }
-    }, 200)
+    });
 
     $("#report-submit-btn").click(function() {
         var code = $("#inputCode").text();
