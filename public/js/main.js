@@ -75,3 +75,27 @@ function collapseDirectionsBar() {
     $("#map-content").css("background-color", "transparent");
     $(".navbar").css("background-color", "");
 }
+
+$(function() {
+
+    $.history.on('load change push pushed', function(event, url, type) {
+
+        if (event.type=='load') {
+            console.log('load' + ': ' + url);
+        } else if (event.type=='push' || event.type=='change') {
+            console.log('push/change' + ': ' + url);
+        } else if (event.type='pushed') {
+            console.log('pushed' + ': ' + url);
+        }
+
+    }).listen('hash');
+
+    $('body').on('click', 'a', function(event) {
+
+        $.history.push($(this).attr('href'));
+
+        event.preventDefault();
+
+    });
+
+});
