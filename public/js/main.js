@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
 
 
-    $(".nav-tabs > li").click(function() {
+    /*$(".nav-tabs > li").click(function() {
 
         if(!$(this).hasClass("active")){
             var newId = "#" + $(this).attr("id") + "-content";
