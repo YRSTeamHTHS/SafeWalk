@@ -158,12 +158,12 @@ function closeWindowSidebar() {
     $(this).data('type', 'open');
     $(this).html('&#59237;');
     $("#map-content").css('width','100%');
-    google.maps.event.trigger(map, "resize");
+    //google.maps.event.trigger(map, "resize");
 }
 
 function openWindowSidebar() {
     $(this).data('type', 'close');
     $(this).html('&#59238;');
     $("#map-content").css('width','');
-    google.maps.event.trigger(map, "resize");
+    //google.maps.event.trigger(map, "resize");
 }
