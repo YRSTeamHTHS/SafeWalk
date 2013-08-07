@@ -2,6 +2,38 @@ var isWindowSize = ($(window).width() >= 768);
 
 $(document).ready(function() {
 
+    $("#feed-btn,#dir-btn").mousedown(function(e){
+        if($(window).width() < 768) {
+            $(document).mousemove(function(e){
+
+                if (e.which!=0 &&
+                    $("#map-content").hasClass("normal") &&
+                    e.pageY < $(window).height() &&
+                    e.pageY > 0 &&
+                    e.pageX < $(window).width() &&
+                    e.pageX > 0
+                    ) {
+                    $("#map-content").height(e.pageY);
+                }
+                else {
+                    openMobileSidebar(300);
+                    return;
+                }
+
+           });
+        }
+    });
+
+
+    $("#feed-btn").click(function() {
+        $("#directions").fadeOut();
+        $("#feed").fadeIn();
+
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+        changeMobileSidebar($("#map-content").hasClass("normal"));
+    });
+
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();

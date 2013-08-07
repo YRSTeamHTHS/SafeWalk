@@ -51,7 +51,7 @@ exports.getReportByCode = (code, callback) ->
 
 
 exports.getReports = (limit, callback) ->
-  query = ReportModel.find({});
+  query = ReportModel.find({},{code:0});
   query.sort({_id:-1}).limit(limit)
   query.exec( (err, result) ->
     if (err)
