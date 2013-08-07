@@ -26,7 +26,6 @@ exports.attach = (io2) ->
 exports.addReport = (report, callback) ->
   #check that code does not already exist
   ReportModel.find {code: report.code}, (err, reports) ->
-    console.log reports.length;
     if (err || reports.length == 0)
       console.log reports
       # yay not found, save the report
