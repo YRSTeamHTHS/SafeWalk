@@ -36,11 +36,6 @@ $(document).ready(function() {
         $("#feed").fadeIn();
     });
 
-    setInterval(function() {
-        if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
-            $("#report-submit-btn").prop("disabled", false);
-        }
-    }, 200)
 
     $("#report-submit-btn").click(function() {
         var code = $("#inputCode").text();
@@ -65,7 +60,7 @@ $(document).ready(function() {
             isWindowSize = false;
             var barType = $("#shrink-arrow").data('type');
             if (barType=="close"){
-                openMobileSidebar();
+                openMobileSidebar(0);
                 $("#map-content,.navbar").click(function() {
                     closeMobileSidebar();
                 });
@@ -95,10 +90,10 @@ $(document).ready(function() {
     });
 
     function sizeBackground() {
-        ratio=$(window).width()/$(window).height();
+        ratio=$(window).width()/($(window).height()-60);
         imgRatio=1.33;
         if (ratio < imgRatio) {
-            height=$(window).height();
+            height=($(window).height()-60);
             width=height*imgRatio;
             height=height+'px';
             width=width+'px';
@@ -109,7 +104,7 @@ $(document).ready(function() {
             width=width+'px';
         }
         dim=width + ' ' + height;
-        $('#home').css('backgroundSize', dim);
+        $('#background-wrapper').css('backgroundSize', dim);
     }
 
     function showHomeTab(tab, time) {
@@ -174,17 +169,16 @@ function closeMobileSidebar() {
         height: '100%',
     }, time, function(){});
     $(".navbar").css("background-color", "");
+    setTimeout(function(){
+        google.maps.event.trigger(map, 'resize');
+    },500);
 }
 
-function openMobileSidebar() {
-    time=500;
-    if ($('#shink-arrow').data('type')==null) {
-        time=0;
-    }
+function openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%',
-    }, time, function(){});
+    }, t, function(){});
     $(".navbar").css("background-color", "#223044");
 }
 

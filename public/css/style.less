@@ -17,7 +17,7 @@
 }
 
 body {
-  padding-top:70px;
+  padding-top:60px;
   /*background-color:#ebebeb;*/
   /*font-family: NewNeue;*/
   overflow: hidden;
@@ -30,9 +30,12 @@ body {
   text-shadow:none;
 }
 
-#home {
+#background-wrapper {
   background: url("/img/home-background.png");
-
+  position: absolute;
+  top:60px;
+  bottom:0px;
+  width:100%;
 }
 
 /* ----------NAVBAR ELEMENTS---------- */
@@ -41,7 +44,7 @@ body {
 .navbar-inverse,
 .navbar-fixed-top,
 .nav-collapse {
-  height:70px;
+  height:60px;
   box-shadow: 0 5px 5px rgba(0,0,0,0.2);
   background-color:#34495e;
   /*background-image: url("../img/mooning.png");*/
@@ -55,8 +58,9 @@ body {
 
 .navbar .navbar-toggle {
   border:none;
-  border-radius:30px;
-  margin-top:-4px;
+  border-radius:0px;
+  margin-top:-9px;
+  margin-right:-10px;
   height:60px;
   width:60px;
   padding-left:19px;
@@ -81,7 +85,7 @@ body {
 
 .navbar .nav-collapse .nav.navbar-nav > li > a {
 
-  padding: 25px 35px;
+  padding: 20px 35px;
   color:#ffffff;
   line-height:20px;
   font-size:17px;
@@ -255,7 +259,7 @@ textarea, input[type="text"] {
 }
 
 .map-wrapper {
-  position: absolute; bottom:0; left:0; top:70px; width:100%;
+  position: absolute; bottom:0; left:0; top:60px; width:100%;
 }
 
 .departure {
