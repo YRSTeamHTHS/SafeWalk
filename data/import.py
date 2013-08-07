@@ -50,29 +50,39 @@ with open('intersections.json', 'w') as f:
 # TODO: store the distance along the road
 connections = {num: [] for num in intersections.keys()}
 for way in ways:
-    nds = way.findall('nd')
     wayid = int(way.attrib['id'])
-    prev = -1
     prev_intersection = -1
     prev_lat = -1
     prev_lon = -1
     length = 0
+    prev = []
+    
+    # Try to get name of road
+    name = 'Unnamed road'
+    tags = way.findall('tag')
+    for tag in tags:
+        if tag.attrib['k'] == 'name':
+            name = tag.attrib['v']
+            break
+    
+    # Walk down road and identify intersection connections
+    nds = way.findall('nd')
     for nd in nds:
         ref = int(nd.attrib['ref'])
         lat = float(nodes[ref]['lat'])
         lon = float(nodes[ref]['lon'])
         length = 0
-        if prev != -1:
-            length = length + distance(prev_lat, prev_lon, lat, lon)
+        if len(prev) > 0:
+            length = length + distance(prev[-1]['lat'], prev[-1]['lon'], lat, lon)
         if ref in intersections:
             if prev_intersection != -1:
-                connections[ref].append({'id': prev_intersection, 'distance': length})
-                connections[prev_intersection].append({'id': ref, 'distance': length})
+                connections[ref].append({'id': prev_intersection, 'distance': length, 'name': name, 'path': prev})
+                connections[prev_intersection].append({'id': ref, 'distance': length, 'name': name, 'path': prev})
             prev_intersection = ref
             length = 0
-        prev = ref
-        prev_lat = lat
-        prev_lon = lon
+            prev = []
+        else:
+            prev.append({'lat': lat, 'lon': lon})
 
 with open('connections.json', 'w') as f:
     json.dump(connections, f)
