@@ -25,7 +25,7 @@ exports.submit = (req, res) ->
 
   #check for valid code
   if _validateCode() #@todo validate code
-    db = require("../models/config"); #load the database
+    db = require("../models/reports"); #load the database
     abc = db.getReportByCode(shortcode, (data) ->
       console.log(data)
     )
