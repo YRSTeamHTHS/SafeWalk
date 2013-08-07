@@ -3,7 +3,7 @@ $(document).ready( () ->
   switch param.type
     when "search"
       $.ajax(
-        url: "/navigate/search"
+        url: "/navigate/searchmap"
         data:
           search: param.search
         success: (data) ->
@@ -11,7 +11,7 @@ $(document).ready( () ->
       )
     when "directions"
       $.ajax(
-        url: "/navigate/directions"
+        url: "/navigate/navmap"
         data:
           from: param.from
           to: param.to
