@@ -43,12 +43,5 @@
         </div>
     </div>
 </div>
-<script>
-    var socket = io.connect('http://localhost');
-    socket.on('livereport', function (data) {
-        console.log(data);
-        //socket.emit('my other event', { my: 'data' });
-    });
-</script>
 <script src="/js/home.js"></script>
 <% include footer %>
