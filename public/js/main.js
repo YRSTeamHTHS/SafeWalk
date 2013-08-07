@@ -58,7 +58,8 @@ $(document).ready(function() {
 
             else {
                 openWindowSidebar();
-                closeMobileSidebar();
+                $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
+                $(".navbar").css("background-color", "");
             }
         }
 
@@ -145,7 +146,7 @@ function changeMobileSidebar(normal) {
 
 function closeMobileSidebar() {
     $("#sidebar .btn").removeClass("on");
-    $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal").css();;
+    $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     $(".navbar").css("background-color", "");
 }
 
