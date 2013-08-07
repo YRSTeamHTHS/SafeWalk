@@ -14,8 +14,17 @@
                     <button type="button" class="sidebar-btn btn btn-default" id="feed-btn"><span class="nav-icon">&#xf122;</span>Live Feed</button>
                 </div>
             </div>
+
+
+
             <div class="row side-wrapper" id="directions">
                 <div class="side-content">
+                    <form id="map-directions-form">
+                         <input type="hidden" name="type" value="directions">
+                         <input name="from" id="map-directions-start" type="text" class="form-control" placeholder="Start Location...">
+                         <input name="to" id="map-directions-end" type="text" class="form-control" placeholder="End Location..." style="margin-bottom: 20px;">
+                         <button type="submit" class="btn" id="map-directions-btn">Show Directions</button>
+                    </form>
                     <div class="dist-time-total">Total Travel Time: 1 hours, 5 minutes</div>
                     <hr>
                     <div class="departure"><b>Start</b><br>1567 Broadway<br> New York, NY 10036, USA<br><br></div>
@@ -80,6 +89,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 </div>
 <script src="/js/main.js"></script>

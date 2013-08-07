@@ -16,4 +16,7 @@ $(document).ready(function(){
         });
 
     });
-}
+    $('#report-type-btn').focus(function(){
+        $('#report-type-btn').click();
+    });
+});

@@ -1,6 +1,7 @@
 var isWindowSize = ($(window).width() >= 768);
 
 $(document).ready(function() {
+
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();
