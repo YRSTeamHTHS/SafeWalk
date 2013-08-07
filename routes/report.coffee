@@ -3,6 +3,7 @@
 
   renders and processes the report form
 ###
+db = require("../models/reports"); #load the database
 
 ###
   renders the default form of the registration
@@ -26,7 +27,7 @@ exports.submit = (req, res) ->
 
   #check for valid code
   if _validateCode() #@todo validate code
-    db = require("../models/reports"); #load the database
+
     data = {code:shortcode,type:type,comment:comment}
     console.log data
     db.addReport(data,(result) ->
@@ -46,10 +47,7 @@ _validateCode = () ->
   return true
 
 exports.getall = (req, res) ->
-  db.reports.find({sex: "female"}, (err, users) ->
-    if( err || !users)
-      console.log("No female users found");
-    else users.forEach( (femaleUser) ->
-      console.log(femaleUser);
-    )
+  db.getReports(20, (result) ->
+    if result
+      res.send(result)
   )

@@ -48,3 +48,14 @@ exports.getReportByCode = (code, callback) ->
       callback(false)
     else
       callback(reports)
+
+
+exports.getReports = (limit, callback) ->
+  query = ReportModel.find({});
+  query.sort({_id:-1}).limit(limit)
+  query.exec( (err, result) ->
+    if (err)
+      callback(false)
+    else
+      callback(result)
+  )
