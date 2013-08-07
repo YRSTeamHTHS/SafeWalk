@@ -1,5 +1,5 @@
 mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/brittyscenes');
+mongoose.connect('mongodb://192.168.113.51/brittyscenes');
 #mongoose.connect('mongodb://212.71.249.18/brittyscenes');
 io = undefined
 
@@ -8,9 +8,10 @@ Schema = mongoose.Schema;
 
 #Collection to hold users
 reportSchema = new Schema({
-  code: { type: String, required: true }
-  type: { type: String, required: true }
-  comment: {type: String, required: true}},
+  code: { type: String, required: true, trim: true },
+  type: { type: String, required: true, trim: true },
+  comment: {type: String, required: true, trim: true, min: 1, max: 140},
+  time: {type: Date, "default": Date.now}},
   versionKey: false
 );
 
@@ -26,7 +27,6 @@ exports.attach = (io2) ->
 exports.addReport = (report, callback) ->
   #check that code does not already exist
   ReportModel.find {code: report.code}, (err, reports) ->
-    console.log reports.length;
     if (err || reports.length == 0)
       console.log reports
       # yay not found, save the report
@@ -48,3 +48,14 @@ exports.getReportByCode = (code, callback) ->
       callback(false)
     else
       callback(reports)
+
+
+exports.getReports = (limit, callback) ->
+  query = ReportModel.find({});
+  query.sort({_id:-1}).limit(limit)
+  query.exec( (err, result) ->
+    if (err)
+      callback(false)
+    else
+      callback(result)
+  )

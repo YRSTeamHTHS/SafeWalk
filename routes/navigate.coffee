@@ -49,23 +49,38 @@ astar = (start, end) ->
         neighbor_node.parent = current_id
         neighbor_node.g = tentative_g_score
         neighbor_node.f = tentative_g_score + distance(neighbor_node.lat, neighbor_node.lon, end_node.lat, end_node.lon)
+        neighbor_node.road_name = neighbor.road_name
+        neighbor_node.road_id = neighbor.road_id
+        neighbor_node.path = neighbor.path
         if neighbor_id not in open_nodes
           open_nodes.push(neighbor_id)
 
   return "Could not find after " + count + " iterations"
 
 reconstructRoute = (nodes, start, end) ->
-  current = end
+  # Build route in forwards direction by stepping backwards on route
+  current_id = end
   first = true
-  console.log nodes[current]
   route = []
-  while current != start
+  while current_id != start
     if !first
-      current = nodes[current].parent
+      current_id = nodes[current_id].parent
     first = false
-    route.push(nodes[current])
+    route.push(nodes[current_id])
   route.reverse()
-  return route
+
+  # Flatten route into polyline and unique roads
+  path = []
+  roads = []
+  current_road = -1
+  for item in route
+    if item.path? then path = path.concat(item.path)
+    path.push(item)
+    if item.road_id? and item.road_id != current_road
+      roads.push({'id': item.road_id, 'name': item.road_name})
+      current_road = item.road_id
+
+  return {'route': route, 'path': path, 'roads': roads}
 
 distance = (lat1, lon1, lat2, lon2) ->
   R = 3956.6
@@ -82,8 +97,9 @@ toRad = (deg) ->
   return deg * Math.PI / 180
 
 calcWeight = (arrayCrimes, arrayReports) ->
-  # TODO: implement intersection weight calculation
-  return Math.random() * 1000
+  # TODO: fix array calculation
+  #return Math.random() * 100000000
+  return arrayCrimes.length
 
 # Load navigation data from JSON file
 console.log("Loading intersections")
@@ -113,7 +129,7 @@ console.log("Processing")
 #  if "crimes" not in intersection then intersection.crimes = []
 #  intersection.crimes.push(type)
 
-exports.navmap = (req, res) ->
+exports.nav = (req, res) ->
   start = parseInt(req.query.start)
   end = parseInt(req.query.end)
   res.send(astar(start, end))
