@@ -3,11 +3,10 @@ var isWindowSize = ($(window).width() >= 768);
 $(document).ready(function() {
 
     $("#feed-btn,#dir-btn").mousedown(function(e){
-        if($(window).width() < 768) {
+        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
 
                 if (e.which!=0 &&
-                    $("#map-content").hasClass("normal") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
                     e.pageX < $(window).width() &&
@@ -17,11 +16,16 @@ $(document).ready(function() {
                 }
                 else {
                     openMobileSidebar(300);
+                    alert(5);
                     return;
                 }
+                //alert(4);
+                return;
 
            });
         }
+        alert(3);
+        return;
     });
 
 
@@ -105,7 +109,7 @@ $(document).ready(function() {
 
 function changeMobileSidebar(normal) {
     if(normal && $(window).width() < 768) {
-        openMobileSidebar();
+        openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
         $("#map-content,.navbar").click(function() {
@@ -131,7 +135,7 @@ function closeMobileSidebar() {
 function openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
-        height: '20%',
+        height: '20%'
     }, t, function(){});
     $(".navbar").css("background-color", "#223044");
 }
