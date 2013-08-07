@@ -26,26 +26,16 @@ exports.submit = (req, res) ->
   #check for valid code
   if _validateCode() #@todo validate code
     db = require("../models/config"); #load the database
-    db.reports.find {code: shortcode},(err, reports) -> #check that code does not already exist
-      if (err || reports.length == 0)
-        console.log "null code"
-        res.send("a")
+    abc = db.getReportByCode(shortcode, (data) ->
+      console.log(data)
+    )
+    res.send(abc)
 
   return true
 
 
   #@todo insertion escaping
 
-
-  db.reports.save(
-    code: code
-    type: type,
-    (err, saved) ->
-      if( err || !saved )
-        console.log("User not saved");
-      else console.log("User saved");
-  )
-  res.redirect("")
 
 _validateCode = () ->
   return true
