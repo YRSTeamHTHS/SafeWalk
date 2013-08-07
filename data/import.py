@@ -1,6 +1,7 @@
 from lxml import etree
 import math
 import json
+import csv
 
 def distance(lat1, lon1, lat2, lon2):
     R = 3956.6
@@ -13,6 +14,9 @@ def distance(lat1, lon1, lat2, lon2):
     d = R * c
     return d
 
+def distance_quick(lat1, lon1, lat2, lon2):
+    return math.sqrt(math.pow(lat1-lat2, 2) + math.pow(lon1-lon2, 2))
+
 doc = etree.parse('map.osm')
 
 # Extract all nodes from XML
@@ -21,8 +25,8 @@ nodes = {}
 node_ways = {}
 for node_xml in nodes_xml:
     data = {}
-    data['lat'] = node_xml.attrib['lat']
-    data['lon'] = node_xml.attrib['lon']
+    data['lat'] = float(node_xml.attrib['lat'])
+    data['lon'] = float(node_xml.attrib['lon'])
     ref = int(node_xml.attrib['id'])
     nodes[ref] = data
     node_ways[ref] = []
@@ -42,12 +46,30 @@ intersections = {}
 for ref, node in node_ways.iteritems():
     if len(node) > 1:
         intersections[ref] = nodes[ref]
+        intersections[ref]['crimes'] = []
+
+# Map saved crime data to intersections
+with open('2013-06-greater-manchester-street.csv', 'rb') as f:
+    reader = csv.DictReader(f)
+    count = 0
+    length = 27800
+    for row in reader:
+        count += 1
+        minDistance = -1
+        minId = -1
+        for id in intersections.keys():
+            d = distance_quick(float(row['lat']), float(row['lon']), intersections[id]['lat'], intersections[id]['lon'])
+            if d < minDistance or minDistance == -1:
+                minDistance = d
+                minId = id
+        intersections[minId]['crimes'].append(row['type'])
+        if (count % 30) == 0:
+            print str((float(count)/length)*100) + "%"
 
 with open('intersections.json', 'w') as f:
     json.dump(intersections, f)
 
 # Find connections between intersections
-# TODO: store the distance along the road
 connections = {num: [] for num in intersections.keys()}
 for way in ways:
     wayid = int(way.attrib['id'])
@@ -63,7 +85,6 @@ for way in ways:
     for tag in tags:
         if tag.attrib['k'] == 'name':
             name = tag.attrib['v']
-            break
     
     # Walk down road and identify intersection connections
     nds = way.findall('nd')
@@ -76,13 +97,13 @@ for way in ways:
             length = length + distance(prev[-1]['lat'], prev[-1]['lon'], lat, lon)
         if ref in intersections:
             if prev_intersection != -1:
-                connections[ref].append({'id': prev_intersection, 'distance': length, 'name': name, 'path': prev})
-                connections[prev_intersection].append({'id': ref, 'distance': length, 'name': name, 'path': prev})
+                connections[ref].append({'id': prev_intersection, 'distance': length, 'road_id': wayid, 'road_name': name, 'path': prev})
+                connections[prev_intersection].append({'id': ref, 'distance': length, 'road_id': wayid, 'road_name': name, 'path': prev})
             prev_intersection = ref
             length = 0
             prev = []
         else:
-            prev.append({'lat': lat, 'lon': lon})
+            prev.append({'id': ref, 'lat': lat, 'lon': lon})
 
 with open('connections.json', 'w') as f:
     json.dump(connections, f)

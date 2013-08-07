@@ -50,7 +50,7 @@ app.get('/', routes.index)
 app.get('/users', user.list)
 app.get('/map', map.index)
 app.get('/report', report.index)
-app.get('/navigate/navmap', navigate.navmap)
+app.get('/navigate/nav', navigate.nav)
 app.get('/navigate/searchmap', navigate.searchmap)
 app.post('/report/submit/', report.submit)
 
