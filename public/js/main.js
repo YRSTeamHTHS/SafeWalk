@@ -34,6 +34,29 @@ $(document).ready(function() {
         $("#feed").fadeIn();
     });
 
+    setInterval(function() {
+        if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
+            $("#report-submit-btn").prop("disabled", false);
+        }
+    }, 200)
+
+    $("#report-submit-btn").click(function() {
+        var code = $("#inputCode").text();
+        var type = $("#report-type-btn").text();
+        var comment = $("#inputComment").text();
+
+        $.ajax({
+            url: "/ajax/addReport",
+            type: 'POST',
+            data: {
+                code:code,
+                type:type,
+                comment:comment
+            },
+            dataType: 'json'
+        });
+
+    });
     $(window).resize(function() {
 
         if ($(window).width() < 768 && isWindowSize) {
