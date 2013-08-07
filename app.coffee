@@ -63,11 +63,6 @@ app.get '/parse', (req, res) ->
   res.send 'def'
 ###
 
-#broadcast the new event
-io.sockets.on('connection', (socket) ->
-  socket.emit('livereport', { report: "connection start" });
-)
-
 server.listen(
   app.get('port')
   () ->
