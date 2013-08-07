@@ -97,9 +97,9 @@ toRad = (deg) ->
   return deg * Math.PI / 180
 
 calcWeight = (arrayCrimes, arrayReports) ->
-  # TODO: implement intersection weight calculation
+  # TODO: fix array calculation
   #return Math.random() * 100000000
-  return 0
+  return arrayCrimes.length
 
 # Load navigation data from JSON file
 console.log("Loading intersections")
