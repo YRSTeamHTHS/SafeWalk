@@ -81,11 +81,11 @@ $(function() {
     $.history.on('load change push pushed', function(event, url, type) {
 
         if (event.type=='load') {
-            alert('load' + ': ' + url);
+            console.log('load' + ': ' + url);
         } else if (event.type=='push' || event.type=='change') {
-            alert('push/change' + ': ' + url);
+            console.log('push/change' + ': ' + url);
         } else if (event.type='pushed') {
-            alert('pushed' + ': ' + url);
+            console.log('pushed' + ': ' + url);
         }
 
     }).listen('hash');
