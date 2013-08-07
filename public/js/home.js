@@ -1,41 +1,32 @@
 $(document).ready(function(){
-    sizeBackground();
-    var count = 0;
-    setInterval(function() {
+    sizeBackground();//adjust size of background image
+    var count = 0;//running count of bubbles on the screen
+
+    var socket = io.connect('http://localhost');
+    socket.on('livereport', function (data) {
+        console.log(data);
+        //socket.emit('my other event', { my: 'data' });
+    });
+
+    /**
+     * creates a new bubble in a random location
+     *
+     * @param timestamp
+     * @param type
+     * @param comment
+     * @return bubble html
+     */
+    function newBubble(timestamp,type,comment) {
         var hue=Math.random()*100;
         var saturation='80%';
         var lightness='70%';
         var hsla="hsla(" + hue +"," + saturation +"," + lightness +",1);"
-        /*var left=Math.random()*$('#background-wrapper').width();
-        var top=Math.random()*$('#background-wrapper').height();
-        var distance=10000;
-        $('.popup').each(function() {
-            var pos=$(this).position();
-            var new_distance=Math.sqrt(Math.pow(pos.left-left,2)+Math.pow(pos.top-top,2));
-            if(new_distance<distance) {
-                distance=new_distance;
-            }
-        });
-        var count = 0;
-        while (distance < 100 && count < 100) {
-            distance = 10000;
-            count++;
-            left=Math.random()*$('#background-wrapper').width();
-            top=Math.random()*$('#background-wrapper').height();
-            $('.popup').each(function() {
-                var pos=$(this).position();
-                var new_distance=Math.sqrt(Math.pow(pos.left-left,2)+Math.pow(pos.top-top,2));
-                if(new_distance<distance) {
-                    distance=new_distance;
-                }
-            });
-            console.log(distance);
-        }*/
+
         var left=Math.random()*$('#background-wrapper').width();
         left=left/$('#background-wrapper').width()*100+'%;';
         var top='90%;'//top/$('#background-wrapper').height()*100+'%;';
         var style = "style='position: absolute; background-color:"+hsla+"left:" + left + "top:" + top +"'";
-        var html=$("<div class='popup' "+ style + ">aasdfjasdflufbvakf<br/>aasdfjasdflufbvakf<br/>aasdfjasdflufbvakf<br/></div>");
+        var html=$("<div class='popup' "+ style + ">"+timestamp+"<br/>a"+type+"<br/>"+comment+"<br/></div>");
         $('#background-wrapper').prepend(html);
         $(html).animate({
             opacity:0.75
@@ -45,12 +36,18 @@ $(document).ready(function(){
         }, {duration: 8000, complete: function(){
             $(this).remove();
         }, queue: false});
-    }, 1000);
+    }
 
+    /**
+     * adjusts background image size when window is resized
+     */
     $(window).resize(function() {
         sizeBackground();
     });
 
+    /**
+     * adjusts background image sized based on ratio of window height and width
+     */
     function sizeBackground() {
         ratio=$(window).width()/($(window).height()-60);
         imgRatio=1.33;
@@ -71,6 +68,10 @@ $(document).ready(function(){
 
 });
 
+
+/**
+ * functions for toggling between search and directions tabs
+ */
 $(function() {
     $.history.on('load change push pushed', function(event, url, type) {
         if (url=="search"||url=="directions") {
@@ -88,6 +89,11 @@ $(function() {
         event.preventDefault();
     });
 
+    /**
+     * switch to tab based on url anchor
+     * @param url
+     * @param time
+     */
     function switchToTab(url, time) {
         if (url=="search") {
             hideHomeTab("tab-directions");
@@ -97,12 +103,23 @@ $(function() {
             showHomeTab("tab-directions",time);
         }
     }
+
+    /**
+     * make home tab active
+     * @param tab
+     * @param time
+     */
     function showHomeTab(tab, time) {
         var newId = document.getElementById(tab + "-content");
         var currentId = document.getElementById(tab);
         $(currentId).addClass("active");
         $(newId).fadeIn(time);
     }
+
+    /**
+     * make home tab inactive
+     * @param tab
+     */
     function hideHomeTab(tab) {
         var newId = document.getElementById(tab + "-content");
         //console.log(newId);

@@ -148,3 +148,25 @@ function openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
 }
+
+function getDirections(start, end) {
+    $.getJSON('/navigate/nav?start=344234568&end=2345009892', function(data) {
+        var coors = [];
+        for (var i=0; i<data.path.length; i++) {
+            coors.push(new google.maps.LatLng(data.path[i].lat, data.path[i].lon));
+        }
+        var path = new google.maps.Polyline({
+            path: coors,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+        path.setMap(map);
+    });
+}
+
+$(function(){
+    setTimeout(function(){
+        getDirections();
+    },2000);
+});

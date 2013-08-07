@@ -1,12 +1,16 @@
 <% include header %>
+<script src="/js/jquery.history.min.js"></script>
+
 <div id="background-wrapper">
     <div class="container home-nav">
         <div class="row">
             <div class=" tabbar col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
                 <ul class="nav nav-tabs">
-                    <li id="tab-search" class="active"><a href="#search"><span class="nav-icon">&#xf002;</span>Search</a>
+                    <li id="tab-search" class="active"><a href="#search"><span
+                            class="nav-icon">&#xf002;</span>Search</a>
                     </li>
-                    <li id="tab-directions"><a href="#directions"><span class="nav-icon">&#xf124;</span>Directions</a></li>
+                    <li id="tab-directions"><a href="#directions"><span class="nav-icon">&#xf124;</span>Directions</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -27,9 +31,11 @@
 
                 <div id="tab-directions-content" style="display:none;">
                     <form action="/map" method="GET">
-                        <input type="hidden" name="type" value="directions" />
-                        <input name="from" id="directions-start" type="text" class="form-control" placeholder="Start Location...">
-                        <input name="to" id="directions-end" type="text" class="form-control" placeholder="End Location..." style="margin-bottom: 20px;">
+                        <input type="hidden" name="type" value="directions"/>
+                        <input name="from" id="directions-start" type="text" class="form-control"
+                               placeholder="Start Location...">
+                        <input name="to" id="directions-end" type="text" class="form-control"
+                               placeholder="End Location..." style="margin-bottom: 20px;">
                         <button type="submit" class="btn" id="directions-btn">Show Directions</button>
                     </form>
                 </div>
@@ -37,12 +43,5 @@
         </div>
     </div>
 </div>
-<script>
-    var socket = io.connect('http://localhost');
-    socket.on('livereport', function (data) {
-        console.log(data);
-        //socket.emit('my other event', { my: 'data' });
-    });
-</script>
 <script src="/js/home.js"></script>
 <% include footer %>

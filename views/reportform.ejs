@@ -17,6 +17,7 @@
                 <div class="row">
                     <div class="col-lg-offset-1 col-lg-10">
                         <a id="report-type-btn" data-toggle="modal" href="#report-choices" class="btn btn-default">Report Type</a>
+                        <input name="type" type="hidden" id="report-type-hidden" /></a>
                     </div>
                 </div>
             </div>
@@ -58,25 +59,6 @@
         </div>
     </div>
 </div>
-<script>
-    $('#report-choices').modal({
-        keyboard: false
-    })
-    $('#report-choices').modal('hide');
-
-    $('.report-type-option').click(function() {
-        $('#report-type-btn').html($(this).html());
-        $('#report-type-btn').css('color','blac k');
-        $('#report-choices').modal('hide');
-        $('#inputComment').focus();
-    })
-
-    setInterval(function() {
-        if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
-            $("#report-submit-btn").prop("disabled", false);
-        }
-    }, 200);
-</script>
 <script src="/js/report.js"></script>
 <% include footer %>
 </body>
