@@ -65,7 +65,7 @@ $(document).ready(function() {
             isWindowSize = false;
             var barType = $("#shrink-arrow").data('type');
             if (barType=="close"){
-                openMobileSidebar();
+                openMobileSidebar(0);
                 $("#map-content,.navbar").click(function() {
                     closeMobileSidebar();
                 });
@@ -174,18 +174,17 @@ function closeMobileSidebar() {
         height: '100%',
     }, time, function(){});
     $(".navbar").css("background-color", "");
+    setTimeout(function(){
+        google.maps.event.trigger(map, 'resize');
+    },500);
 }
 
-function openMobileSidebar() {
-    time=500;
-    if ($('#shink-arrow').data('type')==null) {
-        time=0;
-    }
+function openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%',
-    }, time, function(){});
-    $(".navbar").css("background-color", "#2c3e50;");
+    }, t, function(){});
+    $(".navbar").css("background-color", "#223044");
 }
 
 function closeWindowSidebar() {
