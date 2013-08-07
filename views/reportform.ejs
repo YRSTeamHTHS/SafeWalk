@@ -71,10 +71,11 @@
     });
 
     setInterval(function() {
-        if ($("#inputCode").val().length > 0 || $("#report-type-btn").text() !== "Report Type") {
+        alert($("#inputCode").val());
+        if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
             $("#report-submit-btn").prop("disabled", false);
         }
-    }, 200);
+    }, 10000);
 </script>
 <% include footer %>
 </body>
