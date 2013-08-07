@@ -31,13 +31,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#feed-btn").click(function() {
-        $("#directions").hide();
-        $("#feed").fadeIn();
-    });
-
     $(".nav-tabs > li").click(function() {
-
         if(!$(this).hasClass("active")){
             var newId = "#" + $(this).attr("id") + "-content";
             $(".nav-tabs > li").removeClass("active");
@@ -50,36 +44,28 @@ $(document).ready(function() {
 
 function collapseMap(normal) {
     if(normal && $(window).width() < 768) {
-        $("#map-content").css('height','20%');
-        $("#map-content").css('min-height','60px'); //make min width 60 so the list buttons don't go under the navbar
-        $("#map-content").removeClass("normal");
-        $("#map-content").addClass("collapsed");
-
+        //make min width 60 so the list buttons don't go under the navbar
         //darken rest of screen
-        $("#map-content").css("background-color", "rgba(0,0,0,0.4)");
+        $("#map-content").css({'height':'20%', 'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
+
         $(".navbar").css("background-color", "#223044");
 
         //click anywhere to exit list
-        $("#map-content,.navbar").click(function() {
+        // TODO: assign in initialization, have check state
+        $("#map-content, .navbar").click(function() {
             collapseDirectionsBar();
         });
     }
 }
 
 function collapseDirectionsBar() {
-
     $("#sidebar .btn").removeClass("on");
-    $("#map-content").css('height','');
-    $("#map-content").removeClass("collapsed");
-    $("#map-content").addClass("normal");
-    $("#map-content").css("background-color", "transparent");
+    $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal").css();;
     $(".navbar").css("background-color", "");
 }
 
 $(function() {
-
     $.history.on('load change push pushed', function(event, url, type) {
-
         if (event.type=='load') {
             console.log('load' + ': ' + url);
         } else if (event.type=='push' || event.type=='change') {
@@ -87,15 +73,10 @@ $(function() {
         } else if (event.type='pushed') {
             console.log('pushed' + ': ' + url);
         }
-
     }).listen('hash');
 
     $('body').on('click', 'a', function(event) {
-
         $.history.push($(this).attr('href'));
-
         event.preventDefault();
-
     });
-
 });
