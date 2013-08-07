@@ -280,7 +280,6 @@ input[type="text"] {
 #feed-btn:hover,
 #dir-btn:hover {
   background-color: #3a3c3c;
-  border: none;
 }
 #feed-btn.on,
 #dir-btn.on {
