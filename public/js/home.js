@@ -18,11 +18,8 @@ $(document).ready(function(){
      * @return bubble       html
      */
     function newBubble(report) {
-        console.log("new bubble")
-        type = report.type
-        comment = report.comment
-        console.log(report)
-        console.log (report.type)
+        type = report.type;
+        comment = report.comment;
         var hue=Math.random()*100;
         var saturation='80%';
         var lightness='70%';
