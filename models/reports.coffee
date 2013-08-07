@@ -8,9 +8,10 @@ Schema = mongoose.Schema;
 
 #Collection to hold users
 reportSchema = new Schema({
-  code: { type: String, required: true }
-  type: { type: String, required: true }
-  comment: {type: String, required: true}},
+  code: { type: String, required: true, trim: true },
+  type: { type: String, required: true, trim: true },
+  comment: {type: String, required: true, trim: true, min: 1, max: 140},
+  time: {type: Date, "default": Date.now}},
   versionKey: false
 );
 
