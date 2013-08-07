@@ -113,7 +113,12 @@ console.log("Processing")
 #  if "crimes" not in intersection then intersection.crimes = []
 #  intersection.crimes.push(type)
 
-exports.nav = (req, res) ->
+exports.navmap = (req, res) ->
   start = parseInt(req.query.start)
   end = parseInt(req.query.end)
   res.send(astar(start, end))
+
+exports.searchmap = (req,res) ->
+  search = (req.query.search);
+  res.send("<map here>")
+

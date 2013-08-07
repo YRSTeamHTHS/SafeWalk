@@ -17,7 +17,7 @@
 }
 
 body {
-  padding-top:70px;
+  padding-top:60px;
   /*background-color:#ebebeb;*/
   /*font-family: NewNeue;*/
   overflow: hidden;
@@ -30,14 +30,12 @@ body {
   text-shadow:none;
 }
 
-#home {
+#background-wrapper {
   background: url("/img/home-background.png");
-  //background-size: 1500px 1000px;
-  -webkit-background-size: cover; /*webkit*/
-  -moz-background-size: cover; /*mozilla*/
-  -o-background-size: cover; /*opera*/
-  background-size: cover; /*generic*/
-  background-position: 0 -100px;
+  position: absolute;
+  top:60px;
+  bottom:0px;
+  width:100%;
 }
 
 /* ----------NAVBAR ELEMENTS---------- */
@@ -46,7 +44,7 @@ body {
 .navbar-inverse,
 .navbar-fixed-top,
 .nav-collapse {
-  height:70px;
+  height:60px;
   box-shadow: 0 5px 5px rgba(0,0,0,0.2);
   background-color:#34495e;
   /*background-image: url("../img/mooning.png");*/
@@ -60,8 +58,9 @@ body {
 
 .navbar .navbar-toggle {
   border:none;
-  border-radius:30px;
-  margin-top:-4px;
+  border-radius:0px;
+  margin-top:-9px;
+  margin-right:-10px;
   height:60px;
   width:60px;
   padding-left:19px;
@@ -86,7 +85,7 @@ body {
 
 .navbar .nav-collapse .nav.navbar-nav > li > a {
 
-  padding: 25px 35px;
+  padding: 20px 35px;
   color:#ffffff;
   line-height:20px;
   font-size:17px;
@@ -100,7 +99,7 @@ body {
 
 .navbar .nav-collapse .nav.navbar-nav > li > a:hover,
 .navbar .nav-collapse .nav.navbar-nav > li > a:focus {
-  background-color:rgba(0,0,0,0.2);
+  background-color:#aeaeae;
 
 }
 
@@ -150,7 +149,7 @@ body {
 
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover {
-  background-color: #aeaeae
+  background-color:#aeaeae;
 
 }
 
@@ -197,7 +196,7 @@ body {
 }
 
 .btn.search:hover {
-  background-color: rgba(52, 73, 94, 0.75);
+  background-color: #5A7A97;
 }
 
 #directions-start {
@@ -260,7 +259,7 @@ textarea, input[type="text"] {
 }
 
 .map-wrapper {
-  position: absolute; bottom:0; left:0; top:70px; width:100%;
+  position: absolute; bottom:0; left:0; top:60px; width:100%;
 }
 
 .departure {
@@ -334,6 +333,7 @@ textarea, input[type="text"] {
 /*dumb shit for fitting button group again*/
 #sidebar {
   padding-left:14px;
+  background-color:white;
 
 }
 

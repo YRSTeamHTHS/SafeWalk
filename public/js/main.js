@@ -1,6 +1,8 @@
 var isWindowSize = ($(window).width() >= 768);
 
 $(document).ready(function() {
+    sizeBackground();
+
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();
@@ -34,13 +36,31 @@ $(document).ready(function() {
         $("#feed").fadeIn();
     });
 
+
+    $("#report-submit-btn").click(function() {
+        var code = $("#inputCode").text();
+        var type = $("#report-type-btn").text();
+        var comment = $("#inputComment").text();
+
+        $.ajax({
+            url: "/ajax/addReport",
+            type: 'POST',
+            data: {
+                code:code,
+                type:type,
+                comment:comment
+            },
+            dataType: 'json'
+        });
+
+    });
     $(window).resize(function() {
 
         if ($(window).width() < 768 && isWindowSize) {
             isWindowSize = false;
             var barType = $("#shrink-arrow").data('type');
             if (barType=="close"){
-                openMobileSidebar();
+                openMobileSidebar(0);
                 $("#map-content,.navbar").click(function() {
                     closeMobileSidebar();
                 });
@@ -65,7 +85,27 @@ $(document).ready(function() {
         setTimeout(function(){
             google.maps.event.trigger(map, 'resize');
         },500);
+
+        sizeBackground();
     });
+
+    function sizeBackground() {
+        ratio=$(window).width()/($(window).height()-60);
+        imgRatio=1.33;
+        if (ratio < imgRatio) {
+            height=($(window).height()-60);
+            width=height*imgRatio;
+            height=height+'px';
+            width=width+'px';
+        } else {
+            width=$(window).width();
+            height=width*(1/imgRatio);
+            height=height+'px';
+            width=width+'px';
+        }
+        dim=width + ' ' + height;
+        $('#background-wrapper').css('backgroundSize', dim);
+    }
 
     function showHomeTab(tab, time) {
         var newId = document.getElementById(tab + "-content");
@@ -129,17 +169,16 @@ function closeMobileSidebar() {
         height: '100%',
     }, time, function(){});
     $(".navbar").css("background-color", "");
+    setTimeout(function(){
+        google.maps.event.trigger(map, 'resize');
+    },500);
 }
 
-function openMobileSidebar() {
-    time=500;
-    if ($('#shink-arrow').data('type')==null) {
-        time=0;
-    }
+function openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%',
-    }, time, function(){});
+    }, t, function(){});
     $(".navbar").css("background-color", "#223044");
 }
 

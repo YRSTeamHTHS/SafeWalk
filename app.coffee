@@ -4,7 +4,12 @@
 
 #plugins to include
 express = require('express')
+app = express()
+
 http = require('http')
+server = http.createServer(app)
+io = require('socket.io').listen(server)
+
 path = require('path')
 parseString = require('xml2js').parseString
 mongoose = require('mongoose')
@@ -18,8 +23,6 @@ user = require('./routes/user')
 report = require('./routes/report')
 map = require('./routes/map')
 navigate = require('./routes/navigate')
-
-app = express()
 
 # all environments
 app.set('port', process.env.PORT || 3000);
@@ -47,7 +50,8 @@ app.get('/', routes.index)
 app.get('/users', user.list)
 app.get('/map', map.index)
 app.get('/report', report.index)
-app.get('/navigate/nav', navigate.nav)
+app.get('/navigate/navmap', navigate.navmap)
+app.get('/navigate/searchmap', navigate.searchmap)
 app.post('/report/submit/', report.submit)
 
 ###
@@ -56,7 +60,16 @@ app.get '/parse', (req, res) ->
   res.send 'def'
 ###
 
-http.createServer(app).listen(
+  #socket io stuffs
+io.sockets.on('connection', (socket) ->
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', (data) ->
+    console.log(data);
+  )
+)
+
+
+server.listen(
   app.get('port')
   () ->
     console.log('Express server listening on port ' + app.get('port'));
