@@ -5,7 +5,7 @@ astar = (start, end) ->
   # Copy the array of intersections
   nodes = []
   for id, node of intersections
-    new_node = []
+    new_node = {}
     for prop, val of node
       new_node[prop] = val
     new_node.closed = false
@@ -31,7 +31,7 @@ astar = (start, end) ->
     current_id = open_nodes[0]
     current_node = nodes[current_id]
     if current_id == end
-      return "Complete after " + count + " iterations"
+      return reconstructRoute(nodes, start, end)
 
     open_nodes.splice(0, 1)
     current_node.closed = true
@@ -54,6 +54,19 @@ astar = (start, end) ->
 
   return "Could not find after " + count + " iterations"
 
+reconstructRoute = (nodes, start, end) ->
+  current = end
+  first = true
+  console.log nodes[current]
+  route = []
+  while current != start
+    if !first
+      current = nodes[current].parent
+    first = false
+    route.push(nodes[current])
+  route.reverse()
+  return route
+
 distance = (lat1, lon1, lat2, lon2) ->
   R = 3956.6
   dLat = toRad(lat2-lat1)
@@ -70,7 +83,7 @@ toRad = (deg) ->
 
 calcWeight = (arrayCrimes, arrayReports) ->
   # TODO: implement intersection weight calculation
-  return 0
+  return Math.random() * 1000
 
 # Load navigation data from JSON file
 console.log("Loading intersections")
