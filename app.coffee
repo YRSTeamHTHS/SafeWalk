@@ -16,14 +16,14 @@ mongoose = require('mongoose')
 
 #models
 #models = require('./models')
-require('./models/reports').attach(io)
+require('./models/reports_model').attach(io)
 
 #controller files
 routes = require('./routes')
-user = require('./routes/user')
-report = require('./routes/report')
-map = require('./routes/map')
-navigate = require('./routes/navigate')
+user = require('./routes/user_route')
+report = require('./routes/report_route')
+map = require('./routes/map_route')
+navigate = require('./routes/navigate_route')
 
 # all environments
 app.set('port', process.env.PORT || 3000);
