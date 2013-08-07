@@ -26,7 +26,12 @@ $(document).ready( () ->
 
   #get live feed elements
   $.getJSON('/report/getall',(data) ->
-    console.log data
+    $.each(data, (key, val) ->
+      time = val.time
+      type = val.type
+      comment = val.comment
+      $("#live-feed").append('<div class="feed-item"><hr>'+time + type + comment+'</div>')
+    )
   )
 )
 
