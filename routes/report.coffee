@@ -20,13 +20,23 @@ exports.index = (req, res)->
 
 ###
 exports.submit = (req, res) ->
-  code = req.body.code;
+  shortcode = req.body.code;
   type = req.body.type;
-  #setup server
-  databaseUrl = "brittyscenes"; #"username:password@example.com/mydb"
-  collections = ["reports"]
-  db = require("mongojs").connect(databaseUrl, collections);
-  console.log db
+
+  #check for valid code
+  if _validateCode() #@todo validate code
+    db = require("../models/config"); #load the database
+    db.reports.find {code: shortcode},(err, reports) -> #check that code does not already exist
+      if (err || reports.length == 0)
+        console.log "null code"
+        res.send("a")
+
+  return true
+
+
+  #@todo insertion escaping
+
+
   db.reports.save(
     code: code
     type: type,
@@ -36,6 +46,9 @@ exports.submit = (req, res) ->
       else console.log("User saved");
   )
   res.redirect("")
+
+_validateCode = () ->
+  return true
 
 exports.getall = (req, res) ->
   db.reports.find({sex: "female"}, (err, users) ->
