@@ -32,19 +32,25 @@ $(document).ready(function(){
         $('#background-wrapper').css('backgroundSize', dim);
     }
 
-    function showHomeTab(tab, time) {
-        var newId = document.getElementById(tab + "-content");
-        var currentId = document.getElementById(tab);
-        $(currentId).addClass("active");
-        $(newId).fadeIn(time);
-    }
-    function hideHomeTab(tab) {
-        var newId = document.getElementById(tab + "-content");
-        console.log(newId);
-        var currentId = document.getElementById(tab);
-        $(currentId).removeClass("active");
-        $(newId).hide();
-    }
+});
+
+$(function() {
+    $.history.on('load change push pushed', function(event, url, type) {
+        if (url=="search"||url=="directions") {
+            if (event.type=='load') {
+                //console.log('load' + ': ' + url);
+                switchToTab(url, 0);
+            } else if (event.type=='push' || event.type=='change') {
+                //console.log('push/change' + ': ' + url);
+                switchToTab(url, 200);
+            }
+        }
+    }).listen('hash');
+    $('body').on('click', 'a', function(event) {
+        $.history.push($(this).attr('href'));
+        event.preventDefault();
+    });
+
     function switchToTab(url, time) {
         if (url=="search") {
             hideHomeTab("tab-directions");
@@ -54,22 +60,17 @@ $(document).ready(function(){
             showHomeTab("tab-directions",time);
         }
     }
-});
-
-$(function() {
-    $.history.on('load change push pushed', function(event, url, type) {
-        if (url=="search"||url=="directions") {
-            if (event.type=='load') {
-                console.log('load' + ': ' + url);
-                switchToTab(url, 0);
-            } else if (event.type=='push' || event.type=='change') {
-                console.log('push/change' + ': ' + url);
-                switchToTab(url, 200);
-            }
-        }
-    }).listen('hash');
-    $('body').on('click', 'a', function(event) {
-        $.history.push($(this).attr('href'));
-        event.preventDefault();
-    });
+    function showHomeTab(tab, time) {
+        var newId = document.getElementById(tab + "-content");
+        var currentId = document.getElementById(tab);
+        $(currentId).addClass("active");
+        $(newId).fadeIn(time);
+    }
+    function hideHomeTab(tab) {
+        var newId = document.getElementById(tab + "-content");
+        //console.log(newId);
+        var currentId = document.getElementById(tab);
+        $(currentId).removeClass("active");
+        $(newId).hide();
+    }
 });
