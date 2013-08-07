@@ -22,12 +22,15 @@ exports.index = (req, res)->
 exports.submit = (req, res) ->
   shortcode = req.body.code;
   type = req.body.type;
+  comment = req.body.comment;
 
   #check for valid code
   if _validateCode() #@todo validate code
-    db = require("../models/reports"); #load the database
+    db = require("../models/reports")(); #load the database
     abc = db.getReportByCode(shortcode, (data) ->
-      console.log(data)
+      db.addReport({code:shortcode,type:type,comment:comment},(result) ->
+        console.log(result))
+      #console.log(data)
       res.send(data)
     )
 
