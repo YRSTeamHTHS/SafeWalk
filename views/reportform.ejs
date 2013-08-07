@@ -71,11 +71,10 @@
     });
 
     setInterval(function() {
-        alert($("#inputCode").val());
         if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
             $("#report-submit-btn").prop("disabled", false);
         }
-    }, 10000);
+    }, 200);
 </script>
 <script src="/js/report.js"></script>
 <% include footer %>
