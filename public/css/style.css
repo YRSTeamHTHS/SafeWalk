@@ -59,8 +59,8 @@ body {
 /*padding from the top of screen from navbar*/
 .home-nav {
   margin-top: 50px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 /*custom navtab navigation*/
 .tabbar {
@@ -306,10 +306,11 @@ input[type="text"] {
   border-radius: 6px;
   padding: 50px;
   padding-bottom: 40px;
+  padding-top: 10px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
 }
 #report-floater {
-  margin-bottom: -250px;
-  height: 50%;
+  height: 50px;
 }
 .report-page-wrapper {
   position: absolute;
@@ -323,6 +324,9 @@ input[type="text"] {
   color: #939393;
   text-align: left;
   padding-left: 30px;
+}
+#report-title {
+  padding-bottom: 5px;
 }
 .btn-group-vertical {
   width: 100%;
@@ -377,5 +381,9 @@ input[type="text"] {
     padding-left: 0px;
     padding-right: 0px;
     margin-left: -1px;
+  }
+  #report-wrapper {
+    margin-left: 25px;
+    margin-right: 25px;
   }
 }
