@@ -158,11 +158,11 @@ function openMobileSidebar() {
 function closeWindowSidebar() {
     $("#shrink-arrow").data('type', 'open').html('&#59237;');
     $("#map-content").css('width','100%');
-    google.maps.event.trigger(map, "resize");
+    //google.maps.event.trigger(map, "resize");
 }
 
 function openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
-    google.maps.event.trigger(map, "resize");
+    //google.maps.event.trigger(map, "resize");
 }
