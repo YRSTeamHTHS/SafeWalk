@@ -22,3 +22,26 @@ exports.index = (req, res)->
 exports.submit = (req, res) ->
   code = req.body.code;
   type = req.body.type;
+  #setup server
+  databaseUrl = "brittyscenes"; #"username:password@example.com/mydb"
+  collections = ["reports"]
+  db = require("mongojs").connect(databaseUrl, collections);
+  console.log db
+  db.reports.save(
+    code: code
+    type: type,
+    (err, saved) ->
+      if( err || !saved )
+        console.log("User not saved");
+      else console.log("User saved");
+  )
+  res.redirect("")
+
+exports.getall = (req, res) ->
+  db.reports.find({sex: "female"}, (err, users) ->
+    if( err || !users)
+      console.log("No female users found");
+    else users.forEach( (femaleUser) ->
+      console.log(femaleUser);
+    )
+  )
