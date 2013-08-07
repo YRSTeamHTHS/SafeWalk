@@ -23,6 +23,11 @@ $(document).ready( () ->
           $("#map-directions-end").val(param.to);
           $("#map-wrapper").html(data);
       )
+
+  #get live feed elements
+  $.getJSON('/report/getall',(data) ->
+    console.log data
+  )
 )
 
 ###
