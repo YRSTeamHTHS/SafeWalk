@@ -28,8 +28,8 @@ exports.submit = (req, res) ->
     db = require("../models/reports"); #load the database
     abc = db.getReportByCode(shortcode, (data) ->
       console.log(data)
+      res.send(data)
     )
-    res.send(abc)
 
   return true
 
