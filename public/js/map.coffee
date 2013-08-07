@@ -30,7 +30,7 @@ $(document).ready( () ->
       time = val.time
       type = val.type
       comment = val.comment
-      $("#live-feed").append('<div class="feed-item"><hr>'+time + type + comment+'</div>')
+      $("#live-feed").prepend('<div class="feed-item"><hr>'+'<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment+'</div><div class="feed-time">—'+ time + '</div></div>')
     )
   )
 )
