@@ -50,6 +50,7 @@ app.configure('development', ()->
 app.get('/', routes.index)
 app.get('/users', user.list)
 app.get('/map', map.index)
+app.get('/report', report.index)
 app.get('/navigate/navmap', navigate.navmap)
 app.get('/navigate/searchmap', navigate.searchmap)
 app.get('/report', report.index)
