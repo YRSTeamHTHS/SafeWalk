@@ -61,12 +61,12 @@ function collapseMap(normal) {
 
         //click anywhere to exit list
         $("#map-content,.navbar").click(function() {
-
+            collapseDirectionsBar();
         });
     }
 }
 
-collapseDirectionsBar() {
+function collapseDirectionsBar() {
 
     $("#sidebar .btn").removeClass("on");
     $("#map-content").css('height','');
