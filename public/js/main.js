@@ -1,4 +1,4 @@
-var pastWindowSize = $(window).size();
+var pastWindowSize = 768;
 
 $(document).ready(function() {
     $("#feed-btn").click(function() {
@@ -36,18 +36,21 @@ $(document).ready(function() {
 
     $(window).resize(function() {
 
-        if ($(window).width() < 768) {
-            pzstWindowSize = $(window).size();
+        if ($(window).width() < 768 && pastWindowSize == 768) {
+            pastWindowSize = 767;
             var barType = $("#shrink-arrow").data('type');
-            if (barType=="close")
-                closeMobileSidebar();
-            else
+            if (barType=="close"){
                 openMobileSidebar();
-
                 $("#map-content,.navbar").click(function() {
                     closeMobileSidebar();
                 });
-        } else if ($(window).width() >= 768) {
+            }
+            else
+                closeMobileSidebar();
+
+
+        } else if ($(window).width() >= 768 && pastWindowSize < $(window).width()) {
+            pastWindowSize = 768;
             var mobileBarClosed = $("#map-content").hasClass("normal");
             if (mobileBarClosed) {
                 closeWindowSidebar();
