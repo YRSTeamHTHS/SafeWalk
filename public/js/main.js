@@ -185,7 +185,7 @@ function openMobileSidebar() {
     $("#map-content").animate({
         height: '20%',
     }, time, function(){});
-    $(".navbar").css("background-color", "#223044");
+    $(".navbar").css("background-color", "#2c3e50;");
 }
 
 function closeWindowSidebar() {
