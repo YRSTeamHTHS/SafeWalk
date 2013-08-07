@@ -2,8 +2,22 @@ $(document).ready( () ->
   param = _getParameters()
   switch param.type
     when "search"
-      
+      $.ajax(
+        url: "/navigate/search"
+        data:
+          search: param.search
+        success: (data) ->
+          $("#map-wrapper").html(data);
+      )
     when "directions"
+      $.ajax(
+        url: "/navigate/directions"
+        data:
+          from: param.from
+          to: param.to
+        success: (data) ->
+          $("#map-wrapper").html(data);
+      )
 )
 
 ###

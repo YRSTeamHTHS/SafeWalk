@@ -104,3 +104,12 @@ exports.nav = (req, res) ->
   start = parseInt(req.query.start)
   end = parseInt(req.query.end)
   res.send(astar(start, end))
+
+exports.directions(req, res) ->
+  start = parseInt(req.query.start)
+  end = parseInt(req.query.end)
+  res.send(astar(start, end))
+
+exports.search(req,res) ->
+  search = (req.query.search);
+  res.send("<map here>")
