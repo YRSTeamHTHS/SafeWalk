@@ -48,7 +48,9 @@ app.get('/users', user.list)
 app.get('/map', map.index)
 app.get('/report', report.index)
 app.get('/navigate/nav', navigate.nav)
-app.post('/report/submit', report.submit)
+app.get('/navigate/directions', navigate.directions)
+app.get('/navigate/search', navigate.search)
+app.post('/report/submit/', report.submit)
 
 ###
 app.get '/parse', (req, res) ->

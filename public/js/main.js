@@ -1,6 +1,8 @@
 var isWindowSize = ($(window).width() >= 768);
 
 $(document).ready(function() {
+    sizeBackground();
+
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();
@@ -88,7 +90,27 @@ $(document).ready(function() {
         setTimeout(function(){
             google.maps.event.trigger(map, 'resize');
         },500);
+
+        sizeBackground();
     });
+
+    function sizeBackground() {
+        ratio=$(window).width()/$(window).height();
+        imgRatio=1.33;
+        if (ratio < imgRatio) {
+            height=$(window).height();
+            width=height*imgRatio;
+            height=height+'px';
+            width=width+'px';
+        } else {
+            width=$(window).width();
+            height=width*(1/imgRatio);
+            height=height+'px';
+            width=width+'px';
+        }
+        dim=width + ' ' + height;
+        $('#home').css('backgroundSize', dim);
+    }
 
     function showHomeTab(tab, time) {
         var newId = document.getElementById(tab + "-content");
