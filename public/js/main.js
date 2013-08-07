@@ -95,10 +95,10 @@ $(document).ready(function() {
     });
 
     function sizeBackground() {
-        ratio=$(window).width()/$(window).height();
+        ratio=$(window).width()/($(window).height()-60);
         imgRatio=1.33;
         if (ratio < imgRatio) {
-            height=$(window).height();
+            height=($(window).height()-60);
             width=height*imgRatio;
             height=height+'px';
             width=width+'px';
@@ -109,7 +109,7 @@ $(document).ready(function() {
             width=width+'px';
         }
         dim=width + ' ' + height;
-        $('#home').css('backgroundSize', dim);
+        $('#background-wrapper').css('backgroundSize', dim);
     }
 
     function showHomeTab(tab, time) {
