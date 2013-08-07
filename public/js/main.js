@@ -2,6 +2,16 @@ var isWindowSize = ($(window).width() >= 768);
 
 $(document).ready(function() {
 
+    //connect to socket.io
+    var socket = io.connect('/');
+    socket.on('livereport', function (data) {
+        newBubble(data.report)
+        $("#live-feed").prepend('<div class="feed-item"><hr>'+time + type + comment+'</div>')
+    });
+
+    /**
+     * dragging mobile sidebar
+     */
     $("#feed-btn,#dir-btn").mousedown(function(e){
         if($(window).width() < 768) {
             $(document).mousemove(function(e){
@@ -25,6 +35,9 @@ $(document).ready(function() {
     });
 
 
+    /**
+     * switch to the feed tab on click
+     */
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();
@@ -34,6 +47,9 @@ $(document).ready(function() {
         changeMobileSidebar($("#map-content").hasClass("normal"));
     });
 
+    /**
+     * switch to the feed button on click
+     */
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();
@@ -43,6 +59,9 @@ $(document).ready(function() {
         changeMobileSidebar($("#map-content").hasClass("normal"));
     });
 
+    /**
+     *
+     */
     $("#dir-btn").click(function() {
         $("#feed").fadeOut();
         $("#directions").fadeIn();
@@ -52,6 +71,9 @@ $(document).ready(function() {
         changeMobileSidebar($("#map-content").hasClass("normal"));
     });
 
+    /**
+     * toggle the open/closed state of the sidebar
+     */
     $("#shrink-arrow").click(function() {
         /*$(this).innerHTML='&#59237;';*/
         var type=$(this).data('type');
@@ -62,11 +84,18 @@ $(document).ready(function() {
         }
     });
 
+    /**
+     * show the feed tab in the sidebar on click
+     */
     $("#feed-btn").click(function() {
         $("#directions").hide();
         $("#feed").fadeIn();
     });
 
+    /**
+     * change scrollbar location on window resize
+     * switch to the mobile scrollbar formatting if necessary
+     */
     $(window).resize(function() {
 
         if ($(window).width() < 768 && isWindowSize) {
@@ -103,6 +132,10 @@ $(document).ready(function() {
 
 });
 
+/**
+ * switch to the mobile sidebar
+ * @param bool normal       whether in normal state
+ */
 function changeMobileSidebar(normal) {
     if(normal && $(window).width() < 768) {
         openMobileSidebar();
@@ -114,6 +147,9 @@ function changeMobileSidebar(normal) {
     }
 }
 
+/**
+ * close the mobile sidebar
+ */
 function closeMobileSidebar() {
     time=500;
     $("#sidebar .btn").removeClass("on");
@@ -128,6 +164,10 @@ function closeMobileSidebar() {
     },500);
 }
 
+/**
+ * open the mobile sidebar
+ * @param int t     animation time of height change
+ */
 function openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
@@ -136,6 +176,9 @@ function openMobileSidebar(t) {
     $(".navbar").css("background-color", "#223044");
 }
 
+/**
+ * close the main desktop sidebar
+ */
 function closeWindowSidebar() {
     $("#shrink-arrow").data('type', 'open').html('&#59237;');
     $("#map-content").css('width','100%');
@@ -144,10 +187,19 @@ function closeWindowSidebar() {
     },500);
 }
 
+/**
+ * open the main desktop sidebar
+ */
 function openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
 }
+
+/**
+ * get directions by request
+ * @param start     start location
+ * @param end       end location
+ */
 
 function getDirections(start, end) {
     $.getJSON('/navigate/nav?start=344234568&end=2345009892', function(data) {
@@ -165,6 +217,9 @@ function getDirections(start, end) {
     });
 }
 
+/**
+ * set a timeout on direction retrieval
+ */
 $(function(){
     setTimeout(function(){
         getDirections();

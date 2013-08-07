@@ -2,6 +2,7 @@ $(document).ready(function(){
     sizeBackground();//adjust size of background image
     var count = 0;//running count of bubbles on the screen
 
+    //connect to socket.io
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
         newBubble(data.report)//@todo poopy nested report
@@ -11,10 +12,10 @@ $(document).ready(function(){
     /**
      * creates a new bubble in a random location
      *
-     * @param timestamp
-     * @param type
-     * @param comment
-     * @return bubble html
+     * @param timestamp     of comment
+     * @param type          of comment
+     * @param comment       of comment
+     * @return bubble       html
      */
     function newBubble(report) {
         console.log("new bubble")
