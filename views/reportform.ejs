@@ -69,6 +69,12 @@
         $('#report-type-btn').css('color','black');
         $('#report-choices').modal('hide')
     });
+
+    setInterval(function() {
+        if ($("#inputCode").val().length > 0 || $("#report-type-btn").text() !== "Report Type") {
+            $("#report-submit-btn").prop("disabled", false);
+        }
+    }, 200);
 </script>
 <% include footer %>
 </body>

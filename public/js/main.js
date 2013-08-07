@@ -36,11 +36,6 @@ $(document).ready(function() {
         $("#feed").fadeIn();
     });
 
-    ("#report-submit-btn").click(function() {
-        if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
-            $(this).prop("disabled", false);
-        }
-    });
 
     $("#report-submit-btn").click(function() {
         var code = $("#inputCode").text();
