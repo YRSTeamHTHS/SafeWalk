@@ -1,19 +1,26 @@
 $(document).ready(function(){
-    $("#report-submit-btn").click(function() {
-        var code = $("#inputCode").text();
-        var type = $("#report-type-btn").text();
-        var comment = $("#inputComment").text();
+    $('#report-choices').modal('hide');
 
-        $.ajax({
-            url: "/ajax/addReport",
-            type: 'POST',
-            data: {
-                code:code,
-                type:type,
-                comment:comment
-            },
-            dataType: 'json'
-        });
-
+    $('#report-type-btn').focus(function(){
+        $('#report-type-btn').click();
     });
-}
+
+    //Report choices modal
+    /*$('#report-choices').modal({
+        keyboard: false
+    })*/
+
+    $('.report-type-option').click(function() {
+        var reportChoice = $(this).text()
+        $('#report-type-btn').text(reportChoice).css('color','black');
+        $("#report-type-hidden").val(reportChoice);
+        $('#report-choices').modal('hide');
+        $('#inputComment').focus();
+    })
+
+    setInterval(function() {
+        if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
+            $("#report-submit-btn").prop("disabled", false);
+        }
+    }, 200);
+});

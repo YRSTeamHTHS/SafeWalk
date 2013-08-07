@@ -16,6 +16,11 @@
   src: url("/font/entypo.ttf");
 }
 
+@font-face
+{
+  font-family: EntypoSocial;
+  src: url("/font/entypo-social.ttf");
+}
 body {
   padding-top:60px;
   /*background-color:#ebebeb;*/
@@ -89,6 +94,7 @@ body {
   color:#ffffff;
   line-height:20px;
   font-size:17px;
+  border-radius:0px;
 
   -webkit-transition: background 0.2s linear;
   -moz-transition: background 0.2s linear;
@@ -108,7 +114,6 @@ body {
   margin-top:50px;
   padding-left:25px;
   padding-right:25px;
-
 }
 
 /*custom navtab navigation*/
@@ -215,6 +220,20 @@ body {
   text-align:center;
   margin-right:17px;
 }
+.chainge-icon {
+  height:18px;
+  width:18px;
+  margin-right:17px;
+  margin-top:-6px;
+}
+
+.nav-icon-entypo {
+  font-family:EntypoSocial;
+  font-size:38px;
+  line-height:60px;
+  text-align:center;
+  margin-right:17px;
+}
 
 textarea, input[type="text"] {
   border:none;
@@ -315,9 +334,10 @@ textarea, input[type="text"] {
   overflow: auto;
   max-height:100%;
   padding-left:20px;
-  padding-right:10px;
+  padding-right:20px;
   color: black;
 }
+
 #directions {
   display: block;
 }
@@ -325,11 +345,23 @@ textarea, input[type="text"] {
   display: none;
 }
 
-
-/*dumb shit for fitting button group*/
-.map-wrapper .btn-group {
-  margin-right:-1px;
+#map-directions-form {
+  margin-top:30px;
+  margin-bottom:30px;
 }
+
+#map-directions-start {
+  color:#2ecc71;
+  background-color: #dedede;
+  border-radius: 6px 6px 0px 0px;
+}
+#map-directions-end {
+  color:#e74c3c;
+  background-color: #dedede;
+  border-radius: 0px 0px 6px 6px;
+}
+
+
 /*dumb shit for fitting button group again*/
 #sidebar {
   padding-left:14px;
@@ -440,6 +472,15 @@ textarea, input[type="text"] {
 .btn-group-vertical .btn:hover {
   background-color:silver;
 }
+.popup {
+  padding:20px;
+  width: 200px;
+  text-align:center;
+  font-size:16px;
+  border-radius:50px;
+  box-shadow:5px 5px 5px rgba(0,0,0,0.2);
+  opacity:0;
+}
 
 @media (min-width: 992px) {
   .map-wrapper {
@@ -469,6 +510,10 @@ textarea, input[type="text"] {
     padding-left:0px;
     padding-right:0px;
   }
+  /*dumb shit for fitting button group*/
+  .map-wrapper .btn-group {
+    margin-right:3px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -481,5 +526,8 @@ textarea, input[type="text"] {
   #report-wrapper {
     margin-left:25px;
     margin-right:25px;
+  }
+  .map-wrapper .btn-group {
+    margin-right:-1px;
   }
 }

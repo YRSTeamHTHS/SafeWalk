@@ -16,6 +16,7 @@ mongoose = require('mongoose')
 
 #models
 #models = require('./models')
+require('./models/reports').attach(io)
 
 #controller files
 routes = require('./routes')
@@ -52,7 +53,7 @@ app.get('/map', map.index)
 app.get('/report', report.index)
 app.get('/navigate/nav', navigate.nav)
 app.get('/navigate/searchmap', navigate.searchmap)
-app.post('/report/submit/', report.submit)
+app.post('/report/submit', report.submit)
 
 ###
 app.get '/parse', (req, res) ->
@@ -60,14 +61,10 @@ app.get '/parse', (req, res) ->
   res.send 'def'
 ###
 
-  #socket io stuffs
+#broadcast the new event
 io.sockets.on('connection', (socket) ->
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', (data) ->
-    console.log(data);
-  )
+  socket.emit('livereport', { report: "connection start" });
 )
-
 
 server.listen(
   app.get('port')

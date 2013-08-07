@@ -1,45 +1,53 @@
 <% include header %>
-<div class="container home-nav background-wrapper">
-    <div class="row">
-        <div class=" tabbar col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
-            <ul class="nav nav-tabs">
-                <li id="tab-search" class="active"><a href="#search"><span class="nav-icon">&#xf002;</span>Search</a>
-                </li>
-                <li id="tab-directions"><a href="#directions"><span class="nav-icon">&#xf124;</span>Directions</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
-        <div class="tabcontent col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
-            <div id="tab-search-content">
-                <form action="/map" method="GET">
-                    <div class="input-group">
-                        <input type="hidden" name="type" value="search"/>
-                        <input type="text" name="search" class="form-control" placeholder="Search Project..."/>
-                        <span class="input-group-btn">
-                          <button type="submit" class="btn search" type="button">&#xf002;</button>
-                        </span>
-                    </div>
-                    <!-- /input-group -->
-                </form>
-            </div>
+<script src="/js/jquery.history.min.js"></script>
 
-            <div id="tab-directions-content" style="display:none;">
-                <form action="/map" method="GET">
-                    <input type="hidden" name="type" value="directions" />
-                    <input name="from" id="directions-start" type="text" class="form-control" placeholder="Start Location...">
-                    <input name="to" id="directions-end" type="text" class="form-control" placeholder="End Location..." style="margin-bottom: 20px;">
-                    <button type="submit" class="btn" id="directions-btn">Show Directions</button>
-                </form>
+<div id="background-wrapper">
+    <div class="container home-nav">
+        <div class="row">
+            <div class=" tabbar col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
+                <ul class="nav nav-tabs">
+                    <li id="tab-search" class="active"><a href="#search"><span
+                            class="nav-icon">&#xf002;</span>Search</a>
+                    </li>
+                    <li id="tab-directions"><a href="#directions"><span class="nav-icon">&#xf124;</span>Directions</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="tabcontent col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
+                <div id="tab-search-content">
+                    <form action="/map" method="GET">
+                        <div class="input-group">
+                            <input type="hidden" name="type" value="search"/>
+                            <input type="text" name="search" class="form-control" placeholder="Search Project..."/>
+                            <span class="input-group-btn">
+                              <button type="submit" class="btn search" type="button">&#xf002;</button>
+                            </span>
+                        </div>
+                        <!-- /input-group -->
+                    </form>
+                </div>
+
+                <div id="tab-directions-content" style="display:none;">
+                    <form action="/map" method="GET">
+                        <input type="hidden" name="type" value="directions"/>
+                        <input name="from" id="directions-start" type="text" class="form-control"
+                               placeholder="Start Location...">
+                        <input name="to" id="directions-end" type="text" class="form-control"
+                               placeholder="End Location..." style="margin-bottom: 20px;">
+                        <button type="submit" class="btn" id="directions-btn">Show Directions</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
     var socket = io.connect('http://localhost');
-    socket.on('news', function (data) {
+    socket.on('livereport', function (data) {
         console.log(data);
-        socket.emit('my other event', { my: 'data' });
+        //socket.emit('my other event', { my: 'data' });
     });
 </script>
 <script src="/js/home.js"></script>

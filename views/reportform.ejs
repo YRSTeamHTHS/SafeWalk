@@ -58,24 +58,6 @@
         </div>
     </div>
 </div>
-<script>
-    $('#report-choices').modal({
-        keyboard: false
-    })
-    $('#report-choices').modal('hide')
-
-    $('.report-type-option').click(function() {
-        $('#report-type-btn').html($(this).html());
-        $('#report-type-btn').css('color','black');
-        $('#report-choices').modal('hide')
-    });
-
-    setInterval(function() {
-        if ($("#inputCode").val().length > 0 && $("#report-type-btn").text() !== "Report Type") {
-            $("#report-submit-btn").prop("disabled", false);
-        }
-    }, 200);
-</script>
 <script src="/js/report.js"></script>
 <% include footer %>
 </body>
