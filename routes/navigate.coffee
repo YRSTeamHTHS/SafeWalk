@@ -1,20 +1,3 @@
-# Load navigation data from JSON file
-console.log("Loading intersections")
-intersections = require('../data/intersections.json')
-console.log("Loading connections")
-connections = require('../data/connections.json')
-console.log("Loading crime data")
-crime_data = require('../data/crime.json')
-console.log("Processing")
-
-# Map crime data to intersections
-# Insert weights into intersection
-
-exports.nav = (req, res) ->
-  start = parseInt(req.query.start)
-  end = parseInt(req.query.end)
-  res.send(astar(start, end))
-
 astar = (start, end) ->
   if not intersections.hasOwnProperty(start)
     return false
@@ -24,15 +7,15 @@ astar = (start, end) ->
   for id, node of intersections
     new_node = []
     for prop, val of node
-        new_node[prop] = val
+      new_node[prop] = val
     new_node.closed = false
     new_node.id = id
     nodes[id] = new_node
   open_nodes = [start]
   start_node = nodes[start]
   end_node = nodes[end]
-  start_node.g = 0
-  start_node.f = distance(start_node.lat, start_node.lon, end_node.lat, end_node.lon)
+  start_node.g = calcWeight(start_node.crimes, start_node.reports)
+  start_node.f = start_node.g + distance(start_node.lat, start_node.lon, end_node.lat, end_node.lon)
 
   count = 0
   while open_nodes.length > 0
@@ -57,9 +40,9 @@ astar = (start, end) ->
       neighbor_id = neighbor.id
       neighbor_node = nodes[neighbor_id]
       dist_between = neighbor.distance
-      tentative_g_score = current_node.g + dist_between
+      tentative_g_score = current_node.g + dist_between + calcWeight(neighbor.crimes, neighbor.reports)
 
-      if neighbor_node.closed# and (tentative_g_score >= neighbor_node.g)
+      if neighbor_node.closed and (tentative_g_score >= neighbor_node.g)
         continue
 
       if (neighbor_id not in open_nodes) or (tentative_g_score < neighbor_node.g)
@@ -84,3 +67,40 @@ distance = (lat1, lon1, lat2, lon2) ->
 
 toRad = (deg) ->
   return deg * Math.PI / 180
+
+calcWeight = (arrayCrimes, arrayReports) ->
+  # TODO: implement intersection weight calculation
+  return 0
+
+# Load navigation data from JSON file
+console.log("Loading intersections")
+intersections = require('../data/intersections.json')
+console.log("Loading connections")
+connections = require('../data/connections.json')
+console.log("Loading crime data")
+crime_data = require('../data/crime.json')
+crime_types = require('../shared/crime_types.json')
+console.log("Loading reports")
+reports = [] # TODO: fetch from database
+console.log("Processing")
+
+# Map crime data to intersections
+#for item in crime_data
+#  lat = item.Latitude
+#  lon = item.Longitude
+#  type = crime_types[item['Crime type']]
+#  distances = []
+#  for id, intersection of intersections
+#    distances.push([id, distance(lat, lon, intersection.lat, intersection.lon)])
+#  distances.sort (itemA, itemB) ->
+#    if itemA[1] < itemB[1] then return -1
+#    if itemA[1] > itemB[1] then return 1
+#    return 0
+#  intersection = intersections[distances[0][0]]
+#  if "crimes" not in intersection then intersection.crimes = []
+#  intersection.crimes.push(type)
+
+exports.nav = (req, res) ->
+  start = parseInt(req.query.start)
+  end = parseInt(req.query.end)
+  res.send(astar(start, end))
