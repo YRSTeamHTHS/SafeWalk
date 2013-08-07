@@ -3,7 +3,12 @@ console.log("Loading intersections")
 intersections = require('../data/intersections.json')
 console.log("Loading connections")
 connections = require('../data/connections.json')
+console.log("Loading crime data")
+crime_data = require('../data/crime.json')
 console.log("Processing")
+
+# Map crime data to intersections
+# Insert weights into intersection
 
 exports.nav = (req, res) ->
   start = parseInt(req.query.start)
