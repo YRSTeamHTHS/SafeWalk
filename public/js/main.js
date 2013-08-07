@@ -149,6 +149,7 @@ function changeMobileSidebar(normal) {
         openMobileSidebar();
 
         //click anywhere to exit list
+        // TODO: assign in initialization, have check state
         $("#map-content,.navbar").click(function() {
             closeMobileSidebar();
         });
@@ -158,19 +159,12 @@ function changeMobileSidebar(normal) {
 function closeMobileSidebar() {
 
     $("#sidebar .btn").removeClass("on");
-    $("#map-content").css('height','');
-    $("#map-content").removeClass("collapsed");
-    $("#map-content").addClass("normal");
-    $("#map-content").css("background-color", "transparent");
+    $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal").css();;
     $(".navbar").css("background-color", "");
 }
 
 function openMobileSidebar() {
-
-    $("#map-content").css('height','20%');
-    $("#map-content").css('min-height','60px'); //make min width 60 so the list buttons don't go under the navbar
-    $("#map-content").removeClass("normal");
-    $("#map-content").addClass("collapsed");
+    $("#map-content").css({'height':'20%', 'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
 
     //darken rest of screen
     $("#map-content").css("background-color", "rgba(0,0,0,0.4)");
