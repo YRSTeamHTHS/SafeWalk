@@ -4,9 +4,11 @@ $(document).ready(function() {
 
     $("#feed-btn,#dir-btn").mousedown(function(e){
         if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
+            //alert($("#map-content").hasClass("normal"));
+
             $(document).mousemove(function(e){
 
-                if (e.which!=0 &&
+                if (e.which ===1 &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
                     e.pageX < $(window).width() &&
@@ -14,17 +16,19 @@ $(document).ready(function() {
                     ) {
                     $("#map-content").height(e.pageY);
                 }
+                else if ($("#map-content").hasClass("collapsed")) {$(document).unbind("mousemove");}
+
                 else {
-                    openMobileSidebar(300);
-                    alert(5);
+                    $("#map-content").removeClass("normal");
+                    changeMobileSidebar(true);
+                    $(document).unbind("mousemove");
                     return;
                 }
-                //alert(4);
                 return;
 
-           });
+            });
+            return;
         }
-        alert(3);
         return;
     });
 
@@ -124,7 +128,7 @@ function closeMobileSidebar() {
     $("#map-content").css({"background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     //$("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     $("#map-content").animate({
-        height: '100%',
+        height: '100%'
     }, time, function(){});
     $(".navbar").css("background-color", "");
     setTimeout(function(){
