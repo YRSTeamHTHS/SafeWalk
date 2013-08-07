@@ -7,15 +7,15 @@ io = undefined
 Schema = mongoose.Schema;
 
 #Collection to hold users
-reportSchema = new Schema(
+reportSchema = new Schema({
   code: { type: String, required: true }
   type: { type: String, required: true }
-  comment: {type: String, required: true}
+  comment: {type: String, required: true}},
   versionKey: false
 );
 
 #Creates the Model for the User Schema
-reports = mongoose.model('reports', reportSchema); #attach the schema if required for the first time
+ReportModel = mongoose.model('reports', reportSchema); #attach the schema if required for the first time
 
 exports.attach = (io2) ->
   io = io2
@@ -24,25 +24,26 @@ exports.attach = (io2) ->
   @param report magic
 ###
 exports.addReport = (report, callback) ->
-  #broadcast the new event
-  io.sockets.emit('livereport', { report: report })
-  callback()
-  ###reports.find {code: code}, (err, reports) -> #check that code does not already exist
+  #check that code does not already exist
+  ReportModel.find {code: report.code}, (err, reports) ->
+    console.log reports.length;
     if (err || reports.length == 0)
+      console.log reports
       # yay not found, save the report
-      reports.save report, (err, saved) ->
-          if( err || !saved )
-            callback(false)
-          else
-            #broadcast the new event
-            io.sockets.on('connection', (socket) ->
-              socket.emit('livereport', { report: saved });
-            )
-            callback(true)###
+      newreport = new ReportModel(report);
+      newreport.save( (err) ->
+        if (err)
+          callback(err)
+        else
+          #broadcast the new event
+          io.sockets.emit('livereport', { report: report })
+          callback(true)
+      )
+    else callback(false)
 
 
 exports.getReportByCode = (code, callback) ->
-  reports.find {code: code}, (err, reports) ->
+  ReportModel.find {code: code}, (err, reports) ->
     if (err || reports.length == 0)
       callback(false)
     else
