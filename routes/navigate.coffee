@@ -6,8 +6,8 @@ connections = require('../data/connections.json')
 console.log("Processing")
 
 exports.nav = (req, res) ->
-  start = req.query.start
-  end = req.query.end
+  start = parseInt(req.query.start)
+  end = parseInt(req.query.end)
   res.send(astar(start, end))
 
 astar = (start, end) ->
@@ -16,7 +16,6 @@ astar = (start, end) ->
 
   # Copy the array of intersections
   nodes = []
-  console.log "copy begin"
   for id, node of intersections
     new_node = []
     for prop, val of node
@@ -25,12 +24,12 @@ astar = (start, end) ->
     new_node.id = id
     nodes[id] = new_node
   open_nodes = [start]
-  nodes[start].g = 0
-  nodes[start].f = distance(nodes[start].lat, nodes[start].lon, nodes[end].lat, nodes[end].lon)
-
-  count = 0
   start_node = nodes[start]
   end_node = nodes[end]
+  start_node.g = 0
+  start_node.f = distance(start_node.lat, start_node.lon, end_node.lat, end_node.lon)
+
+  count = 0
   while open_nodes.length > 0
     count++
     # Sort the working nodes by f
@@ -55,7 +54,7 @@ astar = (start, end) ->
       dist_between = neighbor.distance
       tentative_g_score = current_node.g + dist_between
 
-      if neighbor_node.closed and (tentative_g_score >= neighbor_node.g)
+      if neighbor_node.closed# and (tentative_g_score >= neighbor_node.g)
         continue
 
       if (neighbor_id not in open_nodes) or (tentative_g_score < neighbor_node.g)
