@@ -2,10 +2,15 @@
   Module dependencies.
 ###
 
+#plugins to include
 express = require('express')
 http = require('http')
 path = require('path')
 parseString = require('xml2js').parseString
+mongoose = require('mongoose')
+
+#models
+#models = require('./models')
 
 #controller files
 routes = require('./routes')
@@ -42,8 +47,8 @@ app.get('/', routes.index)
 app.get('/users', user.list)
 app.get('/map', map.index)
 app.get('/report', report.index)
-app.post('/report/submit', report.submit)
 app.get('/navigate/nav', navigate.nav)
+app.post('/report/submit', report.submit)
 
 ###
 app.get '/parse', (req, res) ->
