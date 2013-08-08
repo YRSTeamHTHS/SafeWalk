@@ -417,7 +417,7 @@ window.map = new function() {
     this.initialize = function() {
         var latlng = new google.maps.LatLng(53.481136,-2.227279);
         var myOptions = {
-            zoom: 12,
+            zoom: 15,
             center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
