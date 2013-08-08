@@ -339,6 +339,9 @@ function _openMobileSidebar(t) {
         height: '20%'
     }, t, function(){});
     $(".navbar").css("background-color", "#223044");
+    setTimeout(function(){
+        google.maps.event.trigger(map, 'resize');
+    },500);
 }
 
 /**
