@@ -90,7 +90,7 @@ var isWindowSize = ($(window).width() >= 768);
     /**
      * dragging mobile sidebar
      */
-    $('#feed-btn,#dir-btn').mousedown(function(e){
+    $("#feed-btn,#dir-btn").mousedown(function(e){
         if($(window).width() < 768) {
             $(document).mousemove(function(e){
 
@@ -119,18 +119,6 @@ var isWindowSize = ($(window).width() >= 768);
 
     /**
      * switch to the feed tab on click
-     */
-    $("#feed-btn").click(function() {
-        $("#directions").fadeOut();
-        $("#feed").fadeIn();
-
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
-        changeMobileSidebar($("#map-content").hasClass("normal"));
-    });
-
-    /**
-     * switch to the feed button on click
      */
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
@@ -250,7 +238,7 @@ function _closeMobileSidebar() {
     $("#map-content").css({"background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     //$("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     $("#map-content").animate({
-        height: '100%',
+        height: '100%'
     }, time, function(){});
     $(".navbar").css("background-color", "");
     setTimeout(function(){
@@ -265,7 +253,7 @@ function _closeMobileSidebar() {
 function _openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
-        height: '20%',
+        height: '20%'
     }, t, function(){});
     $(".navbar").css("background-color", "#223044");
 }
