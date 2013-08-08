@@ -29,16 +29,17 @@ $(document).ready(function () {
                 }
             });
     }
-    //retrieve live feed data
+
+    //preload some feed items
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
-            var comment, time, type;
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
-            return $("#live-feed").prepend('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+            _createFeedItem(time,type,comment);
         });
     });
+
 
 /**
  * retrieve the get parameters and their values in a querystring
@@ -78,24 +79,23 @@ var isWindowSize = ($(window).width() >= 768);
     try {
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
-        console.log(data)
-        data=data.report //@todo for some reason there is a nested report
-        $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
+        console.log(data);
+        data=data.report; //@todo for some reason there is a nested report
+        _createFeedItem(_processDate(data.time),data.type,data.comment);
     });
     } catch(err) {
-        
+
     }
 
     /**
      * dragging mobile sidebar
      */
     $("#feed-btn,#dir-btn").mousedown(function(e){
-        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
-            //alert($("#map-content").hasClass("normal"));
-
+        if($(window).width() < 768) {
             $(document).mousemove(function(e){
 
-                if (e.which ===1 &&
+                if (e.which!=0 &&
+                    $("#map-content").hasClass("normal") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
                     e.pageX < $(window).width() &&
@@ -103,8 +103,6 @@ var isWindowSize = ($(window).width() >= 768);
                     ) {
                     $("#map-content").height(e.pageY);
                 }
-                else if ($("#map-content").hasClass("collapsed")) {$(document).unbind("mousemove");}
-
                 else {
                     $("#map-content").removeClass("normal");
                     changeMobileSidebar(true);
@@ -146,7 +144,7 @@ var isWindowSize = ($(window).width() >= 768);
                 } //else {$(document).unbind("mousemove");}
                 return;
 
-            });
+           });
             return;
         }
         return;
@@ -155,18 +153,6 @@ var isWindowSize = ($(window).width() >= 768);
 
     /**
      * switch to the feed tab on click
-     */
-    $("#feed-btn").click(function() {
-        $("#directions").fadeOut();
-        $("#feed").fadeIn();
-
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
-        changeMobileSidebar($("#map-content").hasClass("normal"));
-    });
-
-    /**
-     * switch to the feed button on click
      */
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
@@ -196,9 +182,9 @@ var isWindowSize = ($(window).width() >= 768);
         /*$(this).innerHTML='&#59237;';*/
         var type=$(this).data('type');
         if(type=='close') {
-           closeWindowSidebar();
+           _closeWindowSidebar();
         } else if (type=='open') {
-            openWindowSidebar();
+            _openWindowSidebar();
         }
     });
 
@@ -220,24 +206,24 @@ var isWindowSize = ($(window).width() >= 768);
             isWindowSize = false;
             var barType = $("#shrink-arrow").data('type');
             if (barType=="close"){
-                openMobileSidebar(0);
+                _openMobileSidebar(0);
                 $("#map-content,.navbar").click(function() {
-                    closeMobileSidebar();
+                    _closeMobileSidebar();
                 });
             }
             else {
-                closeMobileSidebar();
+                _closeMobileSidebar();
             }
         } else if ($(window).width() >= 768 && !isWindowSize) {
             isWindowSize = true;
             var mobileBarClosed = $("#map-content").hasClass("normal");
             if (mobileBarClosed) {
-                closeWindowSidebar();
-                closeMobileSidebar();
+                _closeWindowSidebar();
+                _closeMobileSidebar();
             }
 
             else {
-                openWindowSidebar();
+                _openWindowSidebar();
                 $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
                 $(".navbar").css("background-color", "");
             }
@@ -251,16 +237,28 @@ var isWindowSize = ($(window).width() >= 768);
 });
 
 /**
+ * create new feed item
+ * @param time
+ * @param type
+ * @param comment
+ */
+function _createFeedItem(time,type,comment) {
+    var html=$('<div class="feed-item feed-item-hidden"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+    $("#live-feed").prepend(html);
+    html.removeClass('feed-item-hidden',300);
+}
+
+/**
  * switch to the mobile sidebar
  * @param bool normal       whether in normal state
  */
 function changeMobileSidebar(normal) {
     if(normal && $(window).width() < 768) {
-        openMobileSidebar(500);
+        _openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
         $("#map-content,.navbar").click(function() {
-            closeMobileSidebar();
+            _closeMobileSidebar();
         });
     }
 }
@@ -268,7 +266,7 @@ function changeMobileSidebar(normal) {
 /**
  * close the mobile sidebar
  */
-function closeMobileSidebar() {
+function _closeMobileSidebar() {
     time=500;
     $("#sidebar .btn").removeClass("on");
     $("#map-content").css({"background-color": "transparent"}).removeClass("collapsed").addClass("normal");
@@ -286,7 +284,7 @@ function closeMobileSidebar() {
  * open the mobile sidebar
  * @param int t     animation time of height change
  */
-function openMobileSidebar(t) {
+function _openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%'
@@ -297,7 +295,7 @@ function openMobileSidebar(t) {
 /**
  * close the main desktop sidebar
  */
-function closeWindowSidebar() {
+function _closeWindowSidebar() {
     $("#shrink-arrow").data('type', 'open').html('&#59237;');
     $("#map-content").css('width','100%');
     setTimeout(function(){
@@ -308,7 +306,7 @@ function closeWindowSidebar() {
 /**
  * open the main desktop sidebar
  */
-function openWindowSidebar() {
+function _openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
 }
