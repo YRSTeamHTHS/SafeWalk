@@ -5,9 +5,7 @@ var google;
 
 $(document).ready(function () {
 
-    document.ontouchstart = function(e){
-        e.preventDefault();
-    }
+
 
     $('.addwebcam').bind('click tap', function(e) {
         $('#cameraformwebcam').show(); //opens up a new form
@@ -264,6 +262,10 @@ $(document).ready(function () {
         },500);
 
     });
+
+    document.ontouchstart = function(e){
+        e.preventDefault();
+    }
 
 });
 
