@@ -83,6 +83,7 @@ var isWindowSize = ($(window).width() >= 768);
         console.log(data);
         data=data.report; //@todo for some reason there is a nested report
         _createFeedItem(_processDate(data.time),data.type,data.comment);
+        incrementBadge();
     });
     } catch(err) {
 
@@ -162,6 +163,7 @@ var isWindowSize = ($(window).width() >= 768);
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
         changeMobileSidebar($("#map-content").hasClass("normal"));
+        clearBadge();
     });
 
     /**
@@ -236,6 +238,27 @@ var isWindowSize = ($(window).width() >= 768);
     });
 
 });
+
+function incrementBadge(){
+    $('#feed-badge').html(getInt($('#feed-badge').html())+1);
+}
+
+function clearBadge(){
+    $('#feed-badge').html(0);
+}
+/**
+ * parses integer, returns 0 if empty string
+ * @param num
+ * @returns {*}
+ */
+function getInt(num){
+    if(num=="") {
+        return 0;
+    }
+    else {
+        return parseInt(num);
+    }
+}
 
 /**
  * create new feed item
