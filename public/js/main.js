@@ -30,27 +30,9 @@ $(document).ready(function () {
             });
     }
 
-    /**
-     * create a new feed item
-     *
-     * @param time          of report
-     * @param type          of report
-     * @param comment       of report
-     */
-    function createFeedItem(time,type,comment) {
-        $("#live-feed").prepend($('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>'));
-        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').css({
-            height:0
-        });
-        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').animate({
-            height: 'auto'
-        },300);
-    }
-
-    //get recent feeds
+    //preload some feed items
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
-            var comment, time, type;
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
@@ -99,7 +81,7 @@ var isWindowSize = ($(window).width() >= 768);
     socket.on('livereport', function (data) {
         console.log(data);
         data=data.report; //@todo for some reason there is a nested report
-        createFeedItem(data.time, data.type,data.comment);
+        $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
     } catch(err) {
 
