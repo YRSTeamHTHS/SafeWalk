@@ -40,7 +40,7 @@ astar = (start, end) ->
       neighbor_id = neighbor.id
       neighbor_node = nodes[neighbor_id]
       dist_between = neighbor.distance
-      tentative_g_score = current_node.g + dist_between + calcWeight(neighbor.crimes, neighbor.reports)
+      tentative_g_score = current_node.g + dist_between + calcWeight(neighbor_node.crimes, neighbor_node.reports)
 
       if neighbor_node.closed and (tentative_g_score >= neighbor_node.g)
         continue
@@ -67,7 +67,7 @@ reconstructRoute = (nodes, start, end) ->
       current_id = nodes[current_id].parent
     first = false
     route.push(nodes[current_id])
-  route.reverse()
+  route = route.reverse()
 
   # Flatten route into polyline and unique roads
   path = []
@@ -98,7 +98,6 @@ toRad = (deg) ->
 
 calcWeight = (arrayCrimes, arrayReports) ->
   # TODO: fix array calculation
-  #return Math.random() * 100000000
   return arrayCrimes.length
 
 # Load navigation data from JSON file

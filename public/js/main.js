@@ -1,13 +1,90 @@
+$(document).ready(function () {
+    //load appropriate map and also prepopulate from and to fields
+    var param = _getParameters();
+    switch (param.type) {
+        case "search":
+            $.ajax({
+                url: "/navigate/searchmap",
+                data: {
+                    search: param.search
+                },
+                success: function (data) {
+                    console.log(param.search);
+                    $("#map-wrapper").html(data);
+                    return $("#map-directions-end").val(param.search);
+                }
+            });
+            break;
+        case "directions":
+            $.ajax({
+                url: "/navigate/navmap",
+                data: {
+                    from: param.from,
+                    to: param.to
+                },
+                success: function (data) {
+                    $("#map-directions-start").val(param.from);
+                    $("#map-directions-end").val(param.to);
+                    return $("#map-wrapper").html(data);
+                }
+            });
+    }
+    //retrieve live feed data
+    $.getJSON('/report/getall', function (data) {
+        $.each(data, function (key, val) {
+            var comment, time, type;
+            var time = _processDate(new Date(val.time));
+            var type = val.type;
+            var comment = val.comment;
+            return $("#live-feed").prepend('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+        });
+    });
+
+/**
+ * retrieve the get parameters and their values in a querystring
+ * @returns urlParams   url parameters in object format
+ * @private
+ */
+function _getParameters() {
+    var decode, match, pl, query, search, urlParams;
+    pl = /\+/g;
+    search = /([^&=]+)=?([^&]*)/g;
+    decode = function (s) {
+        return decodeURIComponent(s.replace(pl, " "));
+    };
+    query = window.location.search.substring(1);
+    urlParams = {};
+    while ((match = search.exec(query))) {
+        urlParams[decode(match[1])] = decode(match[2]);
+    }
+    return urlParams;
+};
+
+/**
+ * process a js Date object
+ * @param date
+ * @private
+ */
+function _processDate(date) {
+    var longdate = date.toDateString();
+    var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    return longdate + " @ " + time;
+}
+
 var isWindowSize = ($(window).width() >= 768);
 
-$(document).ready(function() {
 
     //connect to socket.io
+    try {
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
-        newBubble(data.report)
-        $("#live-feed").prepend('<div class="feed-item"><hr>'+time + type + comment+'</div>')
+        console.log(data)
+        data=data.report //@todo for some reason there is a nested report
+        $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
+    } catch(err) {
+        
+    }
 
     /**
      * dragging mobile sidebar

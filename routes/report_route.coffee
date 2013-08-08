@@ -3,7 +3,7 @@
 
   renders and processes the report form
 ###
-db = require("../models/reports"); #load the database
+db = require("../models/reports_model"); #load the database
 
 ###
   renders the default form of the registration

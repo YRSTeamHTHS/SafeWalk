@@ -80,10 +80,10 @@ $(function() {
         if (url=="search"||url=="directions") {
             if (event.type=='load') {
                 //console.log('load' + ': ' + url);
-                switchToTab(url, 0);
+                window.tabs.switchToTab(url, 0);
             } else if (event.type=='push' || event.type=='change') {
                 //console.log('push/change' + ': ' + url);
-                switchToTab(url, 200);
+                window.tabs.switchToTab(url, 200);
             }
         }
     }).listen('hash');
@@ -91,43 +91,45 @@ $(function() {
         $.history.push($(this).attr('href'));
         event.preventDefault();
     });
+});
 
+window.tabs = new function() {
     /**
      * switch to tab based on url anchor
      * @param url
      * @param time
      */
-    function switchToTab(url, time) {
+    this.switchToTab = function(url, time) {
         if (url=="search") {
-            hideHomeTab("tab-directions");
-            showHomeTab("tab-search",time);
+            this.hideHomeTab("tab-directions");
+            this.showHomeTab("tab-search", time);
         } else if (url=="directions") {
-            hideHomeTab("tab-search");
-            showHomeTab("tab-directions",time);
+            this.hideHomeTab("tab-search");
+            this.showHomeTab("tab-directions", time);
         }
-    }
+    };
 
     /**
      * make home tab active
      * @param tab
      * @param time
      */
-    function showHomeTab(tab, time) {
+    this.showHomeTab = function(tab, time) {
         var newId = document.getElementById(tab + "-content");
         var currentId = document.getElementById(tab);
         $(currentId).addClass("active");
         $(newId).fadeIn(time);
-    }
+    };
 
     /**
      * make home tab inactive
      * @param tab
      */
-    function hideHomeTab(tab) {
+    this.hideHomeTab = function(tab) {
         var newId = document.getElementById(tab + "-content");
         //console.log(newId);
         var currentId = document.getElementById(tab);
         $(currentId).removeClass("active");
         $(newId).hide();
-    }
-});
+    };
+};
