@@ -5,17 +5,16 @@
         <div class="row">
             <div class=" tabbar col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
                 <ul class="nav nav-tabs">
-                    <li id="tab-search" class="active"><a href="#search"><span
+                    <li id="tab-search" class="active"><a href="#tab-search-content" data-toggle="tab"><span
                             class="nav-icon">&#xf002;</span>Search</a>
                     </li>
-                    <li id="tab-directions"><a href="#directions"><span class="nav-icon">&#xf124;</span>Directions</a>
-                    </li>
+                    <li id="tab-directions"><a href="#tab-directions-content" data-toggle="tab"><span class="nav-icon">&#xf124;</span>Directions</a></li>
                 </ul>
             </div>
         </div>
         <div class="row">
-            <div class="tabcontent col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
-                <div id="tab-search-content">
+            <div class="tab-content col-lg-6 col-sm-8 col-12 col-lg-offset-3 col-sm-offset-2">
+                <div class="tab-pane fade in active" id="tab-search-content">
                     <form action="/map" method="GET">
                         <div class="input-group">
                             <input type="hidden" name="type" value="search"/>
@@ -28,7 +27,7 @@
                     </form>
                 </div>
 
-                <div id="tab-directions-content" style="display:none;">
+                <div class="tab-pane fade" id="tab-directions-content">
                     <form action="/map" method="GET">
                         <input type="hidden" name="type" value="directions"/>
                         <input name="from" id="directions-start" type="text" class="form-control"
@@ -43,5 +42,4 @@
     </div>
 </div>
 <script src="/js/home.js"></script>
-<script src="/js/jquery.history.min.js"></script>
 <% include footer %>
