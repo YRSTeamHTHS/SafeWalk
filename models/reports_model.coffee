@@ -19,7 +19,9 @@ reportSchema = new Schema({
   type: { type: String, required: true, trim: true },
   comment: {type: String, required: true, trim: true, min: 1, max: 140},
   time: {type: Date, "default": Date.now}},
-  versionKey: false
+  { capped: { size : 104857600, max : 10000, autoIndexId: true } }
+#versionKey: false,
+#500mb cap
 );
 
 #Creates the Model for the User Schema

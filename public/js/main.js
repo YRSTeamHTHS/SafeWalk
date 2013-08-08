@@ -5,13 +5,11 @@ var google;
 
 $(document).ready(function () {
 
-    _changeTabletNav();
-
     document.ontouchstart = function(e){
         e.preventDefault();
     }
 
-    $('.addwebcam').bind('click tap', function(e) {
+    $('.addwebcam').bind('click', function(e) {
         $('#cameraformwebcam').show(); //opens up a new form
         $('.addwebcam').hide(); //now hide the button
     });
@@ -107,6 +105,8 @@ $(document).ready(function () {
     /**
      * dragging mobile sidebar
      */
+    var latestHeight;
+
     $("#feed-btn,#dir-btn").mousedown(function(e){
         if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
@@ -134,21 +134,20 @@ $(document).ready(function () {
         if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
 
 
-            var latestHeight = $("#map-content").height();
+            latestHeight = $("#map-content").height();
 
-            $(document).mousemove(function(e){
+            $(document).mousemove( function(e){
 
-                /*$(document).mouseup(function(e){
-                    if (Math.abs(e.pageY) - latestHeight >60) {
-                        $("#map-content").removeClass("collapsed");
-                        _closeMobileSidebar();
-                        $(document).unbind("mousemove");
-                    }
-                    else {
-                        $("#map-content").height(latestHeight);
-                    }
-                });*/
 
+                /*if (e.which===0) {
+                        if($("#map-content").hasClass("collapsed")){
+                            if (Math.abs(e.pageY) - latestHeight >60) {
+                                $("#map-content").removeClass("collapsed");
+                                _closeMobileSidebar();
+                                $(document).unbind("mousemove");
+                            }
+                        }
+                }*/
                 if (e.which ===1 &&
                     $("#map-content").hasClass("collapsed") &&
                     e.pageY < $(window).height() &&
@@ -160,6 +159,7 @@ $(document).ready(function () {
                         if (Math.abs(e.pageY) - latestHeight <60){
                             $("#map-content").height('20%');
                         }
+                        $(document).unbind("mousemove");
 
                 }
                 //if (Math.abs(e.pageY) - $("#map-content").height() >20){
@@ -173,15 +173,34 @@ $(document).ready(function () {
                     $(document).unbind("mousemove");
                     return;
                 }
-                //$(document).unbind("mousemove");
+                $(document).unbind("mousemove");
                 return;
 
             });
+            $(document).unbind("mousemove");
             return;
         }
-        return;
     });
 
+
+    /*$(document).mouseup(function(e){
+        if($("#map-content").hasClass("collapsed")){
+            if (Math.abs(e.pageY) - latestHeight >60) {
+                $("#map-content").removeClass("collapsed");
+                _closeMobileSidebar();
+                $(document).unbind("mousemove");
+            }
+            else {
+                $("#map-content").height(latestHeight);
+                $(document).unbind("mousemove");
+            }
+        } else if ($("#map-content").hasClass("normal")){
+            $("#map-content").removeClass("normal");
+            changeMobileSidebar(true);
+            $(document).unbind("mousemove");
+            return;
+        }
+    });*/
 
     /**
      * switch to the feed tab on click
@@ -264,8 +283,6 @@ $(document).ready(function () {
         setTimeout(function(){
             google.maps.event.trigger(map, 'resize');
         },500);
-
-        _changeTabletNav();
 
     });
 
@@ -373,15 +390,6 @@ function _openWindowSidebar() {
     $("#map-content").css('width','');
 }
 
-function _changeTabletNav() {
-    if($(window).width() >= 768) {
-        $(".nav > li > a .nav-text").hide();
-        $(".nav > li > a").css({"padding-left":"20px","padding-right":"5px"});
-    } else {
-        $(".nav > li > a .nav-text").show();
-        $(".nav > li > a").css({"padding":""});
-    }
-}
 
 window.map = new function() {
     var _this = this;
