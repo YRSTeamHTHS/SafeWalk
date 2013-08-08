@@ -30,15 +30,6 @@ $(document).ready(function () {
             });
     }
 
-    function createFeedItem(time,type,comment) {
-        $("#live-feed").prepend($('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>'));
-        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').css({
-            height:0
-        });
-        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').animate({
-            height: 'auto'
-        },300);
-    }
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
             var comment, time, type;
@@ -222,6 +213,18 @@ var isWindowSize = ($(window).width() >= 768);
     });
 
 });
+/**
+ * create new feed item
+ * @param time
+ * @param type
+ * @param comment
+ */
+function createFeedItem(time,type,comment) {
+    var html=$('<div class="feed-item feed-item-hidden"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+    $("#live-feed").prepend(html);
+    html.removeClass('feed-item-hidden',300);
+}
+
 
 /**
  * switch to the mobile sidebar
