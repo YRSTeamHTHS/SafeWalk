@@ -1,11 +1,16 @@
 $(document).ready(function () {
 
 
+    document.ontouchstart = function(e){
+        e.preventDefault();
+    }
 
-    jQuery('.addwebcam').bind('click tap', function(e) {
+    /*jQuery('.addwebcam').bind('click tap', function(e) {
         jQuery('#cameraformwebcam').show(); //opens up a new form
         jQuery('.addwebcam').hide(); //now hide the button
-    });
+    });*/
+
+    _changeTabletNav();
 
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
@@ -256,6 +261,8 @@ $(document).ready(function () {
             google.maps.event.trigger(map, 'resize');
         },500);
 
+        _changeTabletNav();
+
     });
 
     document.ontouchstart = function(e){
@@ -360,6 +367,16 @@ function _closeWindowSidebar() {
 function _openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
+}
+
+function _changeTabletNav() {
+    if($(window).width() >= 768) {
+        $(".nav > li > a .nav-text").hide();
+        $(".nav > li > a").css({"padding-left":"20px","padding-right":"5px"});
+    } else {
+        $(".nav > li > a .nav-text").show();
+        $(".nav > li > a").css({"padding":""});
+    }
 }
 
 window.map = new function() {
