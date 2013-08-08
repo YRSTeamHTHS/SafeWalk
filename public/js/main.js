@@ -1,8 +1,3 @@
-/**
- * @see google
- */
-var google;
-
 $(document).ready(function () {
 
     document.ontouchstart = function(e){
@@ -91,13 +86,13 @@ $(document).ready(function () {
 
     //connect to socket.io
     try {
-    var socket = io.connect('/');
-    socket.on('livereport', function (data) {
+        var socket = io.connect('/');
+        socket.on('livereport', function (data) {
 
-        data=data.report; //@todo for some reason there is a nested report
-        _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
-        incrementBadge();
-    });
+            data=data.report; //@todo for some reason there is a nested report
+            _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
+            incrementBadge();
+        });
     } catch(err) {
 
     }
@@ -105,8 +100,6 @@ $(document).ready(function () {
     /**
      * dragging mobile sidebar
      */
-    var latestHeight;
-
     $("#feed-btn,#dir-btn").mousedown(function(e){
         if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
@@ -134,20 +127,21 @@ $(document).ready(function () {
         if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
 
 
-            latestHeight = $("#map-content").height();
+            var latestHeight = $("#map-content").height();
 
-            $(document).mousemove( function(e){
+            $(document).mousemove(function(e){
 
+                /*$(document).mouseup(function(e){
+                 if (Math.abs(e.pageY) - latestHeight >60) {
+                 $("#map-content").removeClass("collapsed");
+                 _closeMobileSidebar();
+                 $(document).unbind("mousemove");
+                 }
+                 else {
+                 $("#map-content").height(latestHeight);
+                 }
+                 });*/
 
-                /*if (e.which===0) {
-                        if($("#map-content").hasClass("collapsed")){
-                            if (Math.abs(e.pageY) - latestHeight >60) {
-                                $("#map-content").removeClass("collapsed");
-                                _closeMobileSidebar();
-                                $(document).unbind("mousemove");
-                            }
-                        }
-                }*/
                 if (e.which ===1 &&
                     $("#map-content").hasClass("collapsed") &&
                     e.pageY < $(window).height() &&
@@ -155,11 +149,10 @@ $(document).ready(function () {
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
-                        $("#map-content").height(e.pageY);
-                        if (Math.abs(e.pageY) - latestHeight <60){
-                            $("#map-content").height('20%');
-                        }
-                        $(document).unbind("mousemove");
+                    $("#map-content").height(e.pageY);
+                    if (Math.abs(e.pageY) - latestHeight <60){
+                        $("#map-content").height('20%');
+                    }
 
                 }
                 //if (Math.abs(e.pageY) - $("#map-content").height() >20){
@@ -173,34 +166,15 @@ $(document).ready(function () {
                     $(document).unbind("mousemove");
                     return;
                 }
-                $(document).unbind("mousemove");
+                //$(document).unbind("mousemove");
                 return;
 
             });
-            $(document).unbind("mousemove");
             return;
         }
+        return;
     });
 
-
-    /*$(document).mouseup(function(e){
-        if($("#map-content").hasClass("collapsed")){
-            if (Math.abs(e.pageY) - latestHeight >60) {
-                $("#map-content").removeClass("collapsed");
-                _closeMobileSidebar();
-                $(document).unbind("mousemove");
-            }
-            else {
-                $("#map-content").height(latestHeight);
-                $(document).unbind("mousemove");
-            }
-        } else if ($("#map-content").hasClass("normal")){
-            $("#map-content").removeClass("normal");
-            changeMobileSidebar(true);
-            $(document).unbind("mousemove");
-            return;
-        }
-    });*/
 
     /**
      * switch to the feed tab on click
@@ -285,10 +259,6 @@ $(document).ready(function () {
         },500);
 
     });
-
-    document.ontouchstart = function(e){
-        e.preventDefault();
-    }
 
 });
 
@@ -390,9 +360,9 @@ function _openWindowSidebar() {
     $("#map-content").css('width','');
 }
 
-
 window.map = new function() {
     var _this = this;
+
     this.initialize = function() {
         var latlng = new google.maps.LatLng(53.481136,-2.227279);
         var myOptions = {
@@ -408,8 +378,9 @@ window.map = new function() {
 
         $.getJSON('/intersections/all', function(data) {
             window.intersections = new IntersectionsData(data);
+            _this.LiveMVCArray = new LiveMVCArray(window.intersections);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
-                data: window.intersections.MVCArray
+                data: _this.LiveMVCArray
             });
             window.heatmap.setMap(window.map.gmap);
         });
@@ -418,38 +389,33 @@ window.map = new function() {
 };
 
 /**
- * @constructor
- * @param data
+ * @param data IntersectionsData object
  */
-var IntersectionsData = function(data) {
-    this.data = data;
-
+var LiveMVCArray = function(IntersectionsDataObject) {
+    var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    for (var id in data) {
-        if (data.hasOwnProperty(id)) {
-            data[id]['MVC_index'] = this._pushToMVC(data[id]);
+    this.data = IntersectionsDataObject;
+    this.index_map = {};
+
+    for (var id in IntersectionsDataObject) {
+        if (IntersectionsDataObject.hasOwnProperty(id)) {
+            this.index_map[id] = this._pushToMVC(IntersectionsDataObject[id]);
         }
     }
 
-    this.update = function(intersection_id, update) {
-        var intersection = this.data[intersection_id];
-        var index = intersection['MVC_index'];
-        var lat = intersection['lat'];
-        var lon = intersection['lon'];
-        for (var i=0; i<update['reports'].length; i++) {
-            intersection['reports'].push(update['reports'][i]);
-        }
-        var newLatLng = new google.maps.LatLng(lat, lon, this._calcIntersectionWeight(intersection));
-        this.MVCArray.setAt(index, newLatLng);
-    };
-
-    this._calcIntersectionWeight = function(intersection) {
-        return (intersection['crimes'].length + intersection['reports'].length);
-    };
+    IntersectionsDataObject.addUpdateListener(function(intersection_id) {
+        var index = _this.index_map[intersection_id];
+        var newLatLng = new google.maps.LatLng(lat, lon, _this._calcIntersectionWeight(intersection_id));
+        _this.MVCArray.setAt(index, newLatLng);
+    });
 
     this._pushToMVC = function(intersection) {
         var weight = this._calcIntersectionWeight(intersection);
         return (this.MVCArray.push(new google.maps.LatLng(intersection['lat'], intersection['lon'], weight)) - 1);
+    };
+
+    this._calcIntersectionWeight = function(intersection) {
+        return (intersection['crimes'].length + intersection['reports'].length);
     };
 };
 
