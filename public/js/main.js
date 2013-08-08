@@ -72,12 +72,16 @@ var isWindowSize = ($(window).width() >= 768);
 
 
     //connect to socket.io
+    try {
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
         console.log(data)
         data=data.report //@todo for some reason there is a nested report
         $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
+    } catch(err) {
+        
+    }
 
     /**
      * dragging mobile sidebar
