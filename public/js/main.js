@@ -422,6 +422,25 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     };
 };
 
+function removeDuplicates(a) {
+    var isAdded, arr=[];
+    for(var i = 0; i < a.length; i++) {
+        isAdded = arr.some(function(v) {//custom array callback function
+            return isEqual(v, a[i]);
+        });
+        if( !isAdded ) {
+            arr.push(a[i]);
+        }
+    }
+    return a;
+}
+function isEqual(a, b) {
+    if(a.name!== b.name) {
+        return false;
+    }
+    return true
+}
+
 window.directions = new function() {
     /**
      * get directions by request
@@ -441,8 +460,8 @@ window.directions = new function() {
     this.renderList = function(start, end, roads) {
         var startElem = $('<div class="departure"></div>');
         startElem.text(start).appendTo(this.directionsPanel);
-
         var directionsList = $('<ol class="directions"></ol>');
+        roads=removeDuplicates(roads);
         directionsList.appendTo(this.directionsPanel);
         for (var i=0; i<roads.length; i++) {
             var name = roads[i]['name'];
