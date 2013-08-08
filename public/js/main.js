@@ -8,7 +8,7 @@ $(document).ready(function () {
         jQuery('#cameraformwebcam').show(); //opens up a new form
         jQuery('.addwebcam').hide(); //now hide the button
     });
-    
+
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
     switch (param.type) {
