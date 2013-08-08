@@ -5,6 +5,7 @@ var google;
 
 $(document).ready(function () {
 
+    _changeTabletNav();
 
     document.ontouchstart = function(e){
         e.preventDefault();
