@@ -1,8 +1,5 @@
-var _getParameters;
-
 $(document).ready(function () {
-    var param;
-    param = _getParameters();
+    var param = _getParameters();
     switch (param.type) {
         case "search":
             $.ajax({
@@ -34,18 +31,18 @@ $(document).ready(function () {
     return $.getJSON('/report/getall', function (data) {
         return $.each(data, function (key, val) {
             var comment, time, type;
-            time = val.time;
-            type = val.type;
-            comment = val.comment;
+            var time = _processDate(new Date(val.time));
+            var type = val.type;
+            var comment = val.comment;
             return $("#live-feed").prepend('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
         });
     });
-});
-
-/*
- * Extracts GET parameters from url
+/**
+ * retrieve the get parameters and their values in a querystring
+ * @returns urlParams   url parameters in object format
+ * @private
  */
-_getParameters = function () {
+function _getParameters() {
     var decode, match, pl, query, search, urlParams;
     pl = /\+/g;
     search = /([^&=]+)=?([^&]*)/g;
@@ -60,9 +57,19 @@ _getParameters = function () {
     return urlParams;
 };
 
+/**
+ * process a js Date object
+ * @param date
+ * @private
+ */
+function _processDate(date) {
+    var longdate = date.toDateString();
+    var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    return longdate + " @ " + time;
+}
+
 var isWindowSize = ($(window).width() >= 768);
 
-$(document).ready(function() {
 
     //connect to socket.io
     var socket = io.connect('/');
