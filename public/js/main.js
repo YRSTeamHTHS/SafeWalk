@@ -91,13 +91,13 @@ $(document).ready(function () {
 
     //connect to socket.io
     try {
-    var socket = io.connect('/');
-    socket.on('livereport', function (data) {
+        var socket = io.connect('/');
+        socket.on('livereport', function (data) {
 
-        data=data.report; //@todo for some reason there is a nested report
-        _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
-        incrementBadge();
-    });
+            data=data.report; //@todo for some reason there is a nested report
+            _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
+            incrementBadge();
+        });
     } catch(err) {
 
     }
@@ -105,8 +105,6 @@ $(document).ready(function () {
     /**
      * dragging mobile sidebar
      */
-    var latestHeight;
-
     $("#feed-btn,#dir-btn").mousedown(function(e){
         if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
@@ -134,20 +132,21 @@ $(document).ready(function () {
         if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
 
 
-            latestHeight = $("#map-content").height();
+            var latestHeight = $("#map-content").height();
 
-            $(document).mousemove( function(e){
+            $(document).mousemove(function(e){
 
+                /*$(document).mouseup(function(e){
+                 if (Math.abs(e.pageY) - latestHeight >60) {
+                 $("#map-content").removeClass("collapsed");
+                 _closeMobileSidebar();
+                 $(document).unbind("mousemove");
+                 }
+                 else {
+                 $("#map-content").height(latestHeight);
+                 }
+                 });*/
 
-                /*if (e.which===0) {
-                        if($("#map-content").hasClass("collapsed")){
-                            if (Math.abs(e.pageY) - latestHeight >60) {
-                                $("#map-content").removeClass("collapsed");
-                                _closeMobileSidebar();
-                                $(document).unbind("mousemove");
-                            }
-                        }
-                }*/
                 if (e.which ===1 &&
                     $("#map-content").hasClass("collapsed") &&
                     e.pageY < $(window).height() &&
@@ -155,11 +154,10 @@ $(document).ready(function () {
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
-                        $("#map-content").height(e.pageY);
-                        if (Math.abs(e.pageY) - latestHeight <60){
-                            $("#map-content").height('20%');
-                        }
-                        $(document).unbind("mousemove");
+                    $("#map-content").height(e.pageY);
+                    if (Math.abs(e.pageY) - latestHeight <60){
+                        $("#map-content").height('20%');
+                    }
 
                 }
                 //if (Math.abs(e.pageY) - $("#map-content").height() >20){
@@ -173,34 +171,15 @@ $(document).ready(function () {
                     $(document).unbind("mousemove");
                     return;
                 }
-                $(document).unbind("mousemove");
+                //$(document).unbind("mousemove");
                 return;
 
             });
-            $(document).unbind("mousemove");
             return;
         }
+        return;
     });
 
-
-    /*$(document).mouseup(function(e){
-        if($("#map-content").hasClass("collapsed")){
-            if (Math.abs(e.pageY) - latestHeight >60) {
-                $("#map-content").removeClass("collapsed");
-                _closeMobileSidebar();
-                $(document).unbind("mousemove");
-            }
-            else {
-                $("#map-content").height(latestHeight);
-                $(document).unbind("mousemove");
-            }
-        } else if ($("#map-content").hasClass("normal")){
-            $("#map-content").removeClass("normal");
-            changeMobileSidebar(true);
-            $(document).unbind("mousemove");
-            return;
-        }
-    });*/
 
     /**
      * switch to the feed tab on click
@@ -286,10 +265,6 @@ $(document).ready(function () {
 
     });
 
-    document.ontouchstart = function(e){
-        e.preventDefault();
-    }
-
 });
 
 function incrementBadge(){
@@ -369,6 +344,9 @@ function _openMobileSidebar(t) {
         height: '20%'
     }, t, function(){});
     $(".navbar").css("background-color", "#223044");
+    setTimeout(function(){
+        google.maps.event.trigger(map, 'resize');
+    },500);
 }
 
 /**
@@ -389,7 +367,6 @@ function _openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
 }
-
 
 window.map = new function() {
     var _this = this;
