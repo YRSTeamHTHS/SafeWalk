@@ -1,12 +1,12 @@
 $(document).ready(function () {
 
-    /*document.ontouchstart = function(e){
-     e.preventDefault();
-     } */
+    document.ontouchstart = function(e){
+        e.preventDefault();
+    }
 
-    jQuery('.addwebcam').bind('click tap', function(e) {
-        jQuery('#cameraformwebcam').show(); //opens up a new form
-        jQuery('.addwebcam').hide(); //now hide the button
+    $('.addwebcam').bind('click', function(e) {
+        $('#cameraformwebcam').show(); //opens up a new form
+        $('.addwebcam').hide(); //now hide the button
     });
 
     //load appropriate map and also prepopulate from and to fields
@@ -361,6 +361,8 @@ function _openWindowSidebar() {
 }
 
 window.map = new function() {
+    var _this = this;
+
     this.initialize = function() {
         var latlng = new google.maps.LatLng(53.481136,-2.227279);
         var myOptions = {
@@ -373,8 +375,48 @@ window.map = new function() {
         google.maps.event.addDomListenerOnce(this.gmap, 'idle', function() {
             window.directions.get('344234568', '2345009892');
         });
+
+        $.getJSON('/intersections/all', function(data) {
+            window.intersections = new IntersectionsData(data);
+            _this.LiveMVCArray = new LiveMVCArray(window.intersections);
+            window.heatmap = new google.maps.visualization.HeatmapLayer({
+                data: _this.LiveMVCArray
+            });
+            window.heatmap.setMap(window.map.gmap);
+        });
     };
     google.maps.event.addDomListener(window, "load", this.initialize);
+};
+
+/**
+ * @param data IntersectionsData object
+ */
+var LiveMVCArray = function(IntersectionsDataObject) {
+    var _this = this;
+    this.MVCArray = new google.maps.MVCArray();
+    this.data = IntersectionsDataObject;
+    this.index_map = {};
+
+    for (var id in IntersectionsDataObject) {
+        if (IntersectionsDataObject.hasOwnProperty(id)) {
+            this.index_map[id] = this._pushToMVC(IntersectionsDataObject[id]);
+        }
+    }
+
+    IntersectionsDataObject.addUpdateListener(function(intersection_id) {
+        var index = _this.index_map[intersection_id];
+        var newLatLng = new google.maps.LatLng(lat, lon, _this._calcIntersectionWeight(intersection_id));
+        _this.MVCArray.setAt(index, newLatLng);
+    });
+
+    this._pushToMVC = function(intersection) {
+        var weight = this._calcIntersectionWeight(intersection);
+        return (this.MVCArray.push(new google.maps.LatLng(intersection['lat'], intersection['lon'], weight)) - 1);
+    };
+
+    this._calcIntersectionWeight = function(intersection) {
+        return (intersection['crimes'].length + intersection['reports'].length);
+    };
 };
 
 window.directions = new function() {
@@ -414,7 +456,7 @@ window.directions = new function() {
         // TODO: fix line display
         var coors = [];
         for (var i=0; i<path.length; i++) {
-            coors.push(new google.maps.LatLng(path[i].lat, path[i].lon));
+            coors.push(new google.maps.LatLng(path[i]['lat'], path[i]['lon']));
         }
         var line = new google.maps.Polyline({
             'path': coors,
