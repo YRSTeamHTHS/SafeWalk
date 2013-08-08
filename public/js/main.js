@@ -103,7 +103,11 @@ var isWindowSize = ($(window).width() >= 768);
                     $("#map-content").height(e.pageY);
                 }
                 else {
-                    _openMobileSidebar(300);
+                    $("#map-content").removeClass("normal");
+
+
+                    changeMobileSidebar(true);
+                    $(document).unbind("mousemove");
                     return;
                 }
 
@@ -155,9 +159,9 @@ var isWindowSize = ($(window).width() >= 768);
         /*$(this).innerHTML='&#59237;';*/
         var type=$(this).data('type');
         if(type=='close') {
-           _closeWindowSidebar();
+           closeWindowSidebar();
         } else if (type=='open') {
-            _openWindowSidebar();
+            openWindowSidebar();
         }
     });
 
@@ -179,24 +183,24 @@ var isWindowSize = ($(window).width() >= 768);
             isWindowSize = false;
             var barType = $("#shrink-arrow").data('type');
             if (barType=="close"){
-                _openMobileSidebar(0);
+                openMobileSidebar(0);
                 $("#map-content,.navbar").click(function() {
-                    _closeMobileSidebar();
+                    closeMobileSidebar();
                 });
             }
             else {
-                _closeMobileSidebar();
+                closeMobileSidebar();
             }
         } else if ($(window).width() >= 768 && !isWindowSize) {
             isWindowSize = true;
             var mobileBarClosed = $("#map-content").hasClass("normal");
             if (mobileBarClosed) {
-                _closeWindowSidebar();
-                _closeMobileSidebar();
+                closeWindowSidebar();
+                closeMobileSidebar();
             }
 
             else {
-                _openWindowSidebar();
+                openWindowSidebar();
                 $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
                 $(".navbar").css("background-color", "");
             }
@@ -215,11 +219,11 @@ var isWindowSize = ($(window).width() >= 768);
  */
 function changeMobileSidebar(normal) {
     if(normal && $(window).width() < 768) {
-        _openMobileSidebar();
+        _openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
         $("#map-content,.navbar").click(function() {
-            _closeMobileSidebar();
+            closeMobileSidebar();
         });
     }
 }
@@ -227,7 +231,7 @@ function changeMobileSidebar(normal) {
 /**
  * close the mobile sidebar
  */
-function _closeMobileSidebar() {
+function closeMobileSidebar() {
     time=500;
     $("#sidebar .btn").removeClass("on");
     $("#map-content").css({"background-color": "transparent"}).removeClass("collapsed").addClass("normal");
@@ -245,7 +249,7 @@ function _closeMobileSidebar() {
  * open the mobile sidebar
  * @param int t     animation time of height change
  */
-function _openMobileSidebar(t) {
+function openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%',
@@ -256,7 +260,7 @@ function _openMobileSidebar(t) {
 /**
  * close the main desktop sidebar
  */
-function _closeWindowSidebar() {
+function closeWindowSidebar() {
     $("#shrink-arrow").data('type', 'open').html('&#59237;');
     $("#map-content").css('width','100%');
     setTimeout(function(){
@@ -267,7 +271,7 @@ function _closeWindowSidebar() {
 /**
  * open the main desktop sidebar
  */
-function _openWindowSidebar() {
+function openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
 }
