@@ -42,7 +42,7 @@ $(document).ready(function() {
             return;
         }
         if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
-            //alert($("#map-content").hasClass("normal"));
+
 
             $(document).mousemove(function(e){
 
@@ -52,15 +52,18 @@ $(document).ready(function() {
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
-                    $("#map-content").height(e.pageY);
+                        $("#map-content").height(e.pageY);
+                    //if (Math.abs(e.pageY) - $("#map-content").height() >20){
+                    //    $("#map-content").height(e.pageY);
+                    //}
                 }
                 else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
 
                 else {
-                    closeMobileSidebar(true);
+                    closeMobileSidebar();
                     $(document).unbind("mousemove");
                     return;
-                }
+                } //else {$(document).unbind("mousemove");}
                 return;
 
             });
