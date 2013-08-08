@@ -23,11 +23,17 @@ reportSchema = new Schema({
 #Creates the Model for the User Schema
 ReportModel = mongoose.model('reports', reportSchema); #attach the schema if required for the first time
 
+###
+  retrieve the passed in socketio object, and make it locally accessable
+  @param io2  socketio object to make accessable
+###
 exports.attach = (io2) ->
   io = io2
 
 ###
-  @param report magic
+  add a new report to the database
+  @param report     report containing code,type,comment parameters
+  @param callback   callback to execute once completed
 ###
 exports.addReport = (report, callback) ->
   #check that code does not already exist
@@ -46,7 +52,11 @@ exports.addReport = (report, callback) ->
       )
     else callback(false)
 
-
+###
+  gets a report by code
+  @param code       code to search for
+  @param callback   callback to execute once completed
+###
 exports.getReportByCode = (code, callback) ->
   ReportModel.find {code: code}, (err, reports) ->
     if (err || reports.length == 0)
@@ -54,7 +64,11 @@ exports.getReportByCode = (code, callback) ->
     else
       callback(reports)
 
-
+###
+  gets all reports limited by quantity (limit)
+  @param limit      maximum reports to retrieve
+  @param callback   callback to execute once completed
+###
 exports.getReports = (limit, callback) ->
   query = ReportModel.find({},{code:0});
   query.sort({_id:-1}).limit(limit)

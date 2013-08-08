@@ -1,8 +1,6 @@
-var _getParameters;
-
 $(document).ready(function () {
-    var param;
-    param = _getParameters();
+    //load appropriate map and also prepopulate from and to fields
+    var param = _getParameters();
     switch (param.type) {
         case "search":
             $.ajax({
@@ -41,21 +39,23 @@ $(document).ready(function () {
             height: 'auto'
         },300);
     }
-    return $.getJSON('/report/getall', function (data) {
-        return $.each(data, function (key, val) {
+    $.getJSON('/report/getall', function (data) {
+        $.each(data, function (key, val) {
             var comment, time, type;
-            time = val.time;
-            type = val.type;
-            comment = val.comment;
+            var time = _processDate(new Date(val.time));
+            var type = val.type;
+            var comment = val.comment;
             createFeedItem(time,type,comment);
         });
     });
 });
 
-/*
- * Extracts GET parameters from url
+/**
+ * retrieve the get parameters and their values in a querystring
+ * @returns urlParams   url parameters in object format
+ * @private
  */
-_getParameters = function () {
+function _getParameters() {
     var decode, match, pl, query, search, urlParams;
     pl = /\+/g;
     search = /([^&=]+)=?([^&]*)/g;
@@ -70,9 +70,19 @@ _getParameters = function () {
     return urlParams;
 };
 
+/**
+ * process a js Date object
+ * @param date
+ * @private
+ */
+function _processDate(date) {
+    var longdate = date.toDateString();
+    var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    return longdate + " @ " + time;
+}
+
 var isWindowSize = ($(window).width() >= 768);
 
-$(document).ready(function() {
 
     //connect to socket.io
     try {
@@ -90,11 +100,12 @@ $(document).ready(function() {
      * dragging mobile sidebar
      */
     $("#feed-btn,#dir-btn").mousedown(function(e){
-        if($(window).width() < 768) {
+        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
+            //alert($("#map-content").hasClass("normal"));
+
             $(document).mousemove(function(e){
 
-                if (e.which!=0 &&
-                    $("#map-content").hasClass("normal") &&
+                if (e.which ===1 &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
                     e.pageX < $(window).width() &&
@@ -102,13 +113,50 @@ $(document).ready(function() {
                     ) {
                     $("#map-content").height(e.pageY);
                 }
+                else if ($("#map-content").hasClass("collapsed")) {$(document).unbind("mousemove");}
+
                 else {
-                    openMobileSidebar(300);
+                    $("#map-content").removeClass("normal");
+
+
+                    changeMobileSidebar(true);
+                    $(document).unbind("mousemove");
                     return;
                 }
+                return;
 
-           });
+            });
+            return;
         }
+        if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
+
+
+            $(document).mousemove(function(e){
+
+                if (e.which ===1 &&
+                    e.pageY < $(window).height() &&
+                    e.pageY > 0 &&
+                    e.pageX < $(window).width() &&
+                    e.pageX > 0
+                    ) {
+                        $("#map-content").height(e.pageY);
+                    //if (Math.abs(e.pageY) - $("#map-content").height() >20){
+                    //    $("#map-content").height(e.pageY);
+                    //}
+                }
+                else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
+
+                else {
+                    closeMobileSidebar();
+                    $(document).unbind("mousemove");
+                    return;
+                } //else {$(document).unbind("mousemove");}
+                return;
+
+            });
+            return;
+        }
+        return;
     });
 
 
@@ -215,7 +263,7 @@ $(document).ready(function() {
  */
 function changeMobileSidebar(normal) {
     if(normal && $(window).width() < 768) {
-        openMobileSidebar();
+        openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
         $("#map-content,.navbar").click(function() {
@@ -233,7 +281,7 @@ function closeMobileSidebar() {
     $("#map-content").css({"background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     //$("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     $("#map-content").animate({
-        height: '100%',
+        height: '100%'
     }, time, function(){});
     $(".navbar").css("background-color", "");
     setTimeout(function(){
@@ -248,7 +296,7 @@ function closeMobileSidebar() {
 function openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
-        height: '20%',
+        height: '20%'
     }, t, function(){});
     $(".navbar").css("background-color", "#223044");
 }
