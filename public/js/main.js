@@ -258,7 +258,9 @@ var isWindowSize = ($(window).width() >= 768);
 });
 
 function incrementBadge(){
-    $('#feed-badge').html(getInt($('#feed-badge').html())+1);
+    if (!($('#feed-btn').hasClass('on'))) {
+        $('#feed-badge').html(getInt($('#feed-badge').html())+1);
+    }
 }
 
 function clearBadge(){
