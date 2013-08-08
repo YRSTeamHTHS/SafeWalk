@@ -1,3 +1,8 @@
+/**
+ * @see google
+ */
+//var google;
+
 $(document).ready(function () {
 
     /*document.ontouchstart = function(e){
@@ -416,9 +421,9 @@ window.map = new function() {
             center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        this.gmap = new google.maps.Map(document.getElementById("map-content"), myOptions);
+        _this.gmap = new google.maps.Map(document.getElementById("map-content"), myOptions);
 
-        google.maps.event.addDomListenerOnce(this.gmap, 'idle', function() {
+        google.maps.event.addDomListenerOnce(_this.gmap, 'idle', function() {
             window.directions.get('344234568', '2345009892');
         });
 
@@ -426,7 +431,7 @@ window.map = new function() {
             window.intersections = new IntersectionsData(data);
             _this.LiveMVCArray = new LiveMVCArray(window.intersections);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
-                data: _this.LiveMVCArray
+                data: _this.LiveMVCArray.MVCArray
             });
             window.heatmap.setMap(window.map.gmap);
         });
@@ -443,11 +448,16 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     this.data = IntersectionsDataObject;
     this.index_map = {};
 
-    for (var id in IntersectionsDataObject) {
-        if (IntersectionsDataObject.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(IntersectionsDataObject[id]);
-        }
-    }
+    this._pushToMVC = function(intersection) {
+        var weight = this._calcIntersectionWeight(intersection);
+        return (this.MVCArray.push(new google.maps.LatLng(intersection['lat'], intersection['lon'], weight)) - 1);
+    };
+
+    this._calcIntersectionWeight = function(intersection) {
+        //return (intersection['crimes'].length + intersection['reports'].length);
+        // TODO: calculate length of intersection crimes/reports correctly
+        return Math.random();
+    };
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
         var index = _this.index_map[intersection_id];
@@ -455,15 +465,31 @@ var LiveMVCArray = function(IntersectionsDataObject) {
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    this._pushToMVC = function(intersection) {
-        var weight = this._calcIntersectionWeight(intersection);
-        return (this.MVCArray.push(new google.maps.LatLng(intersection['lat'], intersection['lon'], weight)) - 1);
-    };
-
-    this._calcIntersectionWeight = function(intersection) {
-        return (intersection['crimes'].length + intersection['reports'].length);
-    };
+    for (var id in IntersectionsDataObject) {
+        if (IntersectionsDataObject.hasOwnProperty(id)) {
+            this.index_map[id] = this._pushToMVC(IntersectionsDataObject[id]);
+        }
+    }
 };
+
+function removeDuplicates(a) {
+    var isAdded, arr=[];
+    for(var i = 0; i < a.length; i++) {
+        isAdded = arr.some(function(v) {//custom array callback function
+            return isEqual(v, a[i]);
+        });
+        if( !isAdded ) {
+            arr.push(a[i]);
+        }
+    }
+    return a;
+}
+function isEqual(a, b) {
+    if(a.name!== b.name) {
+        return false;
+    }
+    return true
+}
 
 window.directions = new function() {
     /**
@@ -484,8 +510,8 @@ window.directions = new function() {
     this.renderList = function(start, end, roads) {
         var startElem = $('<div class="departure"></div>');
         startElem.text(start).appendTo(this.directionsPanel);
-
         var directionsList = $('<ol class="directions"></ol>');
+        roads=removeDuplicates(roads);
         directionsList.appendTo(this.directionsPanel);
         for (var i=0; i<roads.length; i++) {
             var name = roads[i]['name'];
