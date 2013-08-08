@@ -45,38 +45,38 @@ $(document).ready(function () {
     });
 
 
-/**
- * retrieve the get parameters and their values in a querystring
- * @returns urlParams   url parameters in object format
- * @private
- */
-function _getParameters() {
-    var decode, match, pl, query, search, urlParams;
-    pl = /\+/g;
-    search = /([^&=]+)=?([^&]*)/g;
-    decode = function (s) {
-        return decodeURIComponent(s.replace(pl, " "));
+    /**
+     * retrieve the get parameters and their values in a querystring
+     * @returns urlParams   url parameters in object format
+     * @private
+     */
+    function _getParameters() {
+        var decode, match, pl, query, search, urlParams;
+        pl = /\+/g;
+        search = /([^&=]+)=?([^&]*)/g;
+        decode = function (s) {
+            return decodeURIComponent(s.replace(pl, " "));
+        };
+        query = window.location.search.substring(1);
+        urlParams = {};
+        while ((match = search.exec(query))) {
+            urlParams[decode(match[1])] = decode(match[2]);
+        }
+        return urlParams;
     };
-    query = window.location.search.substring(1);
-    urlParams = {};
-    while ((match = search.exec(query))) {
-        urlParams[decode(match[1])] = decode(match[2]);
+
+    /**
+     * process a js Date object
+     * @param date
+     * @private
+     */
+    function _processDate(date) {
+        var longdate = date.toDateString();
+        var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        return longdate + " @ " + time;
     }
-    return urlParams;
-};
 
-/**
- * process a js Date object
- * @param date
- * @private
- */
-function _processDate(date) {
-    var longdate = date.toDateString();
-    var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-    return longdate + " @ " + time;
-}
-
-var isWindowSize = ($(window).width() >= 768);
+    var isWindowSize = ($(window).width() >= 768);
 
 
     //connect to socket.io
@@ -149,10 +149,10 @@ var isWindowSize = ($(window).width() >= 768);
                             $("#map-content").height('20%');
                         }
 
-                    }
-                    //if (Math.abs(e.pageY) - $("#map-content").height() >20){
-                    //    $("#map-content").height(e.pageY);
-                    //}
+                }
+                //if (Math.abs(e.pageY) - $("#map-content").height() >20){
+                //    $("#map-content").height(e.pageY);
+                //}
                 else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
 
                 if ($("#map-content").height() - latestHeight >60 && e.which===0){
@@ -164,7 +164,7 @@ var isWindowSize = ($(window).width() >= 768);
                 //$(document).unbind("mousemove");
                 return;
 
-           });
+            });
             return;
         }
         return;
@@ -203,7 +203,7 @@ var isWindowSize = ($(window).width() >= 768);
         /*$(this).innerHTML='&#59237;';*/
         var type=$(this).data('type');
         if(type=='close') {
-           _closeWindowSidebar();
+            _closeWindowSidebar();
         } else if (type=='open') {
             _openWindowSidebar();
         }
@@ -258,7 +258,9 @@ var isWindowSize = ($(window).width() >= 768);
 });
 
 function incrementBadge(){
-    $('#feed-badge').html(getInt($('#feed-badge').html())+1);
+    if (!($('#feed-btn').hasClass('on'))) {
+        $('#feed-badge').html(getInt($('#feed-badge').html())+1);
+    }
 }
 
 function clearBadge(){
@@ -363,7 +365,9 @@ window.map = new function() {
         };
         this.gmap = new google.maps.Map(document.getElementById("map-content"), myOptions);
 
-        window.directions.get('344234568', '2345009892');
+        google.maps.event.addDomListenerOnce(this.gmap, 'idle', function() {
+            window.directions.get('344234568', '2345009892');
+        });
     };
     google.maps.event.addDomListener(window, "load", this.initialize);
 };
@@ -377,6 +381,7 @@ window.directions = new function() {
     this.get = function(start, end) {
         var url = '/navigate/nav?start=' + encodeURIComponent(start) + '&end=' + encodeURIComponent(end);
         $.getJSON(url, function(data) {
+            console.log('Directions data:', data);
             window.directions.renderList(start, end, data['roads']);
             window.directions.renderMap(data['path']);
         });
@@ -395,22 +400,29 @@ window.directions = new function() {
             roadElem.text(name).appendTo(directionsList);
         }
 
-        var startElem = $('<div class="arrival"></div>');
-        startElem.text(end).appendTo(this.directionsPanel);
+        var endElem = $('<div class="arrival"></div>');
+        endElem.text(end).appendTo(this.directionsPanel);
     };
 
     this.renderMap = function(path) {
         // TODO: use MVC path type for easier updating
+        // TODO: fix line display
         var coors = [];
         for (var i=0; i<path.length; i++) {
             coors.push(new google.maps.LatLng(path[i].lat, path[i].lon));
         }
         var line = new google.maps.Polyline({
-            path: coors,
-            strokeColor: "#FF0000",
-            strokeOpacity: 1,
-            strokeWeight: 5
+            'path': coors,
+            'strokeColor': "#FF0000",
+            'strokeOpacity': 1.0,
+            'strokeWeight': 5
         });
         line.setMap(window.map.gmap);
+    }
+};
+
+window.reportForm = new function() {
+    this.show = function() {
+
     }
 };
