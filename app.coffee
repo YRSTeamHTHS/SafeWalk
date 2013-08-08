@@ -24,6 +24,7 @@ user = require('./routes/user_route')
 report = require('./routes/report_route')
 map = require('./routes/map_route')
 navigate = require('./routes/navigate_route')
+intersections = require('./routes/intersections_route')
 
 # all environments
 app.set('port', process.env.PORT || 3000);
@@ -56,6 +57,7 @@ app.get('/navigate/search', navigate.searchmap)
 app.get('/report', report.index)
 app.get('/report/getall', report.getall)
 app.post('/report/submit', report.submit)
+app.get('/intersections/all', intersections.all)
 
 ###
 app.get '/parse', (req, res) ->
