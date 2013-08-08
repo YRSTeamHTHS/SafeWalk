@@ -387,6 +387,7 @@ window.map = new function() {
         $.getJSON('/intersections/all', function(data) {
             window.intersections = new IntersectionsData(data);
             _this.LiveMVCArray = new LiveMVCArray(window.intersections);
+            console.log(_this.LiveMVCArray);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
                 data: _this.LiveMVCArray.MVCArray
             });
@@ -397,12 +398,12 @@ window.map = new function() {
 };
 
 /**
- * @param data IntersectionsData object
+ * @param {IntersectionsData} IntersectionsDataObject
  */
 var LiveMVCArray = function(IntersectionsDataObject) {
     var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    this.data = IntersectionsDataObject;
+    this.intersections = IntersectionsDataObject.data;
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
@@ -422,9 +423,9 @@ var LiveMVCArray = function(IntersectionsDataObject) {
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    for (var id in IntersectionsDataObject) {
-        if (IntersectionsDataObject.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(IntersectionsDataObject[id]);
+    for (var id in this.intersections) {
+        if (this.intersections.hasOwnProperty(id)) {
+            this.index_map[id] = this._pushToMVC(this.intersections[id]);
         }
     }
 };
