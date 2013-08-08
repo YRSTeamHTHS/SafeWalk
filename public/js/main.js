@@ -525,7 +525,7 @@ window.directions = new function() {
             }
             var timeTo="TIME TO DESTINATION";
             timeTo='<div class="dist-time">'+timeTo+'</div>';
-            roadElem.text('Turn '+dir+' onto <b>'+name+'</b>').appendTo(directionsList);
+            roadElem.html('Turn '+dir+' onto <b>'+name+'</b>').appendTo(directionsList);
         }
 
         var endElem = $('<div class="arrival"></div>');
