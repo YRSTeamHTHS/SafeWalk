@@ -30,7 +30,13 @@ $(document).ready(function () {
             });
     }
 
-
+    /**
+     * create a new feed item
+     *
+     * @param time          of report
+     * @param type          of report
+     * @param comment       of report
+     */
     function createFeedItem(time,type,comment) {
         $("#live-feed").prepend($('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>'));
         $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').css({
@@ -40,6 +46,8 @@ $(document).ready(function () {
             height: 'auto'
         },300);
     }
+
+    //get recent feeds
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
             var comment, time, type;
@@ -91,7 +99,7 @@ var isWindowSize = ($(window).width() >= 768);
     socket.on('livereport', function (data) {
         console.log(data);
         data=data.report; //@todo for some reason there is a nested report
-        $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
+        createFeedItem(data.time, data.type,data.comment);
     });
     } catch(err) {
 
