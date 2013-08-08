@@ -1,23 +1,24 @@
 $(document).ready(function () {
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
+    console.log(param);
     switch (param.type) {
         case "search":
             $.ajax({
-                url: "/navigate/searchmap",
+                url: "/navigate/search",
                 data: {
                     search: param.search
                 },
                 success: function (data) {
                     console.log(param.search);
                     $("#map-wrapper").html(data);
-                    return $("#map-directions-end").val(param.search);
+                    $("#map-directions-end").val(param.search);
                 }
             });
             break;
         case "directions":
             $.ajax({
-                url: "/navigate/navmap",
+                url: "/navigate/nav",
                 data: {
                     from: param.from,
                     to: param.to
@@ -25,7 +26,7 @@ $(document).ready(function () {
                 success: function (data) {
                     $("#map-directions-start").val(param.from);
                     $("#map-directions-end").val(param.to);
-                    return $("#map-wrapper").html(data);
+                    $("#map-wrapper").html(data);
                 }
             });
     }
