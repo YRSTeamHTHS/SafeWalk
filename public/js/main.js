@@ -20,7 +20,34 @@ $(document).ready(function() {
 
                 else {
                     $("#map-content").removeClass("normal");
+
+
                     changeMobileSidebar(true);
+                    $(document).unbind("mousemove");
+                    return;
+                }
+                return;
+
+            });
+            return;
+        }
+        if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
+            //alert($("#map-content").hasClass("normal"));
+
+            $(document).mousemove(function(e){
+
+                if (e.which ===1 &&
+                    e.pageY < $(window).height() &&
+                    e.pageY > 0 &&
+                    e.pageX < $(window).width() &&
+                    e.pageX > 0
+                    ) {
+                    $("#map-content").height(e.pageY);
+                }
+                else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
+
+                else {
+                    closeMobileSidebar(true);
                     $(document).unbind("mousemove");
                     return;
                 }
