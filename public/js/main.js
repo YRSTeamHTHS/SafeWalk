@@ -67,8 +67,9 @@ $(document).ready(function() {
     //connect to socket.io
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
-        newBubble(data.report)
-        $("#live-feed").prepend('<div class="feed-item"><hr>'+time + type + comment+'</div>')
+        console.log(data)
+        data=data.report //@todo for some reason there is a nested report
+        $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
 
     /**
