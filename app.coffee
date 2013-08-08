@@ -11,7 +11,7 @@ server = http.createServer(app)
 io = require('socket.io').listen(server)
 
 path = require('path')
-parseString = require('xml2js').parseString
+#parseString = require('xml2js').parseString
 mongoose = require('mongoose')
 
 #models
