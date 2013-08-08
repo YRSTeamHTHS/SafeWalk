@@ -473,7 +473,15 @@ window.directions = new function() {
         for (var i=0; i<roads.length; i++) {
             var name = roads[i]['name'];
             var roadElem = $('<li></li>');
-            roadElem.text(name).appendTo(directionsList);
+            var dir=Math.random();
+            if (dir > 0.5) {
+                dir='<b>left</b>';
+            } else {
+                dir='<b>right</b>';
+            }
+            var timeTo="TIME TO DESTINATION";
+            timeTo='<div class="dist-time">'+timeTo+'</div>';
+            roadElem.text('Turn '+dir+' onto <b>'+name+'</b>').appendTo(directionsList);
         }
 
         var endElem = $('<div class="arrival"></div>');
