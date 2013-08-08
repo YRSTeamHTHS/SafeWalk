@@ -6,7 +6,6 @@ $(document).ready(function(){
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
         newBubble(data.report)//@todo poopy nested report
-        //socket.emit('my other event', { my: 'data' });
     });
 
     /**

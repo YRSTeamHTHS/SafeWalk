@@ -30,9 +30,9 @@ $(document).ready(function () {
             });
     }
 
+    //preload some feed items
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
-            var comment, time, type;
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
@@ -213,18 +213,6 @@ var isWindowSize = ($(window).width() >= 768);
     });
 
 });
-/**
- * create new feed item
- * @param time
- * @param type
- * @param comment
- */
-function createFeedItem(time,type,comment) {
-    var html=$('<div class="feed-item feed-item-hidden"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
-    $("#live-feed").prepend(html);
-    html.removeClass('feed-item-hidden',300);
-}
-
 
 /**
  * switch to the mobile sidebar
