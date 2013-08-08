@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
     switch (param.type) {
         case "search":
@@ -28,8 +29,9 @@ $(document).ready(function () {
                 }
             });
     }
-    return $.getJSON('/report/getall', function (data) {
-        return $.each(data, function (key, val) {
+    //retrieve live feed data
+    $.getJSON('/report/getall', function (data) {
+        $.each(data, function (key, val) {
             var comment, time, type;
             var time = _processDate(new Date(val.time));
             var type = val.type;
@@ -37,6 +39,7 @@ $(document).ready(function () {
             return $("#live-feed").prepend('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
         });
     });
+
 /**
  * retrieve the get parameters and their values in a querystring
  * @returns urlParams   url parameters in object format
