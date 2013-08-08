@@ -48,7 +48,7 @@ $(document).ready(function () {
             createFeedItem(time,type,comment);
         });
     });
-});
+
 
 /**
  * retrieve the get parameters and their values in a querystring
