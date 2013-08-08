@@ -31,13 +31,23 @@ $(document).ready(function () {
                 }
             });
     }
+
+    function createFeedItem(time,type,comment) {
+        $("#live-feed").prepend($('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>'));
+        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').css({
+            height:0
+        });
+        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').animate({
+            height: 'auto'
+        },300);
+    }
     return $.getJSON('/report/getall', function (data) {
         return $.each(data, function (key, val) {
             var comment, time, type;
             time = val.time;
             type = val.type;
             comment = val.comment;
-            return $("#live-feed").prepend('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+            createFeedItem(time,type,comment);
         });
     });
 });
@@ -73,7 +83,7 @@ $(document).ready(function() {
         $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
     } catch(err) {
-        
+
     }
 
     /**
