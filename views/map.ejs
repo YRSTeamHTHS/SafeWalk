@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="btn-group pull-right" style="width: 100%">
                     <button type="button" class=" sidebar-btn btn btn-default on" id="dir-btn"><span class="nav-icon">&#xf124;</span>Directions</button>
-                    <button type="button" class="sidebar-btn btn btn-default" id="feed-btn"><span class="nav-icon">&#xf122;</span>Live Feed</button>
+                    <button type="button" class="sidebar-btn btn btn-default" id="feed-btn"><span class="nav-icon">&#xf122;</span>Live Feed<span class="badge" id="feed-badge"></span></button>
                 </div>
             </div>
 
@@ -54,20 +54,5 @@
         </div>
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAz8Msa0Cela-0hHkSB5pAFgcfU6NL_ud0&sensor=false"></script>
-<script>
-    function initialize() {
-        var latlng = new google.maps.LatLng(53.481136,-2.227279);
-        var myOptions = {
-            zoom: 12,
-            center: latlng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        map = new google.maps.Map(document.getElementById("map-content"),
-                myOptions);
-    }
-    google.maps.event.addDomListener(window, "load", initialize);
-
-</script>
-<script src="/js/map.js"></script>
 <script src="/js/main.js"></script>
 <% include footer %>
