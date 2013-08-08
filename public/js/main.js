@@ -1,8 +1,6 @@
 $(document).ready(function () {
 
-    document.ontouchstart = function(e){
-        e.preventDefault();
-    }
+
 
     jQuery('.addwebcam').bind('click tap', function(e) {
         jQuery('#cameraformwebcam').show(); //opens up a new form
@@ -259,6 +257,10 @@ $(document).ready(function () {
         },500);
 
     });
+
+    document.ontouchstart = function(e){
+        e.preventDefault();
+    }
 
 });
 
