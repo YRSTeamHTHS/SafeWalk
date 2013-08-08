@@ -1,15 +1,39 @@
 $(document).ready(function () {
 
-    document.ontouchstart = function(e){
+    /*document.ontouchstart = function(e){
         e.preventDefault();
-    }
+    }*/
 
-    $('.addwebcam').bind('click', function(e) {
+    /*$('.addwebcam').bind('click', function(e) {
         $('#cameraformwebcam').show(); //opens up a new form
         $('.addwebcam').hide(); //now hide the button
-    });
+    });*/
 
     //load appropriate map and also prepopulate from and to fields
+
+    var ScrollFix = function(elem) {
+        // Variables to track inputs
+        var startY, startTopScroll;
+
+        elem = elem || document.querySelector(elem);
+
+        // If there is no element, then do nothing
+        if(!elem)
+            return;
+
+        // Handle the start of interactions
+        elem.addEventListener('touchstart', function(event){
+            startY = event.touches[0].pageY;
+            startTopScroll = elem.scrollTop;
+
+            if(startTopScroll <= 0)
+                elem.scrollTop = 1;
+
+            if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
+                elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
+        }, false);
+    };
+
     var param = _getParameters();
     switch (param.type) {
         case "search":
@@ -101,6 +125,16 @@ $(document).ready(function () {
      * dragging mobile sidebar
      */
     $("#feed-btn,#dir-btn").mousedown(function(e){
+
+        //highlight based on which content is already shown
+        if ($("#directions").is(":visible") ) {
+            $("#dir-btn").addClass("on");
+            $("#feed-btn").removeClass("on");
+        } else if ($("#feed").is(":visible") ) {
+            $("#feed-btn").addClass("on");
+            $("#dir-btn").removeClass("on");
+        }
+
         if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
 
@@ -211,6 +245,15 @@ $(document).ready(function () {
             _closeWindowSidebar();
         } else if (type=='open') {
             _openWindowSidebar();
+        }
+
+        //highlight based on which content is already shown
+        if ($("#directions").is(":visible") ) {
+            $("#dir-btn").addClass("on");
+            $("#feed-btn").removeClass("on");
+        } else if ($("#feed").is(":visible") ) {
+            $("#feed-btn").addClass("on");
+            $("#dir-btn").removeClass("on");
         }
     });
 

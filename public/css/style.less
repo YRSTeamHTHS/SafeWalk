@@ -349,7 +349,9 @@ textarea, input[type="text"] {
 }
 
 .side-content {
-  overflow: auto;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  -webkit-box-flex: 1;
   max-height:100%;
   padding-left:20px;
   padding-right:20px;
@@ -617,7 +619,7 @@ textarea, input[type="text"] {
     padding-left:0px;
     padding-right:0px;
   }
-  
+
   .map-wrapper .btn-group {
     margin-right:3px;
   }
