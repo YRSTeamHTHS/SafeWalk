@@ -1,8 +1,6 @@
-var _getParameters;
-
 $(document).ready(function () {
-    var param;
-    param = _getParameters();
+    //load appropriate map and also prepopulate from and to fields
+    var param = _getParameters();
     switch (param.type) {
         case "search":
             $.ajax({
@@ -31,21 +29,33 @@ $(document).ready(function () {
                 }
             });
     }
-    return $.getJSON('/report/getall', function (data) {
-        return $.each(data, function (key, val) {
+
+    function createFeedItem(time,type,comment) {
+        $("#live-feed").prepend($('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>'));
+        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').css({
+            height:0
+        });
+        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').animate({
+            height: 'auto'
+        },300);
+    }
+    $.getJSON('/report/getall', function (data) {
+        $.each(data, function (key, val) {
             var comment, time, type;
-            time = val.time;
-            type = val.type;
-            comment = val.comment;
-            return $("#live-feed").prepend('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+            var time = _processDate(new Date(val.time));
+            var type = val.type;
+            var comment = val.comment;
+            createFeedItem(time,type,comment);
         });
     });
-});
 
-/*
- * Extracts GET parameters from url
+
+/**
+ * retrieve the get parameters and their values in a querystring
+ * @returns urlParams   url parameters in object format
+ * @private
  */
-_getParameters = function () {
+function _getParameters() {
     var decode, match, pl, query, search, urlParams;
     pl = /\+/g;
     search = /([^&=]+)=?([^&]*)/g;
@@ -60,17 +70,31 @@ _getParameters = function () {
     return urlParams;
 };
 
+/**
+ * process a js Date object
+ * @param date
+ * @private
+ */
+function _processDate(date) {
+    var longdate = date.toDateString();
+    var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    return longdate + " @ " + time;
+}
+
 var isWindowSize = ($(window).width() >= 768);
 
-$(document).ready(function() {
 
     //connect to socket.io
+    try {
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
         console.log(data)
         data=data.report //@todo for some reason there is a nested report
         $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
+    } catch(err) {
+
+    }
 
     /**
      * dragging mobile sidebar
@@ -89,7 +113,11 @@ $(document).ready(function() {
                     $("#map-content").height(e.pageY);
                 }
                 else {
-                    openMobileSidebar(300);
+                    $("#map-content").removeClass("normal");
+
+
+                    changeMobileSidebar(true);
+                    $(document).unbind("mousemove");
                     return;
                 }
 
@@ -141,9 +169,9 @@ $(document).ready(function() {
         /*$(this).innerHTML='&#59237;';*/
         var type=$(this).data('type');
         if(type=='close') {
-           closeWindowSidebar();
+           _closeWindowSidebar();
         } else if (type=='open') {
-            openWindowSidebar();
+            _openWindowSidebar();
         }
     });
 
@@ -165,24 +193,24 @@ $(document).ready(function() {
             isWindowSize = false;
             var barType = $("#shrink-arrow").data('type');
             if (barType=="close"){
-                openMobileSidebar(0);
+                _openMobileSidebar(0);
                 $("#map-content,.navbar").click(function() {
-                    closeMobileSidebar();
+                    _closeMobileSidebar();
                 });
             }
             else {
-                closeMobileSidebar();
+                _closeMobileSidebar();
             }
         } else if ($(window).width() >= 768 && !isWindowSize) {
             isWindowSize = true;
             var mobileBarClosed = $("#map-content").hasClass("normal");
             if (mobileBarClosed) {
-                closeWindowSidebar();
-                closeMobileSidebar();
+                _closeWindowSidebar();
+                _closeMobileSidebar();
             }
 
             else {
-                openWindowSidebar();
+                _openWindowSidebar();
                 $("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
                 $(".navbar").css("background-color", "");
             }
@@ -201,11 +229,11 @@ $(document).ready(function() {
  */
 function changeMobileSidebar(normal) {
     if(normal && $(window).width() < 768) {
-        openMobileSidebar();
+        _openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
         $("#map-content,.navbar").click(function() {
-            closeMobileSidebar();
+            _closeMobileSidebar();
         });
     }
 }
@@ -213,7 +241,7 @@ function changeMobileSidebar(normal) {
 /**
  * close the mobile sidebar
  */
-function closeMobileSidebar() {
+function _closeMobileSidebar() {
     time=500;
     $("#sidebar .btn").removeClass("on");
     $("#map-content").css({"background-color": "transparent"}).removeClass("collapsed").addClass("normal");
@@ -231,7 +259,7 @@ function closeMobileSidebar() {
  * open the mobile sidebar
  * @param int t     animation time of height change
  */
-function openMobileSidebar(t) {
+function _openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%',
@@ -242,7 +270,7 @@ function openMobileSidebar(t) {
 /**
  * close the main desktop sidebar
  */
-function closeWindowSidebar() {
+function _closeWindowSidebar() {
     $("#shrink-arrow").data('type', 'open').html('&#59237;');
     $("#map-content").css('width','100%');
     setTimeout(function(){
@@ -253,7 +281,7 @@ function closeWindowSidebar() {
 /**
  * open the main desktop sidebar
  */
-function openWindowSidebar() {
+function _openWindowSidebar() {
     $("#shrink-arrow").data('type', 'close').html('&#59238;');
     $("#map-content").css('width','');
 }
