@@ -1,8 +1,8 @@
 $(document).ready(function () {
 
-    document.ontouchstart = function(e){
+    /*document.ontouchstart = function(e){
         e.preventDefault();
-    }
+    } */
 
     jQuery('.addwebcam').bind('click tap', function(e) {
         jQuery('#cameraformwebcam').show(); //opens up a new form
