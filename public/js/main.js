@@ -29,16 +29,26 @@ $(document).ready(function () {
                 }
             });
     }
-    //retrieve live feed data
+
+    function createFeedItem(time,type,comment) {
+        $("#live-feed").prepend($('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>'));
+        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').css({
+            height:0
+        });
+        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').animate({
+            height: 'auto'
+        },300);
+    }
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
             var comment, time, type;
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
-            return $("#live-feed").prepend('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+            createFeedItem(time,type,comment);
         });
     });
+});
 
 /**
  * retrieve the get parameters and their values in a querystring
@@ -83,7 +93,7 @@ var isWindowSize = ($(window).width() >= 768);
         $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
     } catch(err) {
-        
+
     }
 
     /**
