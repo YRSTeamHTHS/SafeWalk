@@ -37,7 +37,7 @@ body {
 }
 
 #background-wrapper {
-  background: url("/img/weather/clear.jpg");
+  //background: url("/img/weather/clear.jpg");
   position: absolute;
   top:60px;
   bottom:0px;
@@ -425,10 +425,6 @@ textarea, input[type="text"] {
   z-index:0;
 }
 
-#weather {
-  position: fixed;
-}
-
 #feed-btn.on,
 #dir-btn.on {
   background-color:#ffffff;
@@ -463,7 +459,26 @@ textarea, input[type="text"] {
 #map-content {
   -webkit-transition: width 0.5s ease;
 }
-
+#weather {
+  position:fixed;
+  right:0px;
+  bottom:0px;
+  color: white;
+  opacity:0.7;
+  text-shadow: 2px 2px 5px black, 2px 2px 5px black, 2px 2px 5px black;
+  font-size:30px;
+  padding:15px;
+  text-transform: capitalize;
+  width:100%;
+  text-align:right;
+}
+.bottom-gradient {
+  position:fixed;
+  width:100%;
+  bottom:0;
+  height:0;
+  box-shadow: 0px 0px 90px 60px black;
+}
 //#report-wrapper {
 //  background-color: #aeaeae;
 //  border-radius: 6px;
@@ -605,6 +620,15 @@ textarea, input[type="text"] {
   /*dumb shit for fitting button group*/
   .map-wrapper .btn-group {
     margin-right:3px;
+  }
+
+  .nav-text {
+    display:none;
+  }
+
+  .nav > li > a {
+    padding-left:20px;
+    padding-right:5px;
   }
 }
 

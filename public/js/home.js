@@ -9,7 +9,7 @@ function setBackground(condition, temperature) {
     if ($.inArray(condition, ['clear (night)','sunny', 'fair (night)', 'fair (day)', 'hot', 'haze', 'smoky']) !=-1) {
         $('#background-wrapper').css('background', 'url("/img/weather/clear.jpg")');
     }
-    else if ($.inArray(condition, ['mostly cloudy (night)', "mostly cloudy (day)", "partly cloudy (night)", "partly cloudy (day)"]) !=-1) {
+    else if ($.inArray(condition, ['Partly Cloudy', 'mostly cloudy (night)', "mostly cloudy (day)", "partly cloudy (night)", "partly cloudy (day)"]) !=-1) {
         $('#background-wrapper').css('background', 'url("/img/weather/partly-cloudy.jpg")');
     }
     else if ($.inArray(condition, ["tropical storm", "hurricane", "mixed rain and snow", "mixed rain and sleet", "freezing drizzle", "drizzle", "freezing rain", "showers", "hail", "sleet", "mixed rain and hail", "scattered showers"]) !=-1) {
@@ -24,7 +24,7 @@ function setBackground(condition, temperature) {
     else {
         $('#background-wrapper').css('background', 'url("/img/weather/cloudy.jpg")');
     }
-    $('#weather').html(temperature);
+    $('#weather').html(temperature + ' – ' + condition);
 }
 
 $(document).ready(function(){
