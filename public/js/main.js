@@ -16,7 +16,7 @@ $(document).ready(function () {
 
     //load appropriate map and also prepopulate from and to fields
 
-    var ScrollFix = function(elem) {
+    /*var ScrollFix = function(elem) {
         // Variables to track inputs
         var startY, startTopScroll;
 
@@ -37,7 +37,7 @@ $(document).ready(function () {
             if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
                 elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
         }, false);
-    };
+    };*/
 
     var param = _getParameters();
     switch (param.type) {
