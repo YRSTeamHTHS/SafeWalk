@@ -1,23 +1,24 @@
 $(document).ready(function () {
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
+    console.log(param);
     switch (param.type) {
         case "search":
             $.ajax({
-                url: "/navigate/searchmap",
+                url: "/navigate/search",
                 data: {
                     search: param.search
                 },
                 success: function (data) {
                     console.log(param.search);
                     $("#map-wrapper").html(data);
-                    return $("#map-directions-end").val(param.search);
+                    $("#map-directions-end").val(param.search);
                 }
             });
             break;
         case "directions":
             $.ajax({
-                url: "/navigate/navmap",
+                url: "/navigate/nav",
                 data: {
                     from: param.from,
                     to: param.to
@@ -25,27 +26,18 @@ $(document).ready(function () {
                 success: function (data) {
                     $("#map-directions-start").val(param.from);
                     $("#map-directions-end").val(param.to);
-                    return $("#map-wrapper").html(data);
+                    $("#map-wrapper").html(data);
                 }
             });
     }
 
-    function createFeedItem(time,type,comment) {
-        $("#live-feed").prepend($('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>'));
-        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').css({
-            height:0
-        });
-        $('<div class="feed-item"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>').animate({
-            height: 'auto'
-        },300);
-    }
+    //preload some feed items
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
-            var comment, time, type;
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
-            createFeedItem(time,type,comment);
+            _createFeedItem(time,type,comment);
         });
     });
 
@@ -90,7 +82,7 @@ var isWindowSize = ($(window).width() >= 768);
     socket.on('livereport', function (data) {
         console.log(data);
         data=data.report; //@todo for some reason there is a nested report
-        $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
+        _createFeedItem(_processDate(data.time),data.type,data.comment);
     });
     } catch(err) {
 
@@ -99,7 +91,7 @@ var isWindowSize = ($(window).width() >= 768);
     /**
      * dragging mobile sidebar
      */
-    $('#feed-btn,#dir-btn').mousedown(function(e){
+    $("#feed-btn,#dir-btn").mousedown(function(e){
         if($(window).width() < 768) {
             $(document).mousemove(function(e){
 
@@ -114,32 +106,54 @@ var isWindowSize = ($(window).width() >= 768);
                 }
                 else {
                     $("#map-content").removeClass("normal");
-
-
                     changeMobileSidebar(true);
                     $(document).unbind("mousemove");
                     return;
                 }
+                return;
+
+            });
+            return;
+        }
+        if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
+
+
+            var latestHeight = $("#map-content").height();
+
+            $(document).mousemove(function(e){
+
+
+                if (e.which ===1 &&
+                    e.pageY < $(window).height() &&
+                    e.pageY > 0 &&
+                    e.pageX < $(window).width() &&
+                    e.pageX > 0
+                    ) {
+                        $("#map-content").height(e.pageY);
+
+                    }
+                    //if (Math.abs(e.pageY) - $("#map-content").height() >20){
+                    //    $("#map-content").height(e.pageY);
+                    //}
+                else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
+
+                else {
+                    $("#map-content").removeClass("collapsed");
+                    closeMobileSidebar();
+                    $(document).unbind("mousemove");
+                    return;
+                } //else {$(document).unbind("mousemove");}
+                return;
 
            });
+            return;
         }
+        return;
     });
 
 
     /**
      * switch to the feed tab on click
-     */
-    $("#feed-btn").click(function() {
-        $("#directions").fadeOut();
-        $("#feed").fadeIn();
-
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
-        changeMobileSidebar($("#map-content").hasClass("normal"));
-    });
-
-    /**
-     * switch to the feed button on click
      */
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
@@ -222,6 +236,18 @@ var isWindowSize = ($(window).width() >= 768);
     });
 
 });
+
+/**
+ * create new feed item
+ * @param time
+ * @param type
+ * @param comment
+ */
+function _createFeedItem(time,type,comment) {
+    var html=$('<div class="feed-item feed-item-hidden"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+    $("#live-feed").prepend(html);
+    html.removeClass('feed-item-hidden',300);
+}
 
 /**
  * switch to the mobile sidebar
