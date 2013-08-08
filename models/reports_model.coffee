@@ -49,6 +49,7 @@ exports.addReport = (report, callback) ->
           callback(err)
         else
           #broadcast the new event
+          report.time = Date.now()
           io.sockets.emit('livereport', { report: report })
           callback(true)
       )

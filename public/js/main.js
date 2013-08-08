@@ -6,7 +6,6 @@ $(document).ready(function () {
 
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
-    console.log(param);
     switch (param.type) {
         case "search":
             $.ajax({
@@ -15,7 +14,6 @@ $(document).ready(function () {
                     search: param.search
                 },
                 success: function (data) {
-                    console.log(param.search);
                     $("#map-wrapper").html(data);
                     $("#map-directions-end").val(param.search);
                 }
@@ -85,9 +83,9 @@ var isWindowSize = ($(window).width() >= 768);
     try {
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
-        console.log(data);
+
         data=data.report; //@todo for some reason there is a nested report
-        _createFeedItem(_processDate(data.time),data.type,data.comment);
+        _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
         incrementBadge();
     });
     } catch(err) {
