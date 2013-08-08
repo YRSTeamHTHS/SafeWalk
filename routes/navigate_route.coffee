@@ -1,3 +1,7 @@
+map_model = require('../models/map_model')
+intersections = map_model.intersections
+connections = map_model.connections
+
 astar = (start, end) ->
   if not intersections.hasOwnProperty(start)
     return false
@@ -100,34 +104,6 @@ calcWeight = (arrayCrimes, arrayReports) ->
   # TODO: fix array calculation
   return arrayCrimes.length
 
-# Load navigation data from JSON file
-console.log("Loading intersections")
-intersections = require('../data/intersections.json')
-console.log("Loading connections")
-connections = require('../data/connections.json')
-console.log("Loading crime data")
-crime_data = require('../data/crime.json')
-crime_types = require('../shared/crime_types.json')
-console.log("Loading reports")
-reports = [] # TODO: fetch from database
-console.log("Processing")
-
-# Map crime data to intersections
-#for item in crime_data
-#  lat = item.Latitude
-#  lon = item.Longitude
-#  type = crime_types[item['Crime type']]
-#  distances = []
-#  for id, intersection of intersections
-#    distances.push([id, distance(lat, lon, intersection.lat, intersection.lon)])
-#  distances.sort (itemA, itemB) ->
-#    if itemA[1] < itemB[1] then return -1
-#    if itemA[1] > itemB[1] then return 1
-#    return 0
-#  intersection = intersections[distances[0][0]]
-#  if "crimes" not in intersection then intersection.crimes = []
-#  intersection.crimes.push(type)
-
 exports.nav = (req, res) ->
   start = parseInt(req.query.start)
   end = parseInt(req.query.end)
@@ -136,4 +112,3 @@ exports.nav = (req, res) ->
 exports.searchmap = (req,res) ->
   search = (req.query.search);
   res.send("<map here>")
-
