@@ -79,8 +79,8 @@ var isWindowSize = ($(window).width() >= 768);
     try {
     var socket = io.connect('/');
     socket.on('livereport', function (data) {
-        console.log(data)
-        data=data.report //@todo for some reason there is a nested report
+        console.log(data);
+        data=data.report; //@todo for some reason there is a nested report
         $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
     });
     } catch(err) {
@@ -90,7 +90,7 @@ var isWindowSize = ($(window).width() >= 768);
     /**
      * dragging mobile sidebar
      */
-    $("#feed-btn,#dir-btn").mousedown(function(e){
+    $('#feed-btn,#dir-btn').mousedown(function(e){
         if($(window).width() < 768) {
             $(document).mousemove(function(e){
 
