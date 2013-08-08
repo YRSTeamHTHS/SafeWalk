@@ -2,21 +2,24 @@ $(document).ready(function(){
     sizeBackground();//adjust size of background image
     var count = 0;//running count of bubbles on the screen
 
-    var socket = io.connect('http://localhost');
+    //connect to socket.io
+    var socket = io.connect('/');
     socket.on('livereport', function (data) {
-        console.log(data);
+        newBubble(data.report)//@todo poopy nested report
         //socket.emit('my other event', { my: 'data' });
     });
 
     /**
      * creates a new bubble in a random location
      *
-     * @param timestamp
-     * @param type
-     * @param comment
-     * @return bubble html
+     * @param timestamp     of comment
+     * @param type          of comment
+     * @param comment       of comment
+     * @return bubble       html
      */
-    function newBubble(timestamp,type,comment) {
+    function newBubble(report) {
+        type = report.type;
+        comment = report.comment;
         var hue=Math.random()*100;
         var saturation='80%';
         var lightness='70%';
@@ -26,7 +29,7 @@ $(document).ready(function(){
         left=left/$('#background-wrapper').width()*100+'%;';
         var top='90%;'//top/$('#background-wrapper').height()*100+'%;';
         var style = "style='position: absolute; background-color:"+hsla+"left:" + left + "top:" + top +"'";
-        var html=$("<div class='popup' "+ style + ">"+timestamp+"<br/>a"+type+"<br/>"+comment+"<br/></div>");
+        var html=$("<div class='popup' "+ style + ">"+type+"<br/>"+comment+"<br/></div>");
         $('#background-wrapper').prepend(html);
         $(html).animate({
             opacity:0.75
