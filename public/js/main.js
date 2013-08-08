@@ -107,8 +107,6 @@ var isWindowSize = ($(window).width() >= 768);
 
                 else {
                     $("#map-content").removeClass("normal");
-
-
                     changeMobileSidebar(true);
                     $(document).unbind("mousemove");
                     return;
@@ -121,7 +119,10 @@ var isWindowSize = ($(window).width() >= 768);
         if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
 
 
+            var latestHeight = $("#map-content").height();
+
             $(document).mousemove(function(e){
+
 
                 if (e.which ===1 &&
                     e.pageY < $(window).height() &&
@@ -130,13 +131,15 @@ var isWindowSize = ($(window).width() >= 768);
                     e.pageX > 0
                     ) {
                         $("#map-content").height(e.pageY);
+
+                    }
                     //if (Math.abs(e.pageY) - $("#map-content").height() >20){
                     //    $("#map-content").height(e.pageY);
                     //}
-                }
                 else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
 
                 else {
+                    $("#map-content").removeClass("collapsed");
                     closeMobileSidebar();
                     $(document).unbind("mousemove");
                     return;
