@@ -1,4 +1,9 @@
 $(document).ready(function () {
+
+    document.ontouchstart = function(e){
+        e.preventDefault();
+    }
+
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
     switch (param.type) {
@@ -91,10 +96,10 @@ var isWindowSize = ($(window).width() >= 768);
      * dragging mobile sidebar
      */
     $("#feed-btn,#dir-btn").mousedown(function(e){
-        if($(window).width() < 768) {
+        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
 
-                if (e.which!=0 &&
+                if (e.which===1 &&
                     $("#map-content").hasClass("normal") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
@@ -121,14 +126,28 @@ var isWindowSize = ($(window).width() >= 768);
 
             $(document).mousemove(function(e){
 
+                /*$(document).mouseup(function(e){
+                    if (Math.abs(e.pageY) - latestHeight >60) {
+                        $("#map-content").removeClass("collapsed");
+                        _closeMobileSidebar();
+                        $(document).unbind("mousemove");
+                    }
+                    else {
+                        $("#map-content").height(latestHeight);
+                    }
+                });*/
 
                 if (e.which ===1 &&
+                    $("#map-content").hasClass("collapsed") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
                         $("#map-content").height(e.pageY);
+                        if (Math.abs(e.pageY) - latestHeight <60){
+                            $("#map-content").height('20%');
+                        }
 
                     }
                     //if (Math.abs(e.pageY) - $("#map-content").height() >20){
@@ -136,12 +155,13 @@ var isWindowSize = ($(window).width() >= 768);
                     //}
                 else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
 
-                else {
+                if ($("#map-content").height() - latestHeight >60 && e.which===0){
                     $("#map-content").removeClass("collapsed");
-                    closeMobileSidebar();
+                    _closeMobileSidebar();
                     $(document).unbind("mousemove");
                     return;
-                } //else {$(document).unbind("mousemove");}
+                }
+                //$(document).unbind("mousemove");
                 return;
 
            });
