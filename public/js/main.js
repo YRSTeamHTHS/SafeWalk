@@ -1,8 +1,13 @@
 $(document).ready(function () {
 
-    document.ontouchstart = function(e){
+    /*document.ontouchstart = function(e){
         e.preventDefault();
-    }
+    } */
+
+    jQuery('.addwebcam').bind('click tap', function(e) {
+        jQuery('#cameraformwebcam').show(); //opens up a new form
+        jQuery('.addwebcam').hide(); //now hide the button
+    });
 
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
@@ -418,11 +423,5 @@ window.directions = new function() {
             'strokeWeight': 5
         });
         line.setMap(window.map.gmap);
-    }
-};
-
-window.reportForm = new function() {
-    this.show = function() {
-
     }
 };
