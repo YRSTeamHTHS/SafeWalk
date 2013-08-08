@@ -36,7 +36,7 @@ $(document).ready(function () {
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
-            createFeedItem(time,type,comment);
+            _createFeedItem(time,type,comment);
         });
     });
 
@@ -81,7 +81,7 @@ var isWindowSize = ($(window).width() >= 768);
     socket.on('livereport', function (data) {
         console.log(data);
         data=data.report; //@todo for some reason there is a nested report
-        $("#live-feed").prepend('<div class="feed-item"><hr>'+data.time + data.type + data.comment+'</div>')
+        _createFeedItem(_processDate(data.time),data.type,data.comment);
     });
     } catch(err) {
 
@@ -213,6 +213,18 @@ var isWindowSize = ($(window).width() >= 768);
     });
 
 });
+
+/**
+ * create new feed item
+ * @param time
+ * @param type
+ * @param comment
+ */
+function _createFeedItem(time,type,comment) {
+    var html=$('<div class="feed-item feed-item-hidden"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+    $("#live-feed").prepend(html);
+    html.removeClass('feed-item-hidden',300);
+}
 
 /**
  * switch to the mobile sidebar
