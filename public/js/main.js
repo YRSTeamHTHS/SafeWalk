@@ -423,9 +423,7 @@ window.map = new function() {
         };
         _this.gmap = new google.maps.Map(document.getElementById("map-content"), myOptions);
 
-        google.maps.event.addDomListenerOnce(_this.gmap, 'idle', function() {
-            window.directions.get('344234568', '2345009892');
-        });
+        window.directions.get('344234568', '2345009892');
 
         $.getJSON('/intersections/all', function(data) {
             window.intersections = new IntersectionsData(data);
