@@ -75,7 +75,7 @@ exports.getReportByCode = (code, callback) ->
   @param callback   callback to execute once completed
 ###
 exports.getReports = (limit, callback) ->
-  query = ReportModel.find({},{code:0});
+  query = ReportModel.find({},{code:0})
   query.sort({_id:-1}).limit(limit)
   query.exec( (err, result) ->
     if (err)
@@ -84,3 +84,7 @@ exports.getReports = (limit, callback) ->
       result.reverse() #reverse array so that oldest to newest (allows use of prepend)
       callback(result)
   )
+
+exports.getAllReports = (callback) ->
+  query = ReportModel.find {}, (err, reports) ->
+    callback null

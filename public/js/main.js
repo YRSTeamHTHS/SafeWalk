@@ -16,7 +16,7 @@ $(document).ready(function () {
 
     //load appropriate map and also prepopulate from and to fields
 
-    var ScrollFix = function(elem) {
+    /*var ScrollFix = function(elem) {
         // Variables to track inputs
         var startY, startTopScroll;
 
@@ -37,7 +37,7 @@ $(document).ready(function () {
             if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
                 elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
         }, false);
-    };
+    };*/
 
     var param = _getParameters();
     switch (param.type) {
@@ -430,6 +430,7 @@ window.map = new function() {
         $.getJSON('/intersections/all', function(data) {
             window.intersections = new IntersectionsData(data);
             _this.LiveMVCArray = new LiveMVCArray(window.intersections);
+            console.log(_this.LiveMVCArray);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
                 data: _this.LiveMVCArray.MVCArray
             });
@@ -440,12 +441,12 @@ window.map = new function() {
 };
 
 /**
- * @param data IntersectionsData object
+ * @param {IntersectionsData} IntersectionsDataObject
  */
 var LiveMVCArray = function(IntersectionsDataObject) {
     var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    this.data = IntersectionsDataObject;
+    this.intersections = IntersectionsDataObject.data;
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
@@ -465,9 +466,9 @@ var LiveMVCArray = function(IntersectionsDataObject) {
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    for (var id in IntersectionsDataObject) {
-        if (IntersectionsDataObject.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(IntersectionsDataObject[id]);
+    for (var id in this.intersections) {
+        if (this.intersections.hasOwnProperty(id)) {
+            this.index_map[id] = this._pushToMVC(this.intersections[id]);
         }
     }
 };
@@ -516,7 +517,15 @@ window.directions = new function() {
         for (var i=0; i<roads.length; i++) {
             var name = roads[i]['name'];
             var roadElem = $('<li></li>');
-            roadElem.text(name).appendTo(directionsList);
+            var dir=Math.random();
+            if (dir > 0.5) {
+                dir='<b>left</b>';
+            } else {
+                dir='<b>right</b>';
+            }
+            var timeTo="TIME TO DESTINATION";
+            timeTo='<div class="dist-time">'+timeTo+'</div>';
+            roadElem.text('Turn '+dir+' onto <b>'+name+'</b>').appendTo(directionsList);
         }
 
         var endElem = $('<div class="arrival"></div>');
