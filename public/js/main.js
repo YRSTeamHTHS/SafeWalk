@@ -1,7 +1,11 @@
 $(document).ready(function () {
+
+    document.ontouchstart = function(e){
+        e.preventDefault();
+    }
+
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
-    console.log(param);
     switch (param.type) {
         case "search":
             $.ajax({
@@ -10,7 +14,6 @@ $(document).ready(function () {
                     search: param.search
                 },
                 success: function (data) {
-                    console.log(param.search);
                     $("#map-wrapper").html(data);
                     $("#map-directions-end").val(param.search);
                 }
@@ -78,12 +81,13 @@ $(document).ready(function () {
 
     //connect to socket.io
     try {
-        var socket = io.connect('/');
-        socket.on('livereport', function (data) {
-            console.log(data);
-            data=data.report; //@todo for some reason there is a nested report
-            _createFeedItem(_processDate(data.time),data.type,data.comment);
-        });
+    var socket = io.connect('/');
+    socket.on('livereport', function (data) {
+
+        data=data.report; //@todo for some reason there is a nested report
+        _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
+        incrementBadge();
+    });
     } catch(err) {
 
     }
@@ -92,10 +96,10 @@ $(document).ready(function () {
      * dragging mobile sidebar
      */
     $("#feed-btn,#dir-btn").mousedown(function(e){
-        if($(window).width() < 768) {
+        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
 
-                if (e.which!=0 &&
+                if (e.which===1 &&
                     $("#map-content").hasClass("normal") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
@@ -122,14 +126,28 @@ $(document).ready(function () {
 
             $(document).mousemove(function(e){
 
+                /*$(document).mouseup(function(e){
+                    if (Math.abs(e.pageY) - latestHeight >60) {
+                        $("#map-content").removeClass("collapsed");
+                        _closeMobileSidebar();
+                        $(document).unbind("mousemove");
+                    }
+                    else {
+                        $("#map-content").height(latestHeight);
+                    }
+                });*/
 
                 if (e.which ===1 &&
+                    $("#map-content").hasClass("collapsed") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
-                    $("#map-content").height(e.pageY);
+                        $("#map-content").height(e.pageY);
+                        if (Math.abs(e.pageY) - latestHeight <60){
+                            $("#map-content").height('20%');
+                        }
 
                 }
                 //if (Math.abs(e.pageY) - $("#map-content").height() >20){
@@ -137,12 +155,13 @@ $(document).ready(function () {
                 //}
                 else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
 
-                else {
+                if ($("#map-content").height() - latestHeight >60 && e.which===0){
                     $("#map-content").removeClass("collapsed");
-                    closeMobileSidebar();
+                    _closeMobileSidebar();
                     $(document).unbind("mousemove");
                     return;
-                } //else {$(document).unbind("mousemove");}
+                }
+                //$(document).unbind("mousemove");
                 return;
 
             });
@@ -162,6 +181,7 @@ $(document).ready(function () {
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
         changeMobileSidebar($("#map-content").hasClass("normal"));
+        clearBadge();
     });
 
     /**
@@ -236,6 +256,29 @@ $(document).ready(function () {
     });
 
 });
+
+function incrementBadge(){
+    if (!($('#feed-btn').hasClass('on'))) {
+        $('#feed-badge').html(getInt($('#feed-badge').html())+1);
+    }
+}
+
+function clearBadge(){
+    $('#feed-badge').html(0);
+}
+/**
+ * parses integer, returns 0 if empty string
+ * @param num
+ * @returns {*}
+ */
+function getInt(num){
+    if(num=="") {
+        return 0;
+    }
+    else {
+        return parseInt(num);
+    }
+}
 
 /**
  * create new feed item

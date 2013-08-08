@@ -25,7 +25,8 @@ body {
   padding-top:60px;
   /*background-color:#ebebeb;*/
   /*font-family: NewNeue;*/
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x:hidden;
   color:#ffffff;
 
   -moz-user-select: none;
@@ -384,8 +385,19 @@ textarea, input[type="text"] {
 
 }
 
+.sidebar-btn div {
+  text-align:center;
+}
+
 #feed-btn {
   width:50%;
+  padding-left:5px;
+  padding-right:5px;
+  position:static;
+  margin-top:-1px;
+}
+#feed-btn div {
+
 }
 #dir-btn {
   width:50%;
@@ -485,20 +497,6 @@ textarea, input[type="text"] {
   box-shadow:5px 5px 5px rgba(0,0,0,0.2);
   opacity:0;
 }
-
-//.bs-navbar-collapse {
-//  margin-left:-20px;
-//  margin-right:-20px;
-//  -webkit-transition: height 0.5s ease;
-//}
-//.collapsing {
-//  margin-left:-20px;
-//  margin-right:-20px;
-//  margin-top:10px;
-//}
-//.collapsing ul {
-//  margin-top:0px;
-//}
 .feed-time {
   color:#999999;
 }
@@ -515,6 +513,9 @@ textarea, input[type="text"] {
 }
 .feed-item-hidden{
   height:0px;
+}
+#feed-badge {
+  margin-left:3px;
 }
 
 @media (min-width: 992px) {
