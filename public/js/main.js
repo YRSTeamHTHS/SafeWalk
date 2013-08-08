@@ -420,9 +420,3 @@ window.directions = new function() {
         line.setMap(window.map.gmap);
     }
 };
-
-window.reportForm = new function() {
-    this.show = function() {
-
-    }
-};
