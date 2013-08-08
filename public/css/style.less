@@ -49,11 +49,13 @@ body {
 .navbar-inverse,
 .navbar-fixed-top,
 .nav-collapse {
-  height:60px;
-  box-shadow: 0 5px 5px rgba(0,0,0,0.2);
   background-color:#34495e;
   /*background-image: url("../img/mooning.png");*/
+}
 
+.navbar {
+  min-height: 60px;
+  box-shadow: 0 5px 5px rgba(0,0,0,0.2);
   -webkit-transition: background 0.2s linear;
   -moz-transition: background 0.2s linear;
   -ms-transition: background 0.2s linear;
@@ -69,6 +71,7 @@ body {
   height:60px;
   width:60px;
   padding-left:19px;
+  z-index: 10;
 
   -webkit-transition: background 0.2s linear;
   -moz-transition: background 0.2s linear;
@@ -89,7 +92,6 @@ body {
 }
 
 .navbar .nav-collapse .nav.navbar-nav > li > a {
-
   padding: 20px 35px;
   color:#ffffff;
   line-height:20px;
@@ -484,19 +486,19 @@ textarea, input[type="text"] {
   opacity:0;
 }
 
-.bs-navbar-collapse {
-  margin-left:-20px;
-  margin-right:-20px;
-  -webkit-transition: height 0.5s ease;
-}
-.collapsing {
-  margin-left:-20px;
-  margin-right:-20px;
-  margin-top:10px;
-}
-.collapsing ul {
-  margin-top:0px;
-}
+//.bs-navbar-collapse {
+//  margin-left:-20px;
+//  margin-right:-20px;
+//  -webkit-transition: height 0.5s ease;
+//}
+//.collapsing {
+//  margin-left:-20px;
+//  margin-right:-20px;
+//  margin-top:10px;
+//}
+//.collapsing ul {
+//  margin-top:0px;
+//}
 .feed-time {
   color:#999999;
 }
