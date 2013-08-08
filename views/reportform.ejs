@@ -1,66 +1,48 @@
-<% include header %>
-<div class="report-page-wrapper">
-    <div id="report-floater">
+<div class="modal fade" id="report-modal">
+    <div class="modal-dialog">
+        <form class="form-horizontal" method="post" action="/report/submit" id="report-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h2 style="color:black">Submit a Report</h2>
+                </div>
+                <div class="modal-body" id="report-form-screen">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-offset-1 col-lg-10">
+                                <input type="text" class="form-control" id="inputCode" name="code" placeholder="Route Code"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-offset-1 col-lg-10">
+                                <select class="form-control input-lg">
+                                    <option value="" disabled selected>Report type</option>
+                                    <% for(var i=0; i<types.length; i++){ %>
+                                    <option value="<%= types[i] %>"><%= types[i] %></option><% } %>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-offset-1 col-lg-10">
+                                <input type="text" class="form-control" id="inputComment" name="comment" placeholder="Comment"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    </div>
-    <div class="col-lg-6 col-lg-offset-3 col-sm-6 col-sm-offset-3" id="report-wrapper">
-        <div id="report-title"><h1>Submit a Report</h1></div>
-        <form class="form-horizontal" method="post" action="/report/submit">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-lg-offset-1 col-lg-10">
-                        <input type="text" class="form-control" id="inputCode" name="code" placeholder="Route Code"/>
-                    </div>
+                <div class="modal-body" id="report-loading-screen">Submitting</div>
+                <div class="modal-body" id="report-done-screen">Done</div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-default" id="report-submit-btn">Submit</button>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-lg-offset-1 col-lg-10">
-                        <a id="report-type-btn" data-toggle="modal" href="#report-choices" class="btn btn-default">Report Type</a>
-                        <input name="type" type="hidden" id="report-type-hidden" /></a>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-lg-offset-1 col-lg-10">
-                        <input type="text" class="form-control" id="inputComment" name="comment" placeholder="Comment"/>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-lg-offset-1 col-lg-10">
-                        <button type="submit" class="btn btn-default" id="report-submit-btn" disabled>Submit</button>
-                    </div>
-                </div>
+
             </div>
         </form>
+
     </div>
 </div>
-<div class="modal fade" id="report-choices">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Report Type</h4>
-            </div>
-            <div class="modal-body">
-                <div class="btn-group-vertical">
-                    <% for(var i=0; i<types.length; i++){ %>
-                    <button type="button" class="btn btn-default report-type-option"><%= types[i] %></button>
-                    <% } %>
-                </div>
-            </div>
-            <!--<div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>-->
-        </div>
-    </div>
-</div>
-<script src="/js/report.js"></script>
-<script type="text/javascript"src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAz8Msa0Cela-0hHkSB5pAFgcfU6NL_ud0&sensor=false"></script>
-<% include footer %>
-</body>
-</html>
