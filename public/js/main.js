@@ -1,4 +1,9 @@
 $(document).ready(function () {
+
+    document.ontouchstart = function(e){
+        e.preventDefault();
+    }
+
     //load appropriate map and also prepopulate from and to fields
     var param = _getParameters();
     console.log(param);
@@ -93,10 +98,10 @@ var isWindowSize = ($(window).width() >= 768);
      * dragging mobile sidebar
      */
     $("#feed-btn,#dir-btn").mousedown(function(e){
-        if($(window).width() < 768) {
+        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
             $(document).mousemove(function(e){
 
-                if (e.which!=0 &&
+                if (e.which===1 &&
                     $("#map-content").hasClass("normal") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
@@ -123,14 +128,28 @@ var isWindowSize = ($(window).width() >= 768);
 
             $(document).mousemove(function(e){
 
+                /*$(document).mouseup(function(e){
+                    if (Math.abs(e.pageY) - latestHeight >60) {
+                        $("#map-content").removeClass("collapsed");
+                        _closeMobileSidebar();
+                        $(document).unbind("mousemove");
+                    }
+                    else {
+                        $("#map-content").height(latestHeight);
+                    }
+                });*/
 
                 if (e.which ===1 &&
+                    $("#map-content").hasClass("collapsed") &&
                     e.pageY < $(window).height() &&
                     e.pageY > 0 &&
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
                         $("#map-content").height(e.pageY);
+                        if (Math.abs(e.pageY) - latestHeight <60){
+                            $("#map-content").height('20%');
+                        }
 
                     }
                     //if (Math.abs(e.pageY) - $("#map-content").height() >20){
@@ -138,12 +157,13 @@ var isWindowSize = ($(window).width() >= 768);
                     //}
                 else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
 
-                else {
+                if ($("#map-content").height() - latestHeight >60 && e.which===0){
                     $("#map-content").removeClass("collapsed");
-                    closeMobileSidebar();
+                    _closeMobileSidebar();
                     $(document).unbind("mousemove");
                     return;
-                } //else {$(document).unbind("mousemove");}
+                }
+                //$(document).unbind("mousemove");
                 return;
 
            });
@@ -335,33 +355,64 @@ function _openWindowSidebar() {
     $("#map-content").css('width','');
 }
 
-/**
- * get directions by request
- * @param start     start location
- * @param end       end location
- */
+window.map = new function() {
+    this.initialize = function() {
+        var latlng = new google.maps.LatLng(53.481136,-2.227279);
+        var myOptions = {
+            zoom: 12,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        this.gmap = new google.maps.Map(document.getElementById("map-content"), myOptions);
 
-function getDirections(start, end) {
-    $.getJSON('/navigate/nav?start=344234568&end=2345009892', function(data) {
-        var coors = [];
-        for (var i=0; i<data.path.length; i++) {
-            coors.push(new google.maps.LatLng(data.path[i].lat, data.path[i].lon));
+        window.directions.get('344234568', '2345009892');
+    };
+    google.maps.event.addDomListener(window, "load", this.initialize);
+};
+
+window.directions = new function() {
+    /**
+     * get directions by request
+     * @param start     start location
+     * @param end       end location
+     */
+    this.get = function(start, end) {
+        var url = '/navigate/nav?start=' + encodeURIComponent(start) + '&end=' + encodeURIComponent(end);
+        $.getJSON(url, function(data) {
+            window.directions.renderList(start, end, data['roads']);
+            window.directions.renderMap(data['path']);
+        });
+    };
+
+    this.directionsPanel = $("#directions .side-content");
+    this.renderList = function(start, end, roads) {
+        var startElem = $('<div class="departure"></div>');
+        startElem.text(start).appendTo(this.directionsPanel);
+
+        var directionsList = $('<ol class="directions"></ol>');
+        directionsList.appendTo(this.directionsPanel);
+        for (var i=0; i<roads.length; i++) {
+            var name = roads[i]['name'];
+            var roadElem = $('<li></li>');
+            roadElem.text(name).appendTo(directionsList);
         }
-        var path = new google.maps.Polyline({
+
+        var startElem = $('<div class="arrival"></div>');
+        startElem.text(end).appendTo(this.directionsPanel);
+    };
+
+    this.renderMap = function(path) {
+        // TODO: use MVC path type for easier updating
+        var coors = [];
+        for (var i=0; i<path.length; i++) {
+            coors.push(new google.maps.LatLng(path[i].lat, path[i].lon));
+        }
+        var line = new google.maps.Polyline({
             path: coors,
             strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 2
+            strokeOpacity: 1,
+            strokeWeight: 5
         });
-        path.setMap(map);
-    });
-}
-
-/**
- * set a timeout on direction retrieval
- */
-$(function(){
-    setTimeout(function(){
-        getDirections();
-    },2000);
-});
+        line.setMap(window.map.gmap);
+    }
+};
