@@ -127,7 +127,7 @@ $(document).ready(function () {
     }
 
     /**
-     * dragging mobile sidebar
+     * dragging collapsed sidebar
      */
     $("#feed-btn,#dir-btn").mousedown(function(e){
 
@@ -208,6 +208,94 @@ $(document).ready(function () {
 
     });
 
+
+    /**
+     * dragging mobile sidebar
+     */
+    $("#feed-btn,#dir-btn").bind('touchstart', function(e){
+
+        e.preventDefault();
+
+        //highlight based on which content is already shown
+        if ($("#directions").is(":visible") ) {
+            $("#dir-btn").addClass("on");
+            $("#feed-btn").removeClass("on");
+        } else if ($("#feed").is(":visible") ) {
+            $("#feed-btn").addClass("on");
+            $("#dir-btn").removeClass("on");
+        }
+
+        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
+            $(document).bind('touchmove', function(e){
+
+                e.preventDefault();
+
+                if (e.which===1 &&
+                    $("#map-content").hasClass("normal") &&
+                    e.pageY < $(window).height() &&
+                    e.pageY > 0 &&
+                    e.pageX < $(window).width() &&
+                    e.pageX > 0
+                    ) {
+                    $("#map-content").height(e.pageY);
+                }
+                else {
+                    $("#map-content").removeClass("normal");
+                    changeMobileSidebar(true);
+                    $(document).unbind("touchmove");
+                    return;
+                }
+                return;
+
+            });
+            return;
+        }
+        if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
+
+
+            var latestHeight = $("#map-content").height();
+
+            $(document).bind('touchmove', function(e){
+
+                e.preventDefault();
+
+                /*$(document).mouseup(function(e){
+                 if (Math.abs(e.pageY) - latestHeight >60) {
+                 $("#map-content").removeClass("collapsed");
+                 _closeMobileSidebar();
+                 $(document).unbind("mousemove");
+                 }
+                 else {
+                 $("#map-content").height(latestHeight);
+                 }
+                 });*/
+
+                if (e.which ===1 &&
+                    $("#map-content").hasClass("collapsed") &&
+                    e.pageY < $(window).height() &&
+                    e.pageY > 0 &&
+                    e.pageX < $(window).width() &&
+                    e.pageX > 0
+                    ) {
+                    $("#map-content").height(e.pageY);
+                    if (Math.abs(e.pageY) - latestHeight <60){
+                        $("#map-content").height('20%');
+                    }
+
+                }
+
+                else if ($("#map-content").height() - latestHeight > 60){
+                    $("#map-content").removeClass("collapsed");
+                    _closeMobileSidebar();
+                    $(document).unbind("touchmove");
+                    return;
+                }
+                return;
+            });
+            return;
+        }
+
+    });
 
     /**
      * switch to the feed tab on click
