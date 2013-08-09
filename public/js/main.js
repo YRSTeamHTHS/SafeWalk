@@ -216,6 +216,7 @@ $(document).ready(function () {
 
         e.preventDefault();
 
+
         //highlight based on which content is already shown
         if ($("#directions").is(":visible") ) {
             $("#dir-btn").addClass("on");
@@ -229,15 +230,16 @@ $(document).ready(function () {
             $(document).bind('touchmove', function(e){
 
                 e.preventDefault();
+                var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
 
-                if (e.which===1 &&
+                if (
                     $("#map-content").hasClass("normal") &&
-                    e.pageY < $(window).height() &&
-                    e.pageY > 0 &&
-                    e.pageX < $(window).width() &&
-                    e.pageX > 0
+                    touch.pageY < $(window).height() &&
+                    touch.pageY > 0 &&
+                    touch.pageX < $(window).width() &&
+                    touch.pageX > 0
                     ) {
-                    $("#map-content").height(e.pageY);
+                    $("#map-content").height(touch.pageY);
                 }
                 else {
                     $("#map-content").removeClass("normal");
@@ -258,6 +260,7 @@ $(document).ready(function () {
             $(document).bind('touchmove', function(e){
 
                 e.preventDefault();
+                var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
 
                 /*$(document).mouseup(function(e){
                  if (Math.abs(e.pageY) - latestHeight >60) {
@@ -270,21 +273,17 @@ $(document).ready(function () {
                  }
                  });*/
 
-                if (e.which ===1 &&
+                if (
                     $("#map-content").hasClass("collapsed") &&
-                    e.pageY < $(window).height() &&
-                    e.pageY > 0 &&
-                    e.pageX < $(window).width() &&
-                    e.pageX > 0
+                    touch.pageY < $(window).height() &&
+                    touch.pageY > 0 &&
+                    touch.pageX < $(window).width() &&
+                    touch.pageX > 0
                     ) {
-                    $("#map-content").height(e.pageY);
-                    if (Math.abs(e.pageY) - latestHeight <60){
-                        $("#map-content").height('20%');
-                    }
-
+                    $("#map-content").height(touch.pageY);
                 }
 
-                else if ($("#map-content").height() - latestHeight > 60){
+                else {
                     $("#map-content").removeClass("collapsed");
                     _closeMobileSidebar();
                     $(document).unbind("touchmove");
@@ -310,6 +309,18 @@ $(document).ready(function () {
         clearBadge();
     });
 
+    $("#feed-btn").bind('touchstart',function() {
+        e.preventDefault();
+
+        $("#directions").fadeOut();
+        $("#feed").fadeIn();
+
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+        //changeMobileSidebar($("#map-content").hasClass("normal"));
+        clearBadge();
+    });
+
     /**
      *
      */
@@ -320,6 +331,15 @@ $(document).ready(function () {
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
         changeMobileSidebar($("#map-content").hasClass("normal"));
+    });
+
+    $("#dir-btn").bind('touchstart', function() {
+        $("#feed").fadeOut();
+        $("#directions").fadeIn();
+
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+        //changeMobileSidebar($("#map-content").hasClass("normal"));
     });
 
     /**
