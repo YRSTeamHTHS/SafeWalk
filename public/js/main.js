@@ -309,7 +309,7 @@ $(document).ready(function () {
         clearBadge();
     });
 
-    $("#feed-btn").bind('touchstart',function() {
+    $("#feed-btn").bind('touchstart',function(e) {
         e.preventDefault();
 
         $("#directions").fadeOut();
@@ -333,7 +333,9 @@ $(document).ready(function () {
         changeMobileSidebar($("#map-content").hasClass("normal"));
     });
 
-    $("#dir-btn").bind('touchstart', function() {
+    $("#dir-btn").bind('touchstart', function(e) {
+
+        e.preventDefault();
         $("#feed").fadeOut();
         $("#directions").fadeIn();
 
