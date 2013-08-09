@@ -129,7 +129,7 @@ $(document).ready(function () {
     /**
      * dragging mobile sidebar
      */
-    $("#feed-btn,#dir-btn").mousedown(function(e){
+    $("#feed-btn,#dir-btn").on("mousedown,touchdown", function(e){
 
         //highlight based on which content is already shown
         if ($("#directions").is(":visible") ) {
@@ -141,7 +141,7 @@ $(document).ready(function () {
         }
 
         if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
-            $(document).mousemove(function(e){
+            $(document).on("mousemove, touchmove", function(e){
 
                 if (e.which===1 &&
                     $("#map-content").hasClass("normal") &&
@@ -168,7 +168,7 @@ $(document).ready(function () {
 
             var latestHeight = $("#map-content").height();
 
-            $(document).mousemove(function(e){
+            $(document).on("mousemove, touchmove",function(e){
 
                 /*$(document).mouseup(function(e){
                  if (Math.abs(e.pageY) - latestHeight >60) {
@@ -194,24 +194,18 @@ $(document).ready(function () {
                     }
 
                 }
-                //if (Math.abs(e.pageY) - $("#map-content").height() >20){
-                //    $("#map-content").height(e.pageY);
-                //}
-                else if ($("#map-content").hasClass("normal")) {$(document).unbind("mousemove");}
 
-                if ($("#map-content").height() - latestHeight >60 && e.which===0){
+                else if ($("#map-content").height() - latestHeight > 60){
                     $("#map-content").removeClass("collapsed");
                     _closeMobileSidebar();
                     $(document).unbind("mousemove");
                     return;
                 }
-                //$(document).unbind("mousemove");
                 return;
-
             });
             return;
         }
-        return;
+
     });
 
 
@@ -312,12 +306,12 @@ $(document).ready(function () {
 
 function incrementBadge(){
     if (!($('#feed-btn').hasClass('on'))) {
-        $('#feed-badge').html(getInt($('#feed-badge').html())+1);
+        $('#feed-badge').html(getInt($('#feed-badge').html())+1).addClass("badge-success");
     }
 }
 
 function clearBadge(){
-    $('#feed-badge').html(0);
+    $('#feed-badge').html(0).removeClass("badge-success");
 }
 /**
  * parses integer, returns 0 if empty string
@@ -354,7 +348,8 @@ function changeMobileSidebar(normal) {
         _openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
-        $("#map-content,.navbar").click(function() {
+        $("#map-content,.navbar, .navbar-brand").click(function(e) {
+            e.preventDefault();
             _closeMobileSidebar();
         });
     }
@@ -375,6 +370,8 @@ function _closeMobileSidebar() {
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
     },500);
+
+    $(".navbar-brand").unbind("click");
 }
 
 /**
@@ -390,6 +387,7 @@ function _openMobileSidebar(t) {
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
     },500);
+    $(".navbar-brand").click(function () {return false;});
 }
 
 /**
@@ -401,6 +399,7 @@ function _closeWindowSidebar() {
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
     },500);
+
 }
 
 /**
