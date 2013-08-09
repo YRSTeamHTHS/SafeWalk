@@ -129,7 +129,7 @@ $(document).ready(function () {
     /**
      * dragging mobile sidebar
      */
-    $("#feed-btn,#dir-btn").on("mousedown,touchdown", function(e){
+    $("#feed-btn,#dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
         if ($("#directions").is(":visible") ) {
@@ -141,7 +141,7 @@ $(document).ready(function () {
         }
 
         if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
-            $(document).on("mousemove, touchmove", function(e){
+            $(document).mousemove(function(e){
 
                 if (e.which===1 &&
                     $("#map-content").hasClass("normal") &&
@@ -168,7 +168,7 @@ $(document).ready(function () {
 
             var latestHeight = $("#map-content").height();
 
-            $(document).on("mousemove, touchmove",function(e){
+            $(document).mousemove(function(e){
 
                 /*$(document).mouseup(function(e){
                  if (Math.abs(e.pageY) - latestHeight >60) {
@@ -306,12 +306,12 @@ $(document).ready(function () {
 
 function incrementBadge(){
     if (!($('#feed-btn').hasClass('on'))) {
-        $('#feed-badge').html(getInt($('#feed-badge').html())+1).addClass("badge-success");
+        $('#feed-badge').html(getInt($('#feed-badge').html())+1).css("background-color","#c0392b");
     }
 }
 
 function clearBadge(){
-    $('#feed-badge').html(0).removeClass("badge-success");
+    $('#feed-badge').html(0).css("background-color","");
 }
 /**
  * parses integer, returns 0 if empty string
