@@ -226,12 +226,6 @@ $(document).ready(function () {
 
     });
 
-    $("#feed-btn,#dir-btn").bind('touchend', function() {
-
-        if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
-        if ($("#map-content").hasClass("isUp")){ _closeMobileSidebar();}
-
-    });
 
     /**
      * dragging mobile sidebar
@@ -317,6 +311,13 @@ $(document).ready(function () {
             });
             return;
         }
+
+    });
+
+    $("#feed-btn,#dir-btn").bind('touchend', function() {
+
+        if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
+        if ($("#map-content").hasClass("isUp")){ _closeMobileSidebar();}
 
     });
 
