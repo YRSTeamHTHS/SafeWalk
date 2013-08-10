@@ -463,10 +463,7 @@ function changeMobileSidebar(normal) {
         _openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
-        $("#map-content,.navbar, .navbar-brand").click(function(e) {
-            e.preventDefault();
-            _closeMobileSidebar();
-        });
+
     }
 }
 
@@ -496,7 +493,13 @@ function _openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%'
-    }, t, function(){$("#map-content").addClass("isUp");});
+        }, t, function(){
+            $("#map-content").addClass("isUp");
+            $("#map-content,.navbar, .navbar-brand").click(function(e) {
+            e.preventDefault();
+            _closeMobileSidebar();
+        });
+    });
     $(".navbar").css("background-color", "#223044");
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
