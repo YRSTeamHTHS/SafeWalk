@@ -12,6 +12,14 @@
             return this.data[idmap[intersection_id]];
         };
 
+        this.getLat = function(intersection_id) {
+            return this.get(intersection_id)['loc']['coordinates'][1];
+        }
+
+        this.getLon = function(intersection_id) {
+            return this.get(intersection_id)['loc']['coordinates'][0];
+        }
+
         this.each = function(callback) {
             for (var i=0; i<this.data.length; i++) {
                 callback(this.data[i]);
@@ -19,9 +27,7 @@
         };
 
         this.update = function(intersection_id, update) {
-            var intersection = _this.data[idmap[intersection_id]];
-            var lat = intersection['lat'];
-            var lon = intersection['lon'];
+            var intersection = _this.get(intersection_id);
             for (var i=0; i<update['reports'].length; i++) {
                 console.log(update['reports'][i]);
                 intersection['reports'].push(update['reports'][i]);

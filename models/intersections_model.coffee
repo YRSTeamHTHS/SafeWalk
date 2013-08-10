@@ -1,4 +1,5 @@
-mongoose = require('./model_model')()
+mongoose = require('./model_model')
+#mongoose.set('debug', true)
 IntersectionsData = require('../shared/IntersectionsData.js')
 
 Schema = mongoose.Schema;
@@ -10,7 +11,7 @@ reportSchema = new Schema({
 })
 intersectionSchema = new Schema({
   id: Number,
-  loc: {type: Number, index: '2dsphere'},
+  loc: {type: mongoose.Schema.Types.Mixed, index: '2dsphere'},
   crimes: [String],
   reports: [reportSchema]
 })
@@ -20,7 +21,7 @@ data = null
 
 model.find {}, (err, intersections) ->
   if (err || intersections.length == 0)
-    throw new Error()
+    console.log err
   else
     console.log "Loaded saved intersection data"
     data = new IntersectionsData(intersections)
@@ -32,12 +33,18 @@ model.find {}, (err, intersections) ->
 exports.onReady = (callback) ->
   readyListeners.push callback
 
-exports.addMultiple = (intersectionArray) ->
+exports.addMultiple = (intersectionArray, callback) ->
   model.create intersectionArray, (err) ->
     console.log err
+    callback()
 
 exports.update = (intersection_id, update, callback) ->
   data.update intersection_id, update
   model.update {id: intersection_id}, {$pushAll: update}, (err) ->
     if callback?
       callback err
+
+exports.drop = (callback) ->
+  model.remove (err) ->
+    console.log "Intersections database dropped"
+    callback()

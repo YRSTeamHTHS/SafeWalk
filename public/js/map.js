@@ -571,9 +571,10 @@ window.map = new function() {
         window.directions.get('344234568', '2345009892');
 
         $.getJSON('/intersections/all', function(data) {
+            console.log("Got intersections data");
             window.intersections = new IntersectionsData(data);
             _this.LiveMVCArray = new LiveMVCArray(window.intersections);
-            console.log(_this.LiveMVCArray);
+            console.log("LiveMVCArray", _this.LiveMVCArray);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
                 data: _this.LiveMVCArray.MVCArray
             });
@@ -593,26 +594,25 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
-        console.log('Adding weight to MVC');
-        var weight = this._calcIntersectionWeight(intersection);
-        return (_this.MVCArray.push(this._newLatLng(intersection['lat'], intersection['lon'], weight)) - 1);
+        return (_this.MVCArray.push(this._newLatLng(intersection)) - 1);
     };
 
     this._calcIntersectionWeight = function(intersection) {
-        //console.log(intersection);
         return intersection['crimes'].length + intersection['reports'].length;
     };
 
-    this._newLatLng = function(lat, lon, weight) {
+    this._newLatLng = function(intersection) {
+        var lat = intersection['loc']['coordinates'][1];
+        var lon = intersection['loc']['coordinates'][0];
+        var weight = _this._calcIntersectionWeight(intersection);
         return {location: new google.maps.LatLng(lat, lon), weight: weight};
     };
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
         var intersection = intersections.get(intersection_id);
-        var weight = _this._calcIntersectionWeight(intersection);
         console.log("Updating weight for", intersection_id, 'to', weight);
         var index = _this.index_map[intersection_id];
-        var newLatLng = _this._newLatLng(intersection['lat'], intersection['lon'], weight);
+        var newLatLng = _this._newLatLng(intersection);
         _this.MVCArray.setAt(index, newLatLng);
     });
 

@@ -1,4 +1,4 @@
-mongoose = require('./model_model')()
+mongoose = require('./model_model')
 
 #mongoose.connect('mongodb://192.168.113.51/brittyscenes');
 #mongoose.connect('mongodb://212.71.249.18/brittyscenes');
