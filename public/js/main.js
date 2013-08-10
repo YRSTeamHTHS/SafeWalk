@@ -117,10 +117,10 @@ $(document).ready(function () {
     try {
         var socket = io.connect('/');
         socket.on('livereport', function (data) {
-
-            data=data.report; //@todo for some reason there is a nested report
-            _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
+            var report = data.report; //@todo for some reason there is a nested report
+            _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment);
             incrementBadge();
+            window.intersections.update(report['id'], {'reports': report});
         });
     } catch(err) {
 
@@ -444,29 +444,32 @@ window.map = new function() {
 var LiveMVCArray = function(IntersectionsDataObject) {
     var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    this.intersections = IntersectionsDataObject.data;
+    var intersections = IntersectionsDataObject.data;
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
+        console.log('Adding weight to MVC');
         var weight = this._calcIntersectionWeight(intersection);
         return (this.MVCArray.push(new google.maps.LatLng(intersection['lat'], intersection['lon'], weight)) - 1);
     };
 
     this._calcIntersectionWeight = function(intersection) {
-        //return (intersection['crimes'].length + intersection['reports'].length);
-        // TODO: calculate length of intersection crimes/reports correctly
-        return Math.random();
+        //console.log(intersection);
+        var weight = intersection['crimes'].length + intersection['reports'].length;
+        return weight;
     };
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
+        console.log("Updating weight for", intersection_id);
         var index = _this.index_map[intersection_id];
-        var newLatLng = new google.maps.LatLng(lat, lon, _this._calcIntersectionWeight(intersection_id));
+        var intersection = intersections[intersection_id];
+        var newLatLng = new google.maps.LatLng(intersection['lat'], intersection['lon'], _this._calcIntersectionWeight(intersection));
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    for (var id in this.intersections) {
-        if (this.intersections.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(this.intersections[id]);
+    for (var id in intersections) {
+        if (intersections.hasOwnProperty(id)) {
+            this.index_map[id] = this._pushToMVC(intersections[id]);
         }
     }
 };

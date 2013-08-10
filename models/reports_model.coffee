@@ -15,7 +15,7 @@ Schema = mongoose.Schema;
 
 #Collection to hold users
 reportSchema = new Schema({
-  code: { type: String, required: true, trim: true },
+  id: { type: Number, required: true, trim: true },
   type: { type: String, required: true, trim: true },
   comment: {type: String, required: true, trim: true, min: 1, max: 140},
   time: {type: Date, "default": Date.now}},
@@ -41,29 +41,33 @@ exports.attach = (io2) ->
 ###
 exports.addReport = (report, callback) ->
   #check that code does not already exist
-  ReportModel.find {code: report.code}, (err, reports) ->
-    if (err || reports.length == 0)
-      console.log reports
-      # yay not found, save the report
-      newreport = new ReportModel(report);
-      newreport.save( (err) ->
-        if (err)
-          callback(err)
-        else
-          #broadcast the new event
-          report.time = Date.now()
-          io.sockets.emit('livereport', { report: report })
-          callback(true)
-      )
-    else callback(false)
+  #TODO: use a unique shortcode to prevent duplicates
+  newreport = new ReportModel(report);
+  newreport.save (err) ->
+    if (err)
+      callback(err)
+    else
+      #broadcast the new event
+      report.time = Date.now()
+      io.sockets.emit('livereport', { report: report })
+      callListeners(report)
+      callback(true)
+
+listeners = []
+exports.addListener = (callback) ->
+  listeners.push callback
+
+callListeners = (report) ->
+  for callback in listeners
+    callback report
 
 ###
   gets a report by code
   @param code       code to search for
   @param callback   callback to execute once completed
 ###
-exports.getReportByCode = (code, callback) ->
-  ReportModel.find {code: code}, (err, reports) ->
+exports.getReportById = (id, callback) ->
+  ReportModel.find {'id': id}, (err, reports) ->
     if (err || reports.length == 0)
       callback(false)
     else
@@ -87,4 +91,7 @@ exports.getReports = (limit, callback) ->
 
 exports.getAllReports = (callback) ->
   query = ReportModel.find {}, (err, reports) ->
-    callback null
+    if (err || reports.length == 0)
+      callback false
+    else
+      callback reports
