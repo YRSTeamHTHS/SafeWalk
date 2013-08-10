@@ -82,7 +82,11 @@ reconstructRoute = (nodes, start, end) ->
   current_road = -1
   for item in route
     if item.path? then path = path.concat(item.path)
-    path.push(item)
+    basic_item =
+      id: item['id']
+      lat: item['loc']['coordinates'][1]
+      lon: item['loc']['coordinates'][0]
+    path.push(basic_item)
     if item.road_id? and item.road_id != current_road
       roads.push({'id': item.road_id, 'name': item.road_name})
       current_road = item.road_id
