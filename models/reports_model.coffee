@@ -91,7 +91,6 @@ exports.getReportsSkip = (limit, skip, callback) ->
     if (err)
       callback(false)
     else
-      result.reverse() #reverse array so that oldest to newest (allows use of prepend)
       callback(result)
   )
 
