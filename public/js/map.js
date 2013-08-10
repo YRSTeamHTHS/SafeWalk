@@ -639,7 +639,7 @@ function removeDuplicates(a) {
             arr.push(a[i]);
         }
     }
-    return a;
+    return arr;
 }
 function isEqual(a, b) {
     if(a.name!== b.name) {
