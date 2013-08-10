@@ -24,14 +24,14 @@ exports.index = (req, res)->
 
 ###
 exports.submit = (req, res) ->
-  shortcode = req.body.code;
+  id = req.body.id;
   type = req.body.type;
   comment = req.body.comment;
 
   #check for valid code
   if _validateCode() #@todo validate code
 
-    data = {code:shortcode,type:type,comment:comment}
+    data = {id:id,type:type,comment:comment}
     console.log data
     db.addReport(data,(result) ->
       console.log(result)
@@ -54,3 +54,11 @@ exports.getall = (req, res) ->
     if result
       res.send(result)
   )
+
+sms_regex = /^([0-9a-zA-Z]+)[,\n] *([a-zA-Z ])[,\n] *(.*)$/
+exports.twilio = (req, res) ->
+  message = req.body['Body']
+  segments = message.match(sms_regex)
+  if segments != null
+    [shortcode, type, comment] = segments[1..]
+    console.log "Incoming SMS", shortcode, type, comment

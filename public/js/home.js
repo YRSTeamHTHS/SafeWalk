@@ -1,52 +1,33 @@
-var rssoutput="";
-var feedurl="http://weather.yahooapis.com/forecastrss?w=12695841&u=c";
-var feedlimit=10;
-var re = new RegExp("Current Conditions:\n(.*), (.*)\nForecast:");
-var condition="";
-var temperature="";
-
-function setBackground(condition, temperature) {
-    if ($.inArray(condition, ['clear (night)','sunny', 'fair (night)', 'fair (day)', 'hot', 'haze', 'smoky']) !=-1) {
+$.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%3D%2212695841%22&format=json&u=c', function(data) {
+    var thing=data.query.results.channel.item.condition;
+    var temperature=Math.round(5/9*(parseInt(thing.temp)-32))+'&#176; C';
+    var code=parseInt(thing.code);
+    var condition=thing.text;
+    if ($.inArray(code,[31,32,33,34,36,24,25]) !=-1) {
         $('#background-wrapper').css('background', 'url("/img/weather/clear.jpg")');
     }
-    else if ($.inArray(condition, ['Partly Cloudy', 'mostly cloudy (night)', "mostly cloudy (day)", "partly cloudy (night)", "partly cloudy (day)"]) !=-1) {
+    else if ($.inArray(code,[27,28,29,30]) !=-1) {
         $('#background-wrapper').css('background', 'url("/img/weather/partly-cloudy.jpg")');
     }
-    else if ($.inArray(condition, ["tropical storm", "hurricane", "mixed rain and snow", "mixed rain and sleet", "freezing drizzle", "drizzle", "freezing rain", "showers", "hail", "sleet", "mixed rain and hail", "scattered showers"]) !=-1) {
+    else if ($.inArray(code,[1,2,5,6,8,9,10,11,12,17,18,35,40]) !=-1) {
         $('#background-wrapper').css('background', 'url("/img/weather/rain.jpg")');
     }
-    else if ($.inArray(condition, ["severe thunderstorms", "thunderstorms", "isolated thunderstorms", "scattered thunderstorms", "thundershowers", "isolated thundershowers"]) !=-1) {
+    else if ($.inArray(code,[3,4,37,38,39,45,47]) !=-1) {
         $('#background-wrapper').css('background', 'url("/img/weather/lightning.jpg")');
     }
-    else if ($.inArray(condition, ["snow flurries", "mixed snow and sleet", "light snow showers", "blowing snow", "snow", "heavy snow", "scattered snow showers", "heavy snow", "snow showers"]) !=-1) {
+    else if ($.inArray(code,[13,7,14,15,16,41,42,43,46]) !=-1) {
         $('#background-wrapper').css('background', 'url("/img/weather/snow.jpg")');
     }
     else {
         $('#background-wrapper').css('background', 'url("/img/weather/cloudy.jpg")');
     }
     $('#weather').html(temperature + ' – ' + condition);
-}
-
+});
+/*$('#background-wrapper').load(function() {
+    sizeBackground();
+    alert(1);
+}*/
 $(document).ready(function(){
-    function displayfeed(result){
-        if (!result.error){
-            var thefeeds=result.feed.entries;
-            for (var i=0; i<thefeeds.length; i++) {
-                rssoutput+=thefeeds[i].contentSnippet;
-            }
-        }
-        condition=rssoutput.match(re)[1];
-        temperature=rssoutput.match(re)[2];
-        setBackground(condition, temperature);
-        sizeBackground();
-    }
-    function rssfeedsetup(){
-        var feedpointer=new google.feeds.Feed(feedurl);
-        feedpointer.setNumEntries(feedlimit);
-        feedpointer.load(displayfeed);
-    }
-
-    rssfeedsetup();
     sizeBackground();
     //adjust size of background image
     var count = 0;//running count of bubbles on the screen

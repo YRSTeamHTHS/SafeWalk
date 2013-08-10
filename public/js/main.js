@@ -117,10 +117,10 @@ $(document).ready(function () {
     try {
         var socket = io.connect('/');
         socket.on('livereport', function (data) {
-
-            data=data.report; //@todo for some reason there is a nested report
-            _createFeedItem(_processDate(new Date(data.time)),data.type,data.comment);
+            var report = data.report; //@todo for some reason there is a nested report
+            _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment);
             incrementBadge();
+            window.intersections.update(report['id'], {'reports': [report]});
         });
     } catch(err) {
 
@@ -130,8 +130,8 @@ $(document).ready(function () {
      * dragging collapsed sidebar
      */
 
-    var isSlideUp=0;
-
+    //var isSlideUp=0;
+    var latestHeight;
     $("#feed-btn,#dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
@@ -143,10 +143,10 @@ $(document).ready(function () {
             $("#dir-btn").removeClass("on");
         }
 
-        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
+        if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
 
             //alert(2);
-            isSlideUp =1;
+            //isSlideUp =1;
 
 
             $(document).mousemove(function(e){
@@ -161,22 +161,17 @@ $(document).ready(function () {
                     ) {
                     $("#map-content").height(e.pageY);
                 }
-                else {
-                    //$("#map-content").removeClass("normal");
-                    //changeMobileSidebar(true);
-                    $(document).unbind("mousemove");
-                    return;
-                }
+
                 return;
 
             });
             return;
         }
-        if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
+        if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
             //alert(3);
-            isSlideUp =-1;
-            var latestHeight = $("#map-content").height();
+            //isSlideUp =-1;
+            latestHeight = $("#map-content").height();
 
             $(document).mousemove(function(e){
 
@@ -205,12 +200,6 @@ $(document).ready(function () {
 
                 }
 
-                else if ($("#map-content").height() - latestHeight > 60){
-                    //$("#map-content").removeClass("collapsed");
-                    //_closeMobileSidebar();
-                    $(document).unbind("mousemove");
-                    return;
-                }
                 return;
             });
             return;
@@ -220,10 +209,11 @@ $(document).ready(function () {
 
 
     $("#feed-btn,#dir-btn").mouseup(function() {
-
-        if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
-        if ($("#map-content").hasClass("isUp")){ _closeMobileSidebar();}
-
+        if ($(window).width() < 768){
+            //alert(3);
+            if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
+            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){ _closeMobileSidebar();}
+        }
     });
 
 
@@ -244,7 +234,7 @@ $(document).ready(function () {
             $("#dir-btn").removeClass("on");
         }
 
-        if($(window).width() < 768 && $("#map-content").hasClass("normal")) {
+        if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
             $(document).bind('touchmove', function(e){
 
                 e.preventDefault();
@@ -259,18 +249,12 @@ $(document).ready(function () {
                     ) {
                     $("#map-content").height(touch.pageY);
                 }
-                else {
-                    $("#map-content").removeClass("normal");
-                    changeMobileSidebar(true);
-                    $(document).unbind("touchmove");
-                    return;
-                }
                 return;
 
             });
             return;
         }
-        if($(window).width() < 768 && $("#map-content").hasClass("collapsed")) {
+        if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
 
             var latestHeight = $("#map-content").height();
@@ -299,13 +283,9 @@ $(document).ready(function () {
                     touch.pageX > 0
                     ) {
                     $("#map-content").height(touch.pageY);
-                }
-
-                else {
-                    $("#map-content").removeClass("collapsed");
-                    _closeMobileSidebar();
-                    $(document).unbind("touchmove");
-                    return;
+                    if (Math.abs(touch.pageY) - latestHeight <60){
+                        $("#map-content").height('20%');
+                    }
                 }
                 return;
             });
@@ -315,10 +295,11 @@ $(document).ready(function () {
     });
 
     $("#feed-btn,#dir-btn").bind('touchend', function() {
-
-        if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
-        if ($("#map-content").hasClass("isUp")){ _closeMobileSidebar();}
-
+        if ($(window).width() < 768){
+            //alert(3);
+            if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
+            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){ _closeMobileSidebar();}
+        }
     });
 
     /**
@@ -330,7 +311,8 @@ $(document).ready(function () {
 
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
-        changeMobileSidebar($("#map-content").hasClass("normal"));
+        //if(!($("#map-content").hasClass("isUp")))
+            //_openMobileSidebar(500);
         clearBadge();
     });
 
@@ -355,7 +337,6 @@ $(document).ready(function () {
 
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
-        changeMobileSidebar($("#map-content").hasClass("normal"));
     });
 
     $("#dir-btn").bind('touchstart', function(e) {
@@ -366,7 +347,6 @@ $(document).ready(function () {
 
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
-        //changeMobileSidebar($("#map-content").hasClass("normal"));
     });
 
     /**
@@ -483,10 +463,7 @@ function changeMobileSidebar(normal) {
         _openMobileSidebar(500);
         //click anywhere to exit list
         // TODO: assign in initialization, have check state
-        $("#map-content,.navbar, .navbar-brand").click(function(e) {
-            e.preventDefault();
-            _closeMobileSidebar();
-        });
+
     }
 }
 
@@ -495,12 +472,11 @@ function changeMobileSidebar(normal) {
  */
 function _closeMobileSidebar() {
     time=500;
-    $("#sidebar .btn").removeClass("on");
     $("#map-content").css({"background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     //$("#map-content").css({'height':'', "background-color": "transparent"}).removeClass("collapsed").addClass("normal");
     $("#map-content").animate({
         height: '100%'
-    }, time, function(){$("#map-content").removeClass("isUp");});
+    }, time, function(){$("#map-content").removeClass("isUp");$("#sidebar .btn").removeClass("on");});
     $(".navbar").css("background-color", "");
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
@@ -517,7 +493,13 @@ function _openMobileSidebar(t) {
     $("#map-content").css({'min-height':'60px', "background-color": "rgba(0,0,0,0.4)"}).removeClass("normal").addClass("collapsed");
     $("#map-content").animate({
         height: '20%'
-    }, t, function(){$("#map-content").addClass("isUp");});
+        }, t, function(){
+            $("#map-content").addClass("isUp");
+            $("#map-content,.navbar, .navbar-brand").click(function(e) {
+            e.preventDefault();
+            _closeMobileSidebar();
+        });
+    });
     $(".navbar").css("background-color", "#223044");
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
@@ -578,29 +560,36 @@ window.map = new function() {
 var LiveMVCArray = function(IntersectionsDataObject) {
     var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    this.intersections = IntersectionsDataObject.data;
+    var intersections = IntersectionsDataObject.data;
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
+        console.log('Adding weight to MVC');
         var weight = this._calcIntersectionWeight(intersection);
-        return (this.MVCArray.push(new google.maps.LatLng(intersection['lat'], intersection['lon'], weight)) - 1);
+        return (_this.MVCArray.push(this._newLatLng(intersection['lat'], intersection['lon'], weight)) - 1);
     };
 
     this._calcIntersectionWeight = function(intersection) {
-        //return (intersection['crimes'].length + intersection['reports'].length);
-        // TODO: calculate length of intersection crimes/reports correctly
-        return Math.random();
+        //console.log(intersection);
+        return intersection['crimes'].length + intersection['reports'].length;
     };
 
+    this._newLatLng = function(lat, lon, weight) {
+        return {location: new google.maps.LatLng(lat, lon), weight: weight};
+    }
+
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
+        var intersection = intersections[intersection_id];
+        var weight = _this._calcIntersectionWeight(intersection);
+        console.log("Updating weight for", intersection_id, 'to', weight);
         var index = _this.index_map[intersection_id];
-        var newLatLng = new google.maps.LatLng(lat, lon, _this._calcIntersectionWeight(intersection_id));
+        var newLatLng = _this._newLatLng(intersection['lat'], intersection['lon'], weight);
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    for (var id in this.intersections) {
-        if (this.intersections.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(this.intersections[id]);
+    for (var id in intersections) {
+        if (intersections.hasOwnProperty(id)) {
+            this.index_map[id] = this._pushToMVC(intersections[id]);
         }
     }
 };
