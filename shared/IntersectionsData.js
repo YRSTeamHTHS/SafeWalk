@@ -3,12 +3,13 @@
         var _this = this;
         this.data = data;
         this.listeners = [];
+        var idmap = {};
+        for (var i=0; i<this.data.length; i++) {
+            idmap[this.data[i]['id']] = i;
+        }
 
         this.update = function(intersection_id, update) {
-            var intersection = _this.data[intersection_id];
-            if (typeof intersection === 'undefined') {
-                return false;
-            }
+            var intersection = _this.data[idmap[intersection_id]];
             var lat = intersection['lat'];
             var lon = intersection['lon'];
             for (var i=0; i<update['reports'].length; i++) {
