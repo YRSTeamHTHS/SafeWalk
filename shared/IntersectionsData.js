@@ -4,6 +4,7 @@
         this.listeners = [];
 
         this.update = function(intersection_id, update) {
+            console.log("Update", intersection_id, update);
             var intersection = this.data[intersection_id];
             var lat = intersection['lat'];
             var lon = intersection['lon'];
