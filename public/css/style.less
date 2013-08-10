@@ -307,10 +307,32 @@ textarea, input[type="text"] {
 /*---------- MAP PAGE ---------- */
 .directions {
   color: #383838;
+  padding-left:30px;
 }
 .directions li {
-  padding-top:10px;
-  padding-bottom:10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-left: 1px solid rgb(219, 219, 219);
+  padding-left: 12px;
+}
+ol {
+  counter-reset:li;
+}
+ol > li {
+  list-style:none;
+}
+ol > li:before {
+  content:counter(li);
+  counter-increment:li;
+  position:relative;
+  left:-3em;
+  text-align:center;
+  color: gray;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 .full {
@@ -342,7 +364,7 @@ textarea, input[type="text"] {
 
 .dist-time{
   color:rgb(158, 158, 158);
-  font-size:12px;
+  font-size:10px;
   text-align:right;
 }
 
