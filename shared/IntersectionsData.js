@@ -12,7 +12,11 @@
         }
 
         this.get = function(intersection_id) {
-            return this.data[idmap[intersection_id]];
+            if (this.data.hasOwnProperty(idmap[intersection_id])) {
+                return this.data[idmap[intersection_id]];
+            } else {
+                return null;
+            }
         };
 
         this.getLat = function(intersection_id) {
@@ -31,11 +35,12 @@
 
         this.update = function(intersection_id, update) {
             var intersection = _this.get(intersection_id);
-            for (var i=0; i<update['reports'].length; i++) {
-                console.log(update['reports'][i]);
-                intersection['reports'].push(update['reports'][i]);
+            if (intersection != null) {
+                for (var i=0; i<update['reports'].length; i++) {
+                    intersection['reports'].push(update['reports'][i]);
+                }
+                _this._dispatchUpdate(intersection_id);
             }
-            _this._dispatchUpdate(intersection_id);
         };
 
         this.addUpdateListener = function(f) {
