@@ -3,8 +3,9 @@
  */
 //var google;
 
-$(document).ready(function () {
 
+
+$(document).ready(function () {
     /*document.ontouchstart = function(e){
         e.preventDefault();
     }*/
@@ -133,6 +134,8 @@ $(document).ready(function () {
         socket.on('livereport', function (data) {
             var report = data.report; //@todo for some reason there is a nested report
             _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment);
+            $("#live-feed").mCustomScrollbar("update");
+
             incrementBadge();
             window.intersections.update(report['id'], {'reports': [report]});
         });
@@ -322,7 +325,7 @@ $(document).ready(function () {
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();
-
+        _updateScrollbars();
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
         //if(!($("#map-content").hasClass("isUp")))
@@ -348,7 +351,7 @@ $(document).ready(function () {
     $("#dir-btn").click(function() {
         $("#feed").fadeOut();
         $("#directions").fadeIn();
-
+        _updateScrollbars();
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
     });
@@ -358,7 +361,7 @@ $(document).ready(function () {
         e.preventDefault();
         $("#feed").fadeOut();
         $("#directions").fadeIn();
-
+        _updateScrollbars();
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
     });
@@ -391,6 +394,7 @@ $(document).ready(function () {
     $("#feed-btn").click(function() {
         $("#directions").hide();
         $("#feed").fadeIn();
+        _updateScrollbars();
     });
 
     /**
@@ -435,8 +439,8 @@ $(document).ready(function () {
 
 function incrementBadge(){
     if (!($('#feed-btn').hasClass('on'))) {
-        newFeeds = parseInt($('#feed-badge').html())+1
-        $('#feed-badge').html(parseInt($('#feed-badge').html(newFeeds).css("background-color","#c0392b");
+        newFeeds = parseInt($('#feed-badge').html())+1;
+        $('#feed-badge').html(newFeeds).css("background-color","#c0392b");
         $('title').text("("+newFeeds+") " + "SafeWalk")
     }
 }
@@ -655,6 +659,7 @@ window.directions = new function() {
 
         var endElem = $('<div class="arrival"></div>');
         endElem.text(end).appendTo(this.directionsPanel);
+        _updateScrollbars();
     };
 
     this.renderMap = function(path) {
@@ -673,3 +678,14 @@ window.directions = new function() {
         line.setMap(window.map.gmap);
     }
 };
+
+function _updateScrollbars() {
+    $("#live-feed,#directions-scrollbar").mCustomScrollbar("destroy");
+    $("#live-feed,#directions-scrollbar").mCustomScrollbar({
+        scrollButtons:{
+            enable:true
+        },scrollInertia:0,theme:"dark-thick"
+    })
+
+
+}
