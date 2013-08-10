@@ -595,7 +595,7 @@ window.map = new function() {
 var LiveMVCArray = function(IntersectionsDataObject) {
     var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    var intersections = IntersectionsDataObject.data;
+    var intersections = IntersectionsDataObject;
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
@@ -611,10 +611,10 @@ var LiveMVCArray = function(IntersectionsDataObject) {
 
     this._newLatLng = function(lat, lon, weight) {
         return {location: new google.maps.LatLng(lat, lon), weight: weight};
-    }
+    };
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
-        var intersection = intersections[intersection_id];
+        var intersection = intersections.get(intersection_id);
         var weight = _this._calcIntersectionWeight(intersection);
         console.log("Updating weight for", intersection_id, 'to', weight);
         var index = _this.index_map[intersection_id];
@@ -622,11 +622,9 @@ var LiveMVCArray = function(IntersectionsDataObject) {
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    for (var id in intersections) {
-        if (intersections.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(intersections[id]);
-        }
-    }
+    intersections.each(function(intersection) {
+        _this.index_map[intersection['id']] = _this._pushToMVC(intersection);
+    });
 };
 
 function removeDuplicates(a) {
