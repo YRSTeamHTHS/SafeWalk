@@ -435,25 +435,15 @@ $(document).ready(function () {
 
 function incrementBadge(){
     if (!($('#feed-btn').hasClass('on'))) {
-        $('#feed-badge').html(getInt($('#feed-badge').html())+1).css("background-color","#c0392b");
+        newFeeds = parseInt($('#feed-badge').html())+1
+        $('#feed-badge').html(parseInt($('#feed-badge').html(newFeeds).css("background-color","#c0392b");
+        $('title').text("("+newFeeds+") " + "SafeWalk")
     }
 }
 
 function clearBadge(){
     $('#feed-badge').html(0).css("background-color","");
-}
-/**
- * parses integer, returns 0 if empty string
- * @param num
- * @returns {*}
- */
-function getInt(num){
-    if(num=="") {
-        return 0;
-    }
-    else {
-        return parseInt(num);
-    }
+    $('title').text("SafeWalk");
 }
 
 /**
