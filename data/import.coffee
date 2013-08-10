@@ -14,7 +14,12 @@ for id, data of intersections_data
   intersectionsArray.push intersection
 
 console.log "Sample", intersectionsArray[1000]
-console.log "Adding to database", intersectionsArray.length
 
-intersections_model.addMultiple(intersectionsArray)
-console.log "Done"
+console.log "Deleting old entries"
+
+intersections_model.drop () ->
+  console.log "Adding to database", intersectionsArray.length
+
+  intersections_model.addMultiple intersectionsArray, () ->
+    console.log "Done"
+    process.exit()

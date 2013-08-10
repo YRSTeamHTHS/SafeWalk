@@ -33,12 +33,18 @@ model.find {}, (err, intersections) ->
 exports.onReady = (callback) ->
   readyListeners.push callback
 
-exports.addMultiple = (intersectionArray) ->
+exports.addMultiple = (intersectionArray, callback) ->
   model.create intersectionArray, (err) ->
     console.log err
+    callback()
 
 exports.update = (intersection_id, update, callback) ->
   data.update intersection_id, update
   model.update {id: intersection_id}, {$pushAll: update}, (err) ->
     if callback?
       callback err
+
+exports.drop = (callback) ->
+  model.remove (err) ->
+    console.log "Intersections database dropped"
+    callback()
