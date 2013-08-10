@@ -106,8 +106,22 @@ $(document).ready(function () {
      */
     function _processDate(date) {
         var longdate = date.toDateString();
-        var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        var time = _formatNumber(date.getHours()) + ":" + _formatNumber(date.getMinutes()) + ":" + _formatNumber(date.getSeconds());
         return longdate + " @ " + time;
+    }
+
+    /**
+     * formats a two digit number
+     * if number is less than 10, pads a zero.
+     * @param number        number to format
+     * @returns string      formatted number
+     * @private
+     */
+    function _formatNumber(number) {
+        if (parseInt(number) < 10) {
+            return "0" + number;
+        }
+        else return number;
     }
 
     var isWindowSize = ($(window).width() >= 768);
@@ -130,9 +144,21 @@ $(document).ready(function () {
      * dragging collapsed sidebar
      */
 
+    //Scrolling works like this:
+    //Starting from clicking down the mouse,
+    //while the mouse moves when it is held down,
+    //The sidebar will follow the mouse...
+    //Once released, onClick and onUp functions will occur
+    //onClick loads the right data based on whichever button was clicked
+    //onUp checks whether the sidebar is up (#map-content.class(isUp)),
+    //and then animates correct animation.
+    //Once animation is done the isUp class will update so the new clickDown
+    //function will correctly respond.
+
+
     //var isSlideUp=0;
     var latestHeight;
-    $("#feed-btn,#dir-btn").mousedown(function(e){
+    $("#feed-btn, #dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
         if ($("#directions").is(":visible") ) {
@@ -160,8 +186,8 @@ $(document).ready(function () {
                     e.pageX > 0
                     ) {
                     $("#map-content").height(e.pageY);
-                }
 
+                }
                 return;
 
             });
@@ -198,21 +224,26 @@ $(document).ready(function () {
                         $("#map-content").height('20%');
                     }
 
-                }
 
+                }
                 return;
             });
             return;
         }
-
     });
 
 
     $("#feed-btn,#dir-btn").mouseup(function() {
         if ($(window).width() < 768){
             //alert(3);
-            if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
-            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){ _closeMobileSidebar();}
+            if (!($("#map-content").hasClass("isUp"))) {
+                _openMobileSidebar(500);
+                $(document).unbind('mousemove');
+            }
+            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){
+                _closeMobileSidebar();
+                $(document).unbind('mousemove');
+            }
         }
     });
 
@@ -248,6 +279,7 @@ $(document).ready(function () {
                     touch.pageX > 0
                     ) {
                     $("#map-content").height(touch.pageY);
+
                 }
                 return;
 
@@ -257,7 +289,7 @@ $(document).ready(function () {
         if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
 
-            var latestHeight = $("#map-content").height();
+            latestHeight = $("#map-content").height();
 
             $(document).bind('touchmove', function(e){
 
@@ -297,8 +329,14 @@ $(document).ready(function () {
     $("#feed-btn,#dir-btn").bind('touchend', function() {
         if ($(window).width() < 768){
             //alert(3);
-            if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
-            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){ _closeMobileSidebar();}
+            if (!($("#map-content").hasClass("isUp"))) {
+                _openMobileSidebar(500);
+                $(document).unbind('touchmove');
+            }
+            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){
+                _closeMobileSidebar();
+                $(document).unbind('touchmove');
+            }
         }
     });
 
@@ -311,8 +349,6 @@ $(document).ready(function () {
 
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
-        //if(!($("#map-content").hasClass("isUp")))
-            //_openMobileSidebar(500);
         clearBadge();
     });
 
@@ -324,7 +360,6 @@ $(document).ready(function () {
 
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
-        //changeMobileSidebar($("#map-content").hasClass("normal"));
         clearBadge();
     });
 

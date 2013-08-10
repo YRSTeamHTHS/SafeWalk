@@ -226,7 +226,7 @@ body {
   line-height:0px;
   font-size:20px;
   color:#ffffff;
-  background-color: #34495e;
+  background-color: #1abc9c;
   font-family:FontAwesome;
 
   -webkit-transition: background 0.2s linear;
@@ -237,7 +237,7 @@ body {
 }
 
 .btn.search:hover {
-  background-color: #5A7A97;
+  background-color: #16a085;
 }
 
 #directions-start {
@@ -281,7 +281,7 @@ textarea, input[type="text"] {
 
 .btn {
   border:none;
-  background-color:#34495e;
+  background-color:#1abc9c;
   color:#ffffff;
   background-image:none;
   border-radius:6px;
@@ -299,7 +299,7 @@ textarea, input[type="text"] {
 }
 
 .btn:hover, .btn:active, .btn:focus {
-  background-color:#2c3e50;
+  background-color:#16a085;
   box-shadow:none;
 }
 
@@ -539,6 +539,18 @@ textarea, input[type="text"] {
     text-align: center;
   }
 }
+#inputCode {
+  margin-top:20px;
+  border: 1px solid #ccc;
+}
+#form-type {
+  padding-left: 25px;
+  font-size: 16px;
+  height: 60px;
+}
+#form-comment {
+  border: 1px solid #ccc;
+}
 
 #report-modal.loading {
   // TODO: improve state transition animations
@@ -611,6 +623,11 @@ textarea, input[type="text"] {
 #feed-badge {
   margin-left:3px;
 }
+#title-icon, #title {
+  display: inline-block;
+  vertical-align: middle;
+  font-size:45px;
+}
 
 @media (min-width: 992px) {
   .map-wrapper {
@@ -672,5 +689,22 @@ textarea, input[type="text"] {
   .popup {
     display:none;
   }
-
+}
+@media (max-width: 350px) {
+    #title-icon {
+      width:30px;
+      height:30px;
+    }
+    #title {
+      font-size:30px;
+    }
+}
+@media (max-width: 240px) {
+  #title-icon {
+    width:20px;
+    height:20px;
+  }
+  #title {
+    font-size:20px;
+  }
 }
