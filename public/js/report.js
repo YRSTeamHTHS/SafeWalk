@@ -46,7 +46,7 @@ window.reportForm = new function() {
         }
     };
     $('#form-code').keyup(function() {
-        if($('#form-code').val()!="" && $('#form-code').val()!=null) {
+        if($('#form-code').val()!="" && $('#form-type').val()!=null) {
             $('#report-submit-btn').removeClass('disabled');
         } else {
             $('#report-submit-btn').addClass('disabled');
