@@ -1,14 +1,15 @@
 map_model = require('../models/map_model')
-intersections = map_model.intersections
+intersections_model = require('../models/intersections_model')
+#intersections = intersections_model.intersections
 connections = map_model.connections
 
 astar = (start, end) ->
-  if not intersections.hasOwnProperty(start)
+  if not intersections_model.intersections.data.hasOwnProperty(start)
     return false
 
   # Copy the array of intersections
   nodes = []
-  for id, node of intersections
+  for id, node of intersections_model.intersections.data
     new_node = {}
     for prop, val of node
       new_node[prop] = val

@@ -5,8 +5,10 @@
         this.listeners = [];
 
         this.update = function(intersection_id, update) {
-            console.log("Update", intersection_id, update);
             var intersection = _this.data[intersection_id];
+            if (typeof intersection === 'undefined') {
+                return false;
+            }
             var lat = intersection['lat'];
             var lon = intersection['lon'];
             for (var i=0; i<update['reports'].length; i++) {
