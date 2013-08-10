@@ -55,10 +55,15 @@ exports.getall = (req, res) ->
       res.send(result)
   )
 
+###
+  used in dynamic loading of reports on scroll down in live feed
+  db.getReportsSkip(limit,skip)
+    gets maximimum of limit, skipping n records
+###
 exports.getLimitSkip = (req, res) ->
   skip = req.body.skip;
   console.log skip
-  db.getReportsSkip(20, skip, (result) ->
+  db.getReportsSkip(10, skip, (result) ->
     if result
       res.send(result)
   )
