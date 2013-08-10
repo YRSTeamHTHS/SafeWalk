@@ -34,6 +34,9 @@ exports.import = (intersectionArray, callback) ->
     exports.intersections = new IntersectionsData(intersectionArray)
     callback()
 
+exports.importSkipDatbase = (intersectionArray) ->
+  exports.intersections = new IntersectionsData(intersectionArray)
+
 exports.getNearest = (lat, lon, callback) ->
   selector =
     loc:

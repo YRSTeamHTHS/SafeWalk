@@ -32,6 +32,7 @@ astar = (start, end) ->
   count = 0
   while open_nodes.length > 0
     count++
+    console.log 'navigate_route', open_nodes
     # Sort the working nodes by f
     open_nodes.sort (idA, idB) ->
       fA = nodes[idA].f
