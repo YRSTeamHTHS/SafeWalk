@@ -45,15 +45,15 @@ window.reportForm = new function() {
                 _this.$modal.removeClass('loading').removeClass('done');
         }
     };
-    $('#inputCode').keyup(function() {
-        if($('#inputCode').val()!="" && $('#form-type').val()!=null) {
+    $('#form-code').keyup(function() {
+        if($('#form-code').val()!="" && $('#form-type').val()!=null) {
             $('#report-submit-btn').removeClass('disabled');
         } else {
             $('#report-submit-btn').addClass('disabled');
-        }
+        }x
     });
     $('#form-type').click(function() {
-        if($('#inputCode').val()!="" && $('#form-type').val()!=null) {
+        if($('#form-code').val()!="" && $('#form-type').val()!=null) {
             $('#report-submit-btn').removeClass('disabled');
         } else {
 
