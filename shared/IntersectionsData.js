@@ -3,10 +3,23 @@
         var _this = this;
         this.data = data;
         this.listeners = [];
+        var idmap = {};
+        for (var i=0; i<this.data.length; i++) {
+            idmap[this.data[i]['id']] = i;
+        }
+
+        this.get = function(intersection_id) {
+            return this.data[idmap[intersection_id]];
+        };
+
+        this.each = function(callback) {
+            for (var i=0; i<this.data.length; i++) {
+                callback(this.data[i]);
+            }
+        };
 
         this.update = function(intersection_id, update) {
-            console.log("Update", intersection_id, update);
-            var intersection = _this.data[intersection_id];
+            var intersection = _this.data[idmap[intersection_id]];
             var lat = intersection['lat'];
             var lon = intersection['lon'];
             for (var i=0; i<update['reports'].length; i++) {

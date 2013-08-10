@@ -93,6 +93,7 @@ body {
   height:7px;
   width:7px;
   margin-left:8px;
+  border-radius:0;
 }
 
 .navbar .nav.navbar-nav > li > a {
@@ -226,7 +227,7 @@ body {
   line-height:0px;
   font-size:20px;
   color:#ffffff;
-  background-color: #34495e;
+  background-color: #1abc9c;
   font-family:FontAwesome;
 
   -webkit-transition: background 0.2s linear;
@@ -237,7 +238,7 @@ body {
 }
 
 .btn.search:hover {
-  background-color: #5A7A97;
+  background-color: #16a085;
 }
 
 #directions-start {
@@ -257,16 +258,6 @@ body {
   margin-right:17px;
 }
 
-
-
-.nav-icon-entypo {
-  font-family:EntypoSocial;
-  font-size:38px;
-  line-height:60px;
-  text-align:center;
-  margin-right:17px;
-}
-
 textarea, input[type="text"] {
   border:none;
   padding:30px;
@@ -281,7 +272,7 @@ textarea, input[type="text"] {
 
 .btn {
   border:none;
-  background-color:#34495e;
+  background-color:#1abc9c;
   color:#ffffff;
   background-image:none;
   border-radius:6px;
@@ -299,15 +290,43 @@ textarea, input[type="text"] {
 }
 
 .btn:hover, .btn:active, .btn:focus {
-  background-color:#2c3e50;
+  background-color:#16a085;
   box-shadow:none;
 }
 
 
 /*---------- MAP PAGE ---------- */
+.directions {
+  color: #383838;
+  padding-left:30px;
+}
 .directions li {
-  padding-top:5px;
-  padding-bottom:5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-left: 1px solid rgb(219, 219, 219);
+  padding-left: 12px;
+  position: relative;
+}
+ol {
+  counter-reset:li;
+}
+ol > li {
+  list-style:none;
+}
+ol > li:before {
+  content:counter(li);
+  counter-increment:li;
+  position:relative;
+  left:-2em;
+  text-align:center;
+  color: gray;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
+  width:0px;
+  position: absolute;
 }
 
 .full {
@@ -318,13 +337,36 @@ textarea, input[type="text"] {
   position: absolute; bottom:0; left:0; top:60px; width:100%;
 }
 
+.nav-dir-icon {
+  font-family:FontAwesome;
+  font-size:45px;
+  line-height:50px;
+}
+
+.nav-dir-icon.start{
+  color:#2ecc71;
+}
+
+.nav-dir-icon.middle{
+  color:#f1c40f;
+  font-size: 18px;
+  line-height: 20px;
+  margin-right: 5px;
+}
+
+.nav-dir-icon.end{
+  color:#e74c3c;
+}
+
+
 .departure {
+  padding-bottom:10px;
   font-size:18px;
   color:black;
   background:url(../img/departure.png);
   background-size:40px 40px;
   background-repeat:no-repeat;
-  padding-left:40px;
+  text-align:center;
 }
 
 .arrival {
@@ -333,12 +375,13 @@ textarea, input[type="text"] {
   background:url(../img/arrival.png);
   background-size:40px 40px;
   background-repeat:no-repeat;
-  padding-left:40px;
+  text-align:center;
+  margin-bottom:30px;
 }
 
 .dist-time{
   color:rgb(158, 158, 158);
-  font-size:12px;
+  font-size:10px;
   text-align:right;
 }
 
@@ -540,6 +583,15 @@ textarea, input[type="text"] {
   }
 }
 
+#form-type {
+  padding-left: 25px;
+  font-size: 16px;
+  height: 60px;
+}
+#form-code, #form-comment {
+  border: 1px solid #ccc;
+}
+
 #report-modal.loading {
   // TODO: improve state transition animations
   .modal-footer {
@@ -677,5 +729,22 @@ textarea, input[type="text"] {
   .popup {
     display:none;
   }
-
+}
+@media (max-width: 350px) {
+    #title-icon {
+      width:30px;
+      height:30px;
+    }
+    #title {
+      font-size:30px;
+    }
+}
+@media (max-width: 240px) {
+  #title-icon {
+    width:20px;
+    height:20px;
+  }
+  #title {
+    font-size:20px;
+  }
 }

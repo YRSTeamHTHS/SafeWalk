@@ -147,9 +147,21 @@ $(document).ready(function () {
      * dragging collapsed sidebar
      */
 
+    //Scrolling works like this:
+    //Starting from clicking down the mouse,
+    //while the mouse moves when it is held down,
+    //The sidebar will follow the mouse...
+    //Once released, onClick and onUp functions will occur
+    //onClick loads the right data based on whichever button was clicked
+    //onUp checks whether the sidebar is up (#map-content.class(isUp)),
+    //and then animates correct animation.
+    //Once animation is done the isUp class will update so the new clickDown
+    //function will correctly respond.
+
+
     //var isSlideUp=0;
     var latestHeight;
-    $("#feed-btn,#dir-btn").mousedown(function(e){
+    $("#feed-btn, #dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
         if ($("#directions").is(":visible") ) {
@@ -177,8 +189,8 @@ $(document).ready(function () {
                     e.pageX > 0
                     ) {
                     $("#map-content").height(e.pageY);
-                }
 
+                }
                 return;
 
             });
@@ -215,21 +227,26 @@ $(document).ready(function () {
                         $("#map-content").height('20%');
                     }
 
-                }
 
+                }
                 return;
             });
             return;
         }
-
     });
 
 
     $("#feed-btn,#dir-btn").mouseup(function() {
         if ($(window).width() < 768){
             //alert(3);
-            if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
-            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){ _closeMobileSidebar();}
+            if (!($("#map-content").hasClass("isUp"))) {
+                _openMobileSidebar(500);
+                $(document).unbind('mousemove');
+            }
+            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){
+                _closeMobileSidebar();
+                $(document).unbind('mousemove');
+            }
         }
     });
 
@@ -265,6 +282,7 @@ $(document).ready(function () {
                     touch.pageX > 0
                     ) {
                     $("#map-content").height(touch.pageY);
+
                 }
                 return;
 
@@ -274,7 +292,7 @@ $(document).ready(function () {
         if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
 
-            var latestHeight = $("#map-content").height();
+            latestHeight = $("#map-content").height();
 
             $(document).bind('touchmove', function(e){
 
@@ -314,8 +332,14 @@ $(document).ready(function () {
     $("#feed-btn,#dir-btn").bind('touchend', function() {
         if ($(window).width() < 768){
             //alert(3);
-            if (!($("#map-content").hasClass("isUp"))) { _openMobileSidebar(500);}
-            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){ _closeMobileSidebar();}
+            if (!($("#map-content").hasClass("isUp"))) {
+                _openMobileSidebar(500);
+                $(document).unbind('touchmove');
+            }
+            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){
+                _closeMobileSidebar();
+                $(document).unbind('touchmove');
+            }
         }
     });
 
@@ -328,8 +352,6 @@ $(document).ready(function () {
         _updateScrollbars();
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
-        //if(!($("#map-content").hasClass("isUp")))
-            //_openMobileSidebar(500);
         clearBadge();
     });
 
@@ -341,7 +363,6 @@ $(document).ready(function () {
 
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
-        //changeMobileSidebar($("#map-content").hasClass("normal"));
         clearBadge();
     });
 
@@ -568,7 +589,7 @@ window.map = new function() {
 var LiveMVCArray = function(IntersectionsDataObject) {
     var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    var intersections = IntersectionsDataObject.data;
+    var intersections = IntersectionsDataObject;
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
@@ -584,10 +605,10 @@ var LiveMVCArray = function(IntersectionsDataObject) {
 
     this._newLatLng = function(lat, lon, weight) {
         return {location: new google.maps.LatLng(lat, lon), weight: weight};
-    }
+    };
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
-        var intersection = intersections[intersection_id];
+        var intersection = intersections.get(intersection_id);
         var weight = _this._calcIntersectionWeight(intersection);
         console.log("Updating weight for", intersection_id, 'to', weight);
         var index = _this.index_map[intersection_id];
@@ -595,11 +616,9 @@ var LiveMVCArray = function(IntersectionsDataObject) {
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    for (var id in intersections) {
-        if (intersections.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(intersections[id]);
-        }
-    }
+    intersections.each(function(intersection) {
+        _this.index_map[intersection['id']] = _this._pushToMVC(intersection);
+    });
 };
 
 function removeDuplicates(a) {
@@ -612,7 +631,7 @@ function removeDuplicates(a) {
             arr.push(a[i]);
         }
     }
-    return a;
+    return arr;
 }
 function isEqual(a, b) {
     if(a.name!== b.name) {
@@ -638,8 +657,9 @@ window.directions = new function() {
 
     this.directionsPanel = $("#directions .side-content");
     this.renderList = function(start, end, roads) {
+        start='<div class="nav-dir-icon start">&#xf0aa;</div></div><strong>Start</strong><br />'+start;
         var startElem = $('<div class="departure"></div>');
-        startElem.text(start).appendTo(this.directionsPanel);
+        startElem.html(start).appendTo(this.directionsPanel);
         var directionsList = $('<ol class="directions"></ol>');
         roads=removeDuplicates(roads);
         directionsList.appendTo(this.directionsPanel);
@@ -647,18 +667,22 @@ window.directions = new function() {
             var name = roads[i]['name'];
             var roadElem = $('<li></li>');
             var dir=Math.random();
+            var turnIcon;
             if (dir > 0.5) {
                 dir='<b>left</b>';
+                turnIcon='<span class="nav-dir-icon middle">&#xf0a8;</span>';
             } else {
                 dir='<b>right</b>';
+                turnIcon='<span class="nav-dir-icon middle">&#xf0a9;</span>';
             }
             var timeTo="TIME TO DESTINATION";
             timeTo='<div class="dist-time">'+timeTo+'</div>';
-            roadElem.html('Turn '+dir+' onto <b>'+name+'</b>').appendTo(directionsList);
+            roadElem.html(turnIcon+'Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList);
         }
 
+        end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />'+ end;
         var endElem = $('<div class="arrival"></div>');
-        endElem.text(end).appendTo(this.directionsPanel);
+        endElem.html(end).appendTo(this.directionsPanel);
         _updateScrollbars();
     };
 

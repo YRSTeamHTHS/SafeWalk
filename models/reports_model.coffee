@@ -1,11 +1,5 @@
-mongoose = require('mongoose')
+mongoose = require('./model_model')()
 
-if process.env.MONGO_URL?
-  url = process.env.MONGO_URL
-else
-  url = 'mongodb://localhost/brittyscenes'
-
-mongoose.connect(url)
 #mongoose.connect('mongodb://192.168.113.51/brittyscenes');
 #mongoose.connect('mongodb://212.71.249.18/brittyscenes');
 io = undefined

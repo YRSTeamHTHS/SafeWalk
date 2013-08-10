@@ -1,6 +1,7 @@
 map_model = require('../models/map_model')
-intersections = map_model.intersections
+intersections_model = require('../models/intersections_model')
 connections = map_model.connections
 
 exports.all = (req, res) ->
-  res.send intersections
+  console.log intersections_model.intersections
+  res.send intersections_model.intersections

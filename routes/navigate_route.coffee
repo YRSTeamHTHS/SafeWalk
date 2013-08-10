@@ -1,20 +1,23 @@
 map_model = require('../models/map_model')
-intersections = map_model.intersections
+intersections_model = require('../models/intersections_model')
+#intersections = intersections_model.intersections
 connections = map_model.connections
 
 astar = (start, end) ->
-  if not intersections.hasOwnProperty(start)
-    return false
-
   # Copy the array of intersections
   nodes = []
-  for id, node of intersections
+  foundStart = false
+  foundEnd = false
+  for node in intersections_model.intersections
+    if node['id'] == start then foundStart = true
+    if node['id'] == end then foundEnd = true
     new_node = {}
     for prop, val of node
       new_node[prop] = val
     new_node.closed = false
-    new_node.id = id
-    nodes[id] = new_node
+    nodes[node['id']] = new_node
+
+  if !(foundStart and foundEnd) then return false
   open_nodes = [start]
   start_node = nodes[start]
   end_node = nodes[end]
