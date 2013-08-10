@@ -93,6 +93,7 @@ body {
   height:7px;
   width:7px;
   margin-left:8px;
+  border-radius:0;
 }
 
 .navbar .nav.navbar-nav > li > a {
@@ -257,16 +258,6 @@ body {
   margin-right:17px;
 }
 
-
-
-.nav-icon-entypo {
-  font-family:EntypoSocial;
-  font-size:38px;
-  line-height:60px;
-  text-align:center;
-  margin-right:17px;
-}
-
 textarea, input[type="text"] {
   border:none;
   padding:30px;
@@ -307,10 +298,35 @@ textarea, input[type="text"] {
 /*---------- MAP PAGE ---------- */
 .directions {
   color: #383838;
+  padding-left:30px;
 }
 .directions li {
-  padding-top:10px;
-  padding-bottom:10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-left: 1px solid rgb(219, 219, 219);
+  padding-left: 12px;
+  position: relative;
+}
+ol {
+  counter-reset:li;
+}
+ol > li {
+  list-style:none;
+}
+ol > li:before {
+  content:counter(li);
+  counter-increment:li;
+  position:relative;
+  left:-2em;
+  text-align:center;
+  color: gray;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
+  width:0px;
+  position: absolute;
 }
 
 .full {
@@ -320,6 +336,28 @@ textarea, input[type="text"] {
 .map-wrapper {
   position: absolute; bottom:0; left:0; top:60px; width:100%;
 }
+
+.nav-dir-icon {
+  font-family:FontAwesome;
+  font-size:45px;
+  line-height:50px;
+}
+
+.nav-dir-icon.start{
+  color:#2ecc71;
+}
+
+.nav-dir-icon.middle{
+  color:#f1c40f;
+  font-size: 18px;
+  line-height: 20px;
+  margin-right: 5px;
+}
+
+.nav-dir-icon.end{
+  color:#e74c3c;
+}
+
 
 .departure {
   padding-bottom:10px;
@@ -338,11 +376,12 @@ textarea, input[type="text"] {
   background-size:40px 40px;
   background-repeat:no-repeat;
   text-align:center;
+  margin-bottom:30px;
 }
 
 .dist-time{
   color:rgb(158, 158, 158);
-  font-size:12px;
+  font-size:10px;
   text-align:right;
 }
 
@@ -543,16 +582,13 @@ textarea, input[type="text"] {
     text-align: center;
   }
 }
-#inputCode {
-  margin-top:20px;
-  border: 1px solid #ccc;
-}
+
 #form-type {
   padding-left: 25px;
   font-size: 16px;
   height: 60px;
 }
-#form-comment {
+#form-code, #form-comment {
   border: 1px solid #ccc;
 }
 

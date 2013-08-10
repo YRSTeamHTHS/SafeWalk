@@ -665,7 +665,7 @@ window.directions = new function() {
 
     this.directionsPanel = $("#directions .side-content");
     this.renderList = function(start, end, roads) {
-        start='<strong>Start</strong><br />'+start;
+        start='<div class="nav-dir-icon start">&#xf0aa;</div></div><strong>Start</strong><br />'+start;
         var startElem = $('<div class="departure"></div>');
         startElem.html(start).appendTo(this.directionsPanel);
         var directionsList = $('<ol class="directions"></ol>');
@@ -675,18 +675,22 @@ window.directions = new function() {
             var name = roads[i]['name'];
             var roadElem = $('<li></li>');
             var dir=Math.random();
+            var turnIcon;
             if (dir > 0.5) {
                 dir='<b>left</b>';
+                turnIcon='<span class="nav-dir-icon middle">&#xf0a8;</span>';
             } else {
                 dir='<b>right</b>';
+                turnIcon='<span class="nav-dir-icon middle">&#xf0a9;</span>';
             }
             var timeTo="TIME TO DESTINATION";
             timeTo='<div class="dist-time">'+timeTo+'</div>';
-            roadElem.html('Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList);
+            roadElem.html(turnIcon+'Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList);
         }
 
+        end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />'+ end;
         var endElem = $('<div class="arrival"></div>');
-        endElem.text(end).appendTo(this.directionsPanel);
+        endElem.html(end).appendTo(this.directionsPanel);
     };
 
     this.renderMap = function(path) {
