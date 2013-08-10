@@ -32,7 +32,7 @@ astar = (start, end) ->
   count = 0
   while open_nodes.length > 0
     count++
-    console.log 'navigate_route', open_nodes
+#    console.log 'navigate_route', open_nodes.length
     # Sort the working nodes by f
     open_nodes.sort (idA, idB) ->
       fA = nodes[idA].f
@@ -88,11 +88,12 @@ reconstructRoute = (nodes, start, end) ->
   current_road = -1
   for item in route
     if item.path? then path = path.concat(item.path)
-    basic_item =
-      id: item['id']
-      lat: item['loc']['coordinates'][1]
-      lon: item['loc']['coordinates'][0]
-    path.push(basic_item)
+#    basic_item =
+#      id: item['id']
+#      lat: item['loc']['coordinates'][1]
+#      lon: item['loc']['coordinates'][0]
+#    path.push(basic_item)
+    path.push(item)
     if item.road_id? and item.road_id != current_road
       roads.push({'id': item.road_id, 'name': item.road_name})
       current_road = item.road_id
@@ -135,7 +136,10 @@ exports.navCoordinates = (req, res) ->
       to = result
       if from?.id? and to?.id?
         console.log from.id, to.id
-        res.send(astar(from.id, to.id))
+        route = astar(from.id, to.id)
+        route.start = from.id
+        route.end = to.id
+        res.send(route)
 
 exports.searchmap = (req,res) ->
   search = (req.query.search);

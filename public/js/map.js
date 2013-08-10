@@ -657,7 +657,7 @@ window.directions = new function() {
         console.log('Getting directions', lat1, lon1, lat2, lon2);
         $.post('/navigate/navCoordinates', {lat1: lat1, lon1: lon1, lat2: lat2, lon2: lon2}, function(data) {
             console.log('Directions data:', data);
-            window.directions.renderList(start, end, data['roads']);
+            window.directions.renderList(data.start, data.end, data['roads']);
             window.directions.renderMap(data['path']);
         });
     };
