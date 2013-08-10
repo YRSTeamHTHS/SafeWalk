@@ -1,4 +1,5 @@
-mongoose = require('./model_model')()
+mongoose = require('./model_model')
+#mongoose.set('debug', true)
 IntersectionsData = require('../shared/IntersectionsData.js')
 
 Schema = mongoose.Schema;
@@ -10,7 +11,7 @@ reportSchema = new Schema({
 })
 intersectionSchema = new Schema({
   id: Number,
-  loc: {type: Number, index: '2dsphere'},
+  loc: {type: mongoose.Schema.Types.Mixed, index: '2dsphere'},
   crimes: [String],
   reports: [reportSchema]
 })
@@ -20,7 +21,7 @@ data = null
 
 model.find {}, (err, intersections) ->
   if (err || intersections.length == 0)
-    throw new Error()
+    console.log err
   else
     console.log "Loaded saved intersection data"
     data = new IntersectionsData(intersections)
