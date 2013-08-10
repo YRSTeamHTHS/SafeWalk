@@ -75,7 +75,7 @@ $(document).ready(function () {
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
-            _createFeedItem(time,type,comment);
+            _createFeedItem(time,type,comment, -1);
         });
     });
 
@@ -100,31 +100,6 @@ $(document).ready(function () {
         return urlParams;
     };
 
-    /**
-     * process a js Date object
-     * @param date
-     * @private
-     */
-    function _processDate(date) {
-        var longdate = date.toDateString();
-        var time = _formatNumber(date.getHours()) + ":" + _formatNumber(date.getMinutes()) + ":" + _formatNumber(date.getSeconds());
-        return longdate + " @ " + time;
-    }
-
-    /**
-     * formats a two digit number
-     * if number is less than 10, pads a zero.
-     * @param number        number to format
-     * @returns string      formatted number
-     * @private
-     */
-    function _formatNumber(number) {
-        if (parseInt(number) < 10) {
-            return "0" + number;
-        }
-        else return number;
-    }
-
     var isWindowSize = ($(window).width() >= 768);
 
 
@@ -133,7 +108,7 @@ $(document).ready(function () {
         var socket = io.connect('/');
         socket.on('livereport', function (data) {
             var report = data.report; //@todo for some reason there is a nested report
-            _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment);
+            _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment, -1);
             $("#live-feed").mCustomScrollbar("update");
 
             incrementBadge();
@@ -477,9 +452,12 @@ function clearBadge(){
  * @param type
  * @param comment
  */
-function _createFeedItem(time,type,comment) {
+function _createFeedItem(time,type,comment, pending) {
     var html=$('<div class="feed-item feed-item-hidden"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+    if (pending == -1)
     $("#live-feed").prepend(html);
+    else
+    $("#live-feed .mCSB_container").append(html);
     html.removeClass('feed-item-hidden',300);
 }
 
@@ -726,18 +704,45 @@ function _updateScrollbars() {
                             var time = _processDate(new Date(val.time));
                             var type = val.type;
                             var comment = val.comment;
-                            _createFeedItem(time,type,comment);
+                            _createFeedItem(time,type,comment,1);
                         });
                         $("#live-feed").mCustomScrollbar("update");
-                        totalScrollCall = false;
+                        totalScrollCall = true;
+                        console.log(data);
                         }
-
                     })
                 }
             },
             onTotalScrollOffset:100
         }
     })
+}
 
+/**
+ * process a js Date object
+ * @param date
+ * @private
+ */
+function _processDate(date) {
+    var longdate = date.toDateString();
+    var time = _formatNumber(date.getHours()) + ":" + _formatNumber(date.getMinutes()) + ":" + _formatNumber(date.getSeconds());
+    return longdate + " @ " + time;
+}
+
+/**
+ * formats a two digit number
+ * if number is less than 10, pads a zero.
+ * @param number        number to format
+ * @returns string      formatted number
+ * @private
+ */
+function _formatNumber(number) {
+    if (parseInt(number) < 10) {
+        return "0" + number;
+    }
+    else return number;
+}
+
+function _scrollBottom(data) {
 
 }

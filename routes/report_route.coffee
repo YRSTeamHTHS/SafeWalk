@@ -56,7 +56,8 @@ exports.getall = (req, res) ->
   )
 
 exports.getLimitSkip = (req, res) ->
-  skip = req.body.id;
+  skip = req.body.skip;
+  console.log skip
   db.getReportsSkip(20, skip, (result) ->
     if result
       res.send(result)
