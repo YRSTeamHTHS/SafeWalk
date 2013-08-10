@@ -55,6 +55,13 @@ exports.getall = (req, res) ->
       res.send(result)
   )
 
+exports.getLimitSkip = (req, res) ->
+  skip = req.body.id;
+  db.getReportsSkip(20, skip, (result) ->
+    if result
+      res.send(result)
+  )
+
 sms_regex = /^([0-9a-zA-Z]+)[,\n] *([a-zA-Z ])[,\n] *(.*)$/
 exports.twilio = (req, res) ->
   message = req.body['Body']
