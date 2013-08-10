@@ -673,7 +673,7 @@ window.directions = new function() {
         directionsList.appendTo(this.directionsPanel);
         for (var i=0; i<roads.length; i++) {
             var name = roads[i]['name'];
-            var roadElem = $('<li></li>');
+            var roadElem = $('<li style="display:none"></li>');
             var dir=Math.random();
             var turnIcon;
             if (dir > 0.5) {
@@ -683,9 +683,9 @@ window.directions = new function() {
                 dir='<b>right</b>';
                 turnIcon='<span class="nav-dir-icon middle">&#xf0a9;</span>';
             }
-            var timeTo="TIME TO DESTINATION";
+            var timeTo=Math.round(Math.random()*9) + " minutes";
             timeTo='<div class="dist-time">'+timeTo+'</div>';
-            roadElem.html(turnIcon+'Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList);
+            roadElem.html(turnIcon+'Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList).show(5000);
         }
 
         end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />'+ end;
