@@ -315,6 +315,9 @@ $(document).ready(function () {
                     touch.pageX > 0
                     ) {
                     $("#map-content").height(touch.pageY);
+                    if (Math.abs(touch.pageY) - latestHeight <60){
+                        $("#map-content").height('20%');
+                    }
                 }
                 return;
             });
@@ -330,7 +333,7 @@ $(document).ready(function () {
                 _openMobileSidebar(500);
                 $(document).unbind('touchmove');
             }
-            if ($("#map-content").hasClass("isUp")){
+            if ($("#map-content").hasClass("isUp") && $("#map-content").height() - latestHeight > 60){
                 _closeMobileSidebar();
                 $(document).unbind('touchmove');
             }
