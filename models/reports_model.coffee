@@ -83,6 +83,18 @@ exports.getReports = (limit, callback) ->
       callback(result)
   )
 
+  #TODO combine with above
+exports.getReportsSkip = (limit, skip, callback) ->
+  query = ReportModel.find({},{code:0})
+  query.sort({_id:-1}).limit(limit).skip(skip)
+  query.exec( (err, result) ->
+    if (err)
+      callback(false)
+    else
+      result.reverse() #reverse array so that oldest to newest (allows use of prepend)
+      callback(result)
+  )
+
 exports.getAllReports = (callback) ->
   query = ReportModel.find {}, (err, reports) ->
     if (err || reports.length == 0)

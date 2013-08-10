@@ -702,12 +702,40 @@ window.directions = new function() {
     }
 };
 
+var totalScrollCall = true;
 function _updateScrollbars() {
     $("#live-feed,#directions-scrollbar").mCustomScrollbar("destroy");
-    $("#live-feed,#directions-scrollbar").mCustomScrollbar({
-        scrollButtons:{
-            enable:true
-        },scrollInertia:0,theme:"dark-thick"
+    $("#directions-scrollbar").mCustomScrollbar({
+        scrollButtons:{enable:true},scrollInertia:0,theme:"dark-thick"
+    })
+    $("#live-feed").mCustomScrollbar({
+        scrollButtons:{enable:true},scrollInertia:0,theme:"dark-thick",
+        callbacks:{
+            onTotalScroll:function(){
+                if (totalScrollCall == true) {
+                console.log("scrolled to bottom");
+                    totalScrollCall = false;
+                nLoaded = $(".feed-item").length
+                $.ajax({
+                    url: "/report/getLimitSkip",
+                    data: {skip: nLoaded},
+                    type: "POST",
+                    success: function(data) {
+                        $.each(data, function (key, val) {
+                            var time = _processDate(new Date(val.time));
+                            var type = val.type;
+                            var comment = val.comment;
+                            _createFeedItem(time,type,comment);
+                        });
+                        $("#live-feed").mCustomScrollbar("update");
+                        totalScrollCall = false;
+                        }
+
+                    })
+                }
+            },
+            onTotalScrollOffset:100
+        }
     })
 
 

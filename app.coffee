@@ -57,6 +57,7 @@ app.get('/report/getall', report.getall)
 app.post('/report/submit', report.submit)
 app.get('/intersections/all', intersections.all)
 app.post('/twilio', report.twilio)
+app.post('/report/getLimitSkip', report.getLimitSkip)
 
 ###
 app.get '/parse', (req, res) ->
