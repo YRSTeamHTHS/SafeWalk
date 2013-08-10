@@ -3,14 +3,31 @@
         var _this = this;
         this.data = data;
         this.listeners = [];
+        var idmap = {};
+        for (var i=0; i<this.data.length; i++) {
+            idmap[this.data[i]['id']] = i;
+        }
+
+        this.get = function(intersection_id) {
+            return this.data[idmap[intersection_id]];
+        };
+
+        this.getLat = function(intersection_id) {
+            return this.get(intersection_id)['loc']['coordinates'][1];
+        }
+
+        this.getLon = function(intersection_id) {
+            return this.get(intersection_id)['loc']['coordinates'][0];
+        }
+
+        this.each = function(callback) {
+            for (var i=0; i<this.data.length; i++) {
+                callback(this.data[i]);
+            }
+        };
 
         this.update = function(intersection_id, update) {
-            var intersection = _this.data[intersection_id];
-            if (typeof intersection === 'undefined') {
-                return false;
-            }
-            var lat = intersection['lat'];
-            var lon = intersection['lon'];
+            var intersection = _this.get(intersection_id);
             for (var i=0; i<update['reports'].length; i++) {
                 console.log(update['reports'][i]);
                 intersection['reports'].push(update['reports'][i]);

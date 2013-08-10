@@ -1,4 +1,4 @@
-mongoose = require('./model_model')()
+mongoose = require('./model_model')
 
 #mongoose.connect('mongodb://192.168.113.51/brittyscenes');
 #mongoose.connect('mongodb://212.71.249.18/brittyscenes');
@@ -80,6 +80,17 @@ exports.getReports = (limit, callback) ->
       callback(false)
     else
       result.reverse() #reverse array so that oldest to newest (allows use of prepend)
+      callback(result)
+  )
+
+  #TODO combine with above
+exports.getReportsSkip = (limit, skip, callback) ->
+  query = ReportModel.find({},{code:0})
+  query.sort({_id:-1}).limit(limit).skip(skip)
+  query.exec( (err, result) ->
+    if (err)
+      callback(false)
+    else
       callback(result)
   )
 

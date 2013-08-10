@@ -1,3 +1,24 @@
+/**
+ * adjusts background image sized based on ratio of window height and width
+ */
+function sizeBackground() {
+    ratio=$(window).width()/($(window).height()-60);
+    imgRatio=1.33;
+    if (ratio < imgRatio) {
+        height=($(window).height()-60);
+        width=height*imgRatio;
+        height=height+'px';
+        width=width+'px';
+    } else {
+        width=$(window).width();
+        height=width*(1/imgRatio);
+        height=height+'px';
+        width=width+'px';
+    }
+    dim=width + ' ' + height;
+    $('#background-wrapper').css('backgroundSize', dim);
+}
+
 $.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%3D%2212695841%22&format=json&u=c', function(data) {
     var thing=data.query.results.channel.item.condition;
     var temperature=Math.round(5/9*(parseInt(thing.temp)-32))+'&#176; C';
@@ -21,13 +42,20 @@ $.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weathe
     else {
         $('#background-wrapper').css('background', 'url("/img/weather/cloudy.jpg")');
     }
+
+    var imgUrl = $('#background-wrapper').css('backgroundImage');
+    $('<img>').attr('src',function(){
+        imgUrl = imgUrl .substring(4, imgUrl.length-1);
+        return imgUrl;
+    }).load(function(){
+        sizeBackground();
+    });
+
     $('#weather').html(temperature + ' – ' + condition);
 });
-/*$('#background-wrapper').load(function() {
-    sizeBackground();
-    alert(1);
-}*/
+
 $(document).ready(function(){
+
     sizeBackground();
     //adjust size of background image
     var count = 0;//running count of bubbles on the screen
@@ -80,26 +108,5 @@ $(document).ready(function(){
     $(window).resize(function() {
         sizeBackground();
     });
-
-    /**
-     * adjusts background image sized based on ratio of window height and width
-     */
-    function sizeBackground() {
-        ratio=$(window).width()/($(window).height()-60);
-        imgRatio=1.33;
-        if (ratio < imgRatio) {
-            height=($(window).height()-60);
-            width=height*imgRatio;
-            height=height+'px';
-            width=width+'px';
-        } else {
-            width=$(window).width();
-            height=width*(1/imgRatio);
-            height=height+'px';
-            width=width+'px';
-        }
-        dim=width + ' ' + height;
-        $('#background-wrapper').css('backgroundSize', dim);
-    }
 
 });

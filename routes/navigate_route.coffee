@@ -82,7 +82,11 @@ reconstructRoute = (nodes, start, end) ->
   current_road = -1
   for item in route
     if item.path? then path = path.concat(item.path)
-    path.push(item)
+    basic_item =
+      id: item['id']
+      lat: item['loc']['coordinates'][1]
+      lon: item['loc']['coordinates'][0]
+    path.push(basic_item)
     if item.road_id? and item.road_id != current_road
       roads.push({'id': item.road_id, 'name': item.road_name})
       current_road = item.road_id
@@ -111,6 +115,19 @@ exports.nav = (req, res) ->
   start = parseInt(req.query.start)
   end = parseInt(req.query.end)
   res.send(astar(start, end))
+
+exports.navCoordinates = (req, res) ->
+  lat1 = req.body.lat1
+  lon1 = req.body.lon1
+  lat2 = req.body.lat2
+  lon2 = req.body.lon2
+
+  # Search for nearest intersection to each
+  intersections_model.getNearest lat1, lon1, (result) ->
+    from = result
+    intersections_model.getNearest lat2, lon2, (result) ->
+      to = result
+      res.send(astar(from['id'], to['id']))
 
 exports.searchmap = (req,res) ->
   search = (req.query.search);

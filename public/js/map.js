@@ -3,8 +3,9 @@
  */
 //var google;
 
-$(document).ready(function () {
 
+
+$(document).ready(function () {
     /*document.ontouchstart = function(e){
         e.preventDefault();
     }*/
@@ -39,7 +40,7 @@ $(document).ready(function () {
         }, false);
     };*/
 
-    var param = _getParameters();
+    /*var param = _getParameters();
     switch (param.type) {
         case "search":
             $.ajax({
@@ -66,7 +67,7 @@ $(document).ready(function () {
                     $("#map-wrapper").html(data);
                 }
             });
-    }
+    }*/
 
     //preload some feed items
     $.getJSON('/report/getall', function (data) {
@@ -74,7 +75,7 @@ $(document).ready(function () {
             var time = _processDate(new Date(val.time));
             var type = val.type;
             var comment = val.comment;
-            _createFeedItem(time,type,comment);
+            _createFeedItem(time,type,comment, -1);
         });
     });
 
@@ -97,31 +98,39 @@ $(document).ready(function () {
             urlParams[decode(match[1])] = decode(match[2]);
         }
         return urlParams;
-    };
-
-    /**
-     * process a js Date object
-     * @param date
-     * @private
-     */
-    function _processDate(date) {
-        var longdate = date.toDateString();
-        var time = _formatNumber(date.getHours()) + ":" + _formatNumber(date.getMinutes()) + ":" + _formatNumber(date.getSeconds());
-        return longdate + " @ " + time;
     }
 
-    /**
-     * formats a two digit number
-     * if number is less than 10, pads a zero.
-     * @param number        number to format
-     * @returns string      formatted number
-     * @private
-     */
-    function _formatNumber(number) {
-        if (parseInt(number) < 10) {
-            return "0" + number;
-        }
-        else return number;
+    // begin directions search using the parameters
+    var params = _getParameters();
+    var geocoder = new google.maps.Geocoder();
+    switch (params['type']) {
+        case 'directions':
+            geocoder.geocode({'address': params['from']}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var lat1 = results[0].geometry.location.lat();
+                    var lon1 = results[0].geometry.location.lng();
+                    geocoder.geocoder({'address': params['to']}, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            var lat2 = results[0].geometry.location.lat();
+                            var lon2 = results[0].geometry.location.lng();
+                            console.log(lat1, lon1, lat2, lon2);
+                            window.directions.get(lat1, lon1, lat2, lon2);
+                        }
+                    });
+                }
+            });
+            break;
+        case 'search':
+            geocoder.geocode({'address': params['search']}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    window.map.gmap.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: window.map.gmap,
+                        position: results[0].geometry.location
+                    });
+                }
+            });
+            break;
     }
 
     var isWindowSize = ($(window).width() >= 768);
@@ -132,7 +141,9 @@ $(document).ready(function () {
         var socket = io.connect('/');
         socket.on('livereport', function (data) {
             var report = data.report; //@todo for some reason there is a nested report
-            _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment);
+            _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment, -1);
+            $("#live-feed").mCustomScrollbar("update");
+
             incrementBadge();
             window.intersections.update(report['id'], {'reports': [report]});
         });
@@ -346,7 +357,7 @@ $(document).ready(function () {
     $("#feed-btn").click(function() {
         $("#directions").fadeOut();
         $("#feed").fadeIn();
-
+        _updateScrollbars();
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
         clearBadge();
@@ -369,7 +380,7 @@ $(document).ready(function () {
     $("#dir-btn").click(function() {
         $("#feed").fadeOut();
         $("#directions").fadeIn();
-
+        _updateScrollbars();
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
     });
@@ -379,7 +390,7 @@ $(document).ready(function () {
         e.preventDefault();
         $("#feed").fadeOut();
         $("#directions").fadeIn();
-
+        _updateScrollbars();
         $("#sidebar .btn").removeClass("on");
         $(this).addClass("on");
     });
@@ -412,6 +423,7 @@ $(document).ready(function () {
     $("#feed-btn").click(function() {
         $("#directions").hide();
         $("#feed").fadeIn();
+        _updateScrollbars();
     });
 
     /**
@@ -456,25 +468,15 @@ $(document).ready(function () {
 
 function incrementBadge(){
     if (!($('#feed-btn').hasClass('on'))) {
-        $('#feed-badge').html(getInt($('#feed-badge').html())+1).css("background-color","#c0392b");
+        newFeeds = parseInt($('#feed-badge').html())+1;
+        $('#feed-badge').html(newFeeds).css("background-color","#c0392b");
+        $('title').text("("+newFeeds+") " + "SafeWalk")
     }
 }
 
 function clearBadge(){
     $('#feed-badge').html(0).css("background-color","");
-}
-/**
- * parses integer, returns 0 if empty string
- * @param num
- * @returns {*}
- */
-function getInt(num){
-    if(num=="") {
-        return 0;
-    }
-    else {
-        return parseInt(num);
-    }
+    $('title').text("SafeWalk");
 }
 
 /**
@@ -483,9 +485,12 @@ function getInt(num){
  * @param type
  * @param comment
  */
-function _createFeedItem(time,type,comment) {
+function _createFeedItem(time,type,comment, pending) {
     var html=$('<div class="feed-item feed-item-hidden"><hr>' + '<div class="feed-type">' + type + '</div><div class="feed-comment">' + comment + '</div><div class="feed-time">—' + time + '</div></div>');
+    if (pending == -1)
     $("#live-feed").prepend(html);
+    else
+    $("#live-feed .mCSB_container").append(html);
     html.removeClass('feed-item-hidden',300);
 }
 
@@ -577,9 +582,10 @@ window.map = new function() {
         window.directions.get('344234568', '2345009892');
 
         $.getJSON('/intersections/all', function(data) {
+            console.log("Got intersections data");
             window.intersections = new IntersectionsData(data);
             _this.LiveMVCArray = new LiveMVCArray(window.intersections);
-            console.log(_this.LiveMVCArray);
+            console.log("LiveMVCArray", _this.LiveMVCArray);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
                 data: _this.LiveMVCArray.MVCArray
             });
@@ -595,38 +601,35 @@ window.map = new function() {
 var LiveMVCArray = function(IntersectionsDataObject) {
     var _this = this;
     this.MVCArray = new google.maps.MVCArray();
-    var intersections = IntersectionsDataObject.data;
+    var intersections = IntersectionsDataObject;
     this.index_map = {};
 
     this._pushToMVC = function(intersection) {
-        console.log('Adding weight to MVC');
-        var weight = this._calcIntersectionWeight(intersection);
-        return (_this.MVCArray.push(this._newLatLng(intersection['lat'], intersection['lon'], weight)) - 1);
+        return (_this.MVCArray.push(this._newLatLng(intersection)) - 1);
     };
 
     this._calcIntersectionWeight = function(intersection) {
-        //console.log(intersection);
         return intersection['crimes'].length + intersection['reports'].length;
     };
 
-    this._newLatLng = function(lat, lon, weight) {
+    this._newLatLng = function(intersection) {
+        var lat = intersection['loc']['coordinates'][1];
+        var lon = intersection['loc']['coordinates'][0];
+        var weight = _this._calcIntersectionWeight(intersection);
         return {location: new google.maps.LatLng(lat, lon), weight: weight};
-    }
+    };
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
-        var intersection = intersections[intersection_id];
-        var weight = _this._calcIntersectionWeight(intersection);
+        var intersection = intersections.get(intersection_id);
         console.log("Updating weight for", intersection_id, 'to', weight);
         var index = _this.index_map[intersection_id];
-        var newLatLng = _this._newLatLng(intersection['lat'], intersection['lon'], weight);
+        var newLatLng = _this._newLatLng(intersection);
         _this.MVCArray.setAt(index, newLatLng);
     });
 
-    for (var id in intersections) {
-        if (intersections.hasOwnProperty(id)) {
-            this.index_map[id] = this._pushToMVC(intersections[id]);
-        }
-    }
+    intersections.each(function(intersection) {
+        _this.index_map[intersection['id']] = _this._pushToMVC(intersection);
+    });
 };
 
 function removeDuplicates(a) {
@@ -654,9 +657,8 @@ window.directions = new function() {
      * @param start     start location
      * @param end       end location
      */
-    this.get = function(start, end) {
-        var url = '/navigate/nav?start=' + encodeURIComponent(start) + '&end=' + encodeURIComponent(end);
-        $.getJSON(url, function(data) {
+    this.get = function(lat1, lon1, lat2, lon2) {
+        $.post('/navigate/navCoordinates', {lat1: lat1, lon1: lon1, lat2: lat2, lon2: lon2}, function(data) {
             console.log('Directions data:', data);
             window.directions.renderList(start, end, data['roads']);
             window.directions.renderMap(data['path']);
@@ -691,11 +693,11 @@ window.directions = new function() {
         end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />'+ end;
         var endElem = $('<div class="arrival"></div>');
         endElem.html(end).appendTo(this.directionsPanel);
+        _updateScrollbars();
     };
 
     this.renderMap = function(path) {
-        // TODO: use MVC path type for easier updating
-        // TODO: fix line display
+        // TODO: fix line display at corners
         var coors = [];
         for (var i=0; i<path.length; i++) {
             coors.push(new google.maps.LatLng(path[i]['lat'], path[i]['lon']));
@@ -709,3 +711,67 @@ window.directions = new function() {
         line.setMap(window.map.gmap);
     }
 };
+
+var totalScrollCall = true;
+function _updateScrollbars() {
+    $("#live-feed,#directions-scrollbar").mCustomScrollbar("destroy");
+    $("#directions-scrollbar").mCustomScrollbar({
+        scrollButtons:{enable:true},scrollInertia:0,theme:"dark-thick"
+    })
+    $("#live-feed").mCustomScrollbar({
+        scrollButtons:{enable:true},scrollInertia:0,theme:"dark-thick",
+        callbacks:{
+            onTotalScroll:function(){
+                if (totalScrollCall == true) {
+                    totalScrollCall = false;
+                nLoaded = $(".feed-item").length
+                $.ajax({
+                    url: "/report/getLimitSkip",
+                    data: {skip: nLoaded},
+                    type: "POST",
+                    success: function(data) {
+                        $.each(data, function (key, val) {
+                            var time = _processDate(new Date(val.time));
+                            var type = val.type;
+                            var comment = val.comment;
+                            _createFeedItem(time,type,comment,1);
+                        });
+                        $("#live-feed").mCustomScrollbar("update");
+                        totalScrollCall = true;
+                        }
+                    })
+                }
+            },
+            onTotalScrollOffset:100
+        }
+    })
+}
+
+/**
+ * process a js Date object
+ * @param date
+ * @private
+ */
+function _processDate(date) {
+    var longdate = date.toDateString();
+    var time = _formatNumber(date.getHours()) + ":" + _formatNumber(date.getMinutes()) + ":" + _formatNumber(date.getSeconds());
+    return longdate + " @ " + time;
+}
+
+/**
+ * formats a two digit number
+ * if number is less than 10, pads a zero.
+ * @param number        number to format
+ * @returns string      formatted number
+ * @private
+ */
+function _formatNumber(number) {
+    if (parseInt(number) < 10) {
+        return "0" + number;
+    }
+    else return number;
+}
+
+function _scrollBottom(data) {
+
+}
