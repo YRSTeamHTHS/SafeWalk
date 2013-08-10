@@ -584,12 +584,13 @@ window.map = new function() {
 
         $.getJSON('/intersections/all', function(data) {
             console.log("Got intersections data");
-            window.intersections = new IntersectionsData(data);
+            window.intersections = new IntersectionsData(data.data);
             _this.LiveMVCArray = new LiveMVCArray(window.intersections);
             console.log("LiveMVCArray", _this.LiveMVCArray);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
                 data: _this.LiveMVCArray.MVCArray
             });
+            console.log('heatmap', window.heatmap);
             window.heatmap.setMap(window.map.gmap);
         });
     };
@@ -610,7 +611,8 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     };
 
     this._calcIntersectionWeight = function(intersection) {
-        return intersection['crimes'].length + intersection['reports'].length;
+        return Math.random();
+//        return intersection['crimes'].length + intersection['reports'].length;
     };
 
     this._newLatLng = function(intersection) {
@@ -622,7 +624,7 @@ var LiveMVCArray = function(IntersectionsDataObject) {
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
         var intersection = intersections.get(intersection_id);
-        console.log("Updating weight for", intersection_id, 'to', weight);
+        console.log("Updating weight for", intersection_id);
         var index = _this.index_map[intersection_id];
         var newLatLng = _this._newLatLng(intersection);
         _this.MVCArray.setAt(index, newLatLng);
