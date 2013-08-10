@@ -6,6 +6,9 @@
         var idmap = {};
         for (var i=0; i<this.data.length; i++) {
             idmap[this.data[i]['id']] = i;
+            if (!this.data[i].hasOwnProperty('reports')) {
+                this.data[i]['reports'] = [];
+            }
         }
 
         this.get = function(intersection_id) {
@@ -14,11 +17,11 @@
 
         this.getLat = function(intersection_id) {
             return this.get(intersection_id)['loc']['coordinates'][1];
-        }
+        };
 
         this.getLon = function(intersection_id) {
             return this.get(intersection_id)['loc']['coordinates'][0];
-        }
+        };
 
         this.each = function(callback) {
             for (var i=0; i<this.data.length; i++) {
@@ -43,6 +46,10 @@
             for (var i=0; i<this.listeners.length; i++) {
                 this.listeners[i](intersection_id);
             }
+        };
+
+        this.size = function() {
+             return this.data.length;
         };
     };
 

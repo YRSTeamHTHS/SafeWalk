@@ -17,7 +17,6 @@ intersectionSchema = new Schema({
 })
 model = mongoose.model('intersections', intersectionSchema)
 readyListeners = []
-data = null
 
 #model.find {}, (err, intersections) ->
 #  if (err || intersections.length == 0)
@@ -29,21 +28,10 @@ data = null
 #    for callback in readyListeners
 #      callback()
 
-ready = false
-exports.onReady = (callback) ->
-  if ready
-    callback()
-  else
-    readyListeners.push callback
-
 exports.import = (intersectionArray, callback) ->
   model.create intersectionArray, (err) ->
     console.log err
-    data = new IntersectionsData(intersectionArray)
-    exports.intersections = data.data
-    ready = true
-    for readyCallback in readyListeners
-      readyCallback()
+    exports.intersections = new IntersectionsData(intersectionArray)
     callback()
 
 exports.getNearest = (lat, lon, callback) ->
@@ -57,7 +45,10 @@ exports.getNearest = (lat, lon, callback) ->
     callback result
 
 exports.update = (intersection_id, update, callback) ->
-  data.update intersection_id, update
+  # Push to local cache
+  exports.intersections.update intersection_id, update
+
+  # Push to database
   model.update {id: intersection_id}, {$pushAll: update}, (err) ->
     if callback?
       callback err

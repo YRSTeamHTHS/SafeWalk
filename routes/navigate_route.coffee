@@ -4,12 +4,13 @@ intersections_model = require('../models/intersections_model')
 connections = map_model.connections
 
 astar = (start, end) ->
+  console.log 'navigate_route', start, end
   # Copy the array of intersections
   nodes = {}
   foundStart = false
   foundEnd = false
   count = 0
-  for node in intersections_model.intersections
+  intersections_model.intersections.each (node) ->
     count++
     if node['id'] == start then foundStart = true
     if node['id'] == end then foundEnd = true
@@ -21,8 +22,7 @@ astar = (start, end) ->
     new_node['lon'] = node['loc']['coordinates'][0]
     new_node['closed'] = false
     nodes[node['id']] = new_node
-  console.log intersections_model.intersections.length, count
-  if !(foundStart and foundEnd) then return false
+  #if !(foundStart and foundEnd) then return false
   open_nodes = [start]
   start_node = nodes[start]
   end_node = nodes[end]
