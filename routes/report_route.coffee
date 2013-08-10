@@ -10,9 +10,12 @@ db = require("../models/reports_model"); #load the database
   @param req      request
   @param res      resource to render
 ###
+
+###
 exports.index = (req, res)->
   types = ['Suspicious Activity','Theft','Loitering','Traffic','Construction', 'Uneven Road']
   res.render('reportform', { types: types })
+###
 
 ###
   saves data on form submit for later processing

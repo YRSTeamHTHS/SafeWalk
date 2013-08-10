@@ -119,7 +119,7 @@ body {
 
 .navbar .navbar-brand{
   font-size:50px;
-  margin-top:5px;
+  margin-top:3px;
   font-family:Acme;
   color:#ffffff;
   max-width: none;
@@ -434,14 +434,16 @@ textarea, input[type="text"] {
   margin-right:1px;
   height:60px;
 }
-#feed-btn div {
 
-}
-#dir-btn {
+#feed-btn, #dir-btn {
   width:50%;
+  border-width:0;
 }
 
-#feed-btn:hover, #dir-btn:hover {
+#feed-btn:hover,
+#dir-btn:hover,
+#feed-btn:focus,
+#dir-btn:focus {
   background-color:#3a3c3c;
   z-index:0;
 }
@@ -670,4 +672,5 @@ textarea, input[type="text"] {
   .popup {
     display:none;
   }
+
 }
