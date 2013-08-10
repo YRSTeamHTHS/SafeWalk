@@ -56,6 +56,7 @@ app.get('/navigate/search', navigate.searchmap)
 app.get('/report/getall', report.getall)
 app.post('/report/submit', report.submit)
 app.get('/intersections/all', intersections.all)
+app.post('/twilio', report.twilio)
 
 ###
 app.get '/parse', (req, res) ->
