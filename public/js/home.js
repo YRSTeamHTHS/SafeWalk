@@ -1,28 +1,33 @@
+$.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%3D%2212695841%22&format=json&u=c', function(data) {
+    var thing=data.query.results.channel.item.condition;
+    var temperature=Math.round(5/9*(parseInt(thing.temp)-32))+'&#176; C';
+    var code=parseInt(thing.code);
+    var condition=thing.text;
+    if ($.inArray(code,[31,32,33,34,36,24,25]) !=-1) {
+        $('#background-wrapper').css('background', 'url("/img/weather/clear.jpg")');
+    }
+    else if ($.inArray(code,[27,28,29,30]) !=-1) {
+        $('#background-wrapper').css('background', 'url("/img/weather/partly-cloudy.jpg")');
+    }
+    else if ($.inArray(code,[1,2,5,6,8,9,10,11,12,17,18,35,40]) !=-1) {
+        $('#background-wrapper').css('background', 'url("/img/weather/rain.jpg")');
+    }
+    else if ($.inArray(code,[3,4,37,38,39,45,47]) !=-1) {
+        $('#background-wrapper').css('background', 'url("/img/weather/lightning.jpg")');
+    }
+    else if ($.inArray(code,[13,7,14,15,16,41,42,43,46]) !=-1) {
+        $('#background-wrapper').css('background', 'url("/img/weather/snow.jpg")');
+    }
+    else {
+        $('#background-wrapper').css('background', 'url("/img/weather/cloudy.jpg")');
+    }
+    $('#weather').html(temperature + ' – ' + condition);
+});
+/*$('#background-wrapper').load(function() {
+    sizeBackground();
+    alert(1);
+}*/
 $(document).ready(function(){
-    $.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%3D%2212695841%22&format=json&u=c', function(data) {
-        var thing=data.query.results.channel.item.condition;
-        var temperature=Math.round(5/9*(parseInt(thing.temp)-32));
-        var code=parseInt(thing.code);
-        if ($.inArray(code,[31,32,33,34,36,24,25]) !=-1) {
-            $('#background-wrapper').css('background', 'url("/img/weather/clear.jpg")');
-        }
-        else if ($.inArray(code,[27,28,29,30]) !=-1) {
-            $('#background-wrapper').css('background', 'url("/img/weather/partly-cloudy.jpg")');
-        }
-        else if ($.inArray(code,[1,2,5,6,8,9,10,11,12,17,18,35,40]) !=-1) {
-            $('#background-wrapper').css('background', 'url("/img/weather/rain.jpg")');
-        }
-        else if ($.inArray(code,[3,4,37,38,39,45,47]) !=-1) {
-            $('#background-wrapper').css('background', 'url("/img/weather/lightning.jpg")');
-        }
-        else if ($.inArray(code,[13,7,14,15,16,41,42,43,46]) !=-1) {
-            $('#background-wrapper').css('background', 'url("/img/weather/snow.jpg")');
-        }
-        else {
-            $('#background-wrapper').css('background', 'url("/img/weather/cloudy.jpg")');
-        }
-        $('#weather').html(temperature + ' – ' + condition);
-    });
     sizeBackground();
     //adjust size of background image
     var count = 0;//running count of bubbles on the screen
