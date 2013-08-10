@@ -38,6 +38,16 @@ exports.addMultiple = (intersectionArray, callback) ->
     console.log err
     callback()
 
+exports.getNearest = (lat, lon, callback) ->
+  selector =
+    loc:
+      '$near':
+        '$geometry':
+          type: 'Point'
+          coordinates: [lon, lat]
+  model.findOne selector, (err, result) ->
+    callback result
+
 exports.update = (intersection_id, update, callback) ->
   data.update intersection_id, update
   model.update {id: intersection_id}, {$pushAll: update}, (err) ->

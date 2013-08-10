@@ -98,7 +98,27 @@ $(document).ready(function () {
             urlParams[decode(match[1])] = decode(match[2]);
         }
         return urlParams;
-    };
+    }
+
+    // begin directions search using the parameters
+    var params = _getParameters();
+    var geocoder = new google.maps.Geocoder();
+    if (params['type'] == 'directions') {
+        geocoder.geocode({'address': params['from']}, function(results,status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                var lat1 = results[0].geometry.location.lat();
+                var lon1 = results[0].geometry.location.lng();
+                geocoder.geocoder({'address': params['to']}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        var lat2 = results[0].geometry.location.lat();
+                        var lon2 = results[0].geometry.location.lng();
+                        console.log(lat1, lon1, lat2, lon2);
+                        window.directions.get(lat1, lon1, lat2, lon2);
+                    }
+                });
+            }
+        });
+    }
 
     /**
      * process a js Date object
@@ -646,9 +666,8 @@ window.directions = new function() {
      * @param start     start location
      * @param end       end location
      */
-    this.get = function(start, end) {
-        var url = '/navigate/nav?start=' + encodeURIComponent(start) + '&end=' + encodeURIComponent(end);
-        $.getJSON(url, function(data) {
+    this.get = function(lat1, lon1, lat2, lon2) {
+        $.post('/navigate/navCoordinates', {lat1: lat1, lon1: lon1, lat2: lat2, lon2: lon2}, function(data) {
             console.log('Directions data:', data);
             window.directions.renderList(start, end, data['roads']);
             window.directions.renderMap(data['path']);

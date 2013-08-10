@@ -58,6 +58,7 @@ app.post('/report/submit', report.submit)
 app.get('/intersections/all', intersections.all)
 app.post('/twilio', report.twilio)
 app.post('/report/getLimitSkip', report.getLimitSkip)
+app.post('/navigate/navCoordinates', navigate.navCoordinates)
 
 ###
 app.get '/parse', (req, res) ->

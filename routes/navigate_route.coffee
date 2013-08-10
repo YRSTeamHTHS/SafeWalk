@@ -116,6 +116,19 @@ exports.nav = (req, res) ->
   end = parseInt(req.query.end)
   res.send(astar(start, end))
 
+exports.navCoordinates = (req, res) ->
+  lat1 = req.body.lat1
+  lon1 = req.body.lon1
+  lat2 = req.body.lat2
+  lon2 = req.body.lon2
+
+  # Search for nearest intersection to each
+  intersections_model.getNearest lat1, lon1, (result) ->
+    from = result
+    intersections_model.getNearest lat2, lon2, (result) ->
+      to = result
+      res.send(astar(from['id'], to['id']))
+
 exports.searchmap = (req,res) ->
   search = (req.query.search);
   res.send("<map here>")
