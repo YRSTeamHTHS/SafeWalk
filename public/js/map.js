@@ -109,7 +109,7 @@ $(document).ready(function () {
                 if (status == google.maps.GeocoderStatus.OK) {
                     var lat1 = results[0].geometry.location.lat();
                     var lon1 = results[0].geometry.location.lng();
-                    geocoder.geocoder({'address': params['to']}, function(results, status) {
+                    geocoder.geocode({'address': params['to']}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
                             var lat2 = results[0].geometry.location.lat();
                             var lon2 = results[0].geometry.location.lng();
@@ -579,7 +579,8 @@ window.map = new function() {
         };
         _this.gmap = new google.maps.Map(document.getElementById("map-content"), myOptions);
 
-        window.directions.get('344234568', '2345009892');
+        // Demo directions
+        // window.directions.get('344234568', '2345009892');
 
         $.getJSON('/intersections/all', function(data) {
             console.log("Got intersections data");
@@ -652,12 +653,8 @@ function isEqual(a, b) {
 }
 
 window.directions = new function() {
-    /**
-     * get directions by request
-     * @param start     start location
-     * @param end       end location
-     */
     this.get = function(lat1, lon1, lat2, lon2) {
+        console.log('Getting directions', lat1, lon1, lat2, lon2);
         $.post('/navigate/navCoordinates', {lat1: lat1, lon1: lon1, lat2: lat2, lon2: lon2}, function(data) {
             console.log('Directions data:', data);
             window.directions.renderList(start, end, data['roads']);

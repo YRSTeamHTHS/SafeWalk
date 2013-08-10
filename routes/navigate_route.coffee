@@ -5,18 +5,23 @@ connections = map_model.connections
 
 astar = (start, end) ->
   # Copy the array of intersections
-  nodes = []
+  nodes = {}
   foundStart = false
   foundEnd = false
+  count = 0
   for node in intersections_model.intersections
+    count++
     if node['id'] == start then foundStart = true
     if node['id'] == end then foundEnd = true
     new_node = {}
-    for prop, val of node
-      new_node[prop] = val
-    new_node.closed = false
+    new_node['id'] = node['id']
+    new_node['reports'] = node['reports']
+    new_node['crimes'] = node['crimes']
+    new_node['lat'] = node['loc']['coordinates'][1]
+    new_node['lon'] = node['loc']['coordinates'][0]
+    new_node['closed'] = false
     nodes[node['id']] = new_node
-
+  console.log intersections_model.intersections.length, count
   if !(foundStart and foundEnd) then return false
   open_nodes = [start]
   start_node = nodes[start]
@@ -117,17 +122,19 @@ exports.nav = (req, res) ->
   res.send(astar(start, end))
 
 exports.navCoordinates = (req, res) ->
-  lat1 = req.body.lat1
-  lon1 = req.body.lon1
-  lat2 = req.body.lat2
-  lon2 = req.body.lon2
+  lat1 = parseFloat(req.body.lat1)
+  lon1 = parseFloat(req.body.lon1)
+  lat2 = parseFloat(req.body.lat2)
+  lon2 = parseFloat(req.body.lon2)
 
   # Search for nearest intersection to each
   intersections_model.getNearest lat1, lon1, (result) ->
     from = result
     intersections_model.getNearest lat2, lon2, (result) ->
       to = result
-      res.send(astar(from['id'], to['id']))
+      if from?.id? and to?.id?
+        console.log from.id, to.id
+        res.send(astar(from.id, to.id))
 
 exports.searchmap = (req,res) ->
   search = (req.query.search);

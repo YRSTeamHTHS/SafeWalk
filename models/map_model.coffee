@@ -8,6 +8,7 @@ console.log("Loading connections")
 exports.connections = require('../data/connections.json')
 console.log("Loading crime data")
 exports.crime_types = require('../shared/crime_types.json')
+
 intersections.onReady () ->
   console.log("Loading reports")
   reports_model.getAllReports (reports) ->
