@@ -106,8 +106,22 @@ $(document).ready(function () {
      */
     function _processDate(date) {
         var longdate = date.toDateString();
-        var time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        var time = _formatNumber(date.getHours()) + ":" + _formatNumber(date.getMinutes()) + ":" + _formatNumber(date.getSeconds());
         return longdate + " @ " + time;
+    }
+
+    /**
+     * formats a two digit number
+     * if number is less than 10, pads a zero.
+     * @param number        number to format
+     * @returns string      formatted number
+     * @private
+     */
+    function _formatNumber(number) {
+        if (parseInt(number) < 10) {
+            return "0" + number;
+        }
+        else return number;
     }
 
     var isWindowSize = ($(window).width() >= 768);
