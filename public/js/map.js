@@ -665,8 +665,7 @@ window.directions = new function() {
     };
 
     this.renderMap = function(path) {
-        // TODO: use MVC path type for easier updating
-        // TODO: fix line display
+        // TODO: fix line display at corners
         var coors = [];
         for (var i=0; i<path.length; i++) {
             coors.push(new google.maps.LatLng(path[i]['lat'], path[i]['lon']));
