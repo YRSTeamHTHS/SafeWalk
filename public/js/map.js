@@ -40,7 +40,7 @@ $(document).ready(function () {
         }, false);
     };*/
 
-    var param = _getParameters();
+    /*var param = _getParameters();
     switch (param.type) {
         case "search":
             $.ajax({
@@ -67,7 +67,7 @@ $(document).ready(function () {
                     $("#map-wrapper").html(data);
                 }
             });
-    }
+    }*/
 
     //preload some feed items
     $.getJSON('/report/getall', function (data) {
@@ -103,21 +103,34 @@ $(document).ready(function () {
     // begin directions search using the parameters
     var params = _getParameters();
     var geocoder = new google.maps.Geocoder();
-    if (params['type'] == 'directions') {
-        geocoder.geocode({'address': params['from']}, function(results,status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                var lat1 = results[0].geometry.location.lat();
-                var lon1 = results[0].geometry.location.lng();
-                geocoder.geocoder({'address': params['to']}, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        var lat2 = results[0].geometry.location.lat();
-                        var lon2 = results[0].geometry.location.lng();
-                        console.log(lat1, lon1, lat2, lon2);
-                        window.directions.get(lat1, lon1, lat2, lon2);
-                    }
-                });
-            }
-        });
+    switch (params['type']) {
+        case 'directions':
+            geocoder.geocode({'address': params['from']}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var lat1 = results[0].geometry.location.lat();
+                    var lon1 = results[0].geometry.location.lng();
+                    geocoder.geocoder({'address': params['to']}, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            var lat2 = results[0].geometry.location.lat();
+                            var lon2 = results[0].geometry.location.lng();
+                            console.log(lat1, lon1, lat2, lon2);
+                            window.directions.get(lat1, lon1, lat2, lon2);
+                        }
+                    });
+                }
+            });
+            break;
+        case 'search':
+            geocoder.geocode({'address': params['search']}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    window.map.gmap.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: window.map.gmap,
+                        position: results[0].geometry.location
+                    });
+                }
+            });
+            break;
     }
 
     /**
