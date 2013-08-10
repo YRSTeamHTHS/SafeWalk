@@ -665,8 +665,9 @@ window.directions = new function() {
 
     this.directionsPanel = $("#directions .side-content");
     this.renderList = function(start, end, roads) {
+        start='<strong>Start</strong><br />'+start;
         var startElem = $('<div class="departure"></div>');
-        startElem.text(start).appendTo(this.directionsPanel);
+        startElem.html(start).appendTo(this.directionsPanel);
         var directionsList = $('<ol class="directions"></ol>');
         roads=removeDuplicates(roads);
         directionsList.appendTo(this.directionsPanel);
@@ -681,7 +682,7 @@ window.directions = new function() {
             }
             var timeTo="TIME TO DESTINATION";
             timeTo='<div class="dist-time">'+timeTo+'</div>';
-            roadElem.html('Turn '+dir+' onto <b>'+name+'</b>').appendTo(directionsList);
+            roadElem.html('Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList);
         }
 
         var endElem = $('<div class="arrival"></div>');
