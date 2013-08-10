@@ -120,7 +120,7 @@ $(document).ready(function () {
             var report = data.report; //@todo for some reason there is a nested report
             _createFeedItem(_processDate(new Date(report.time)),report.type,report.comment);
             incrementBadge();
-            window.intersections.update(report['id'], {'reports': report});
+            window.intersections.update(report['id'], {'reports': [report]});
         });
     } catch(err) {
 
@@ -566,20 +566,24 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     this._pushToMVC = function(intersection) {
         console.log('Adding weight to MVC');
         var weight = this._calcIntersectionWeight(intersection);
-        return (this.MVCArray.push(new google.maps.LatLng(intersection['lat'], intersection['lon'], weight)) - 1);
+        return (_this.MVCArray.push(this._newLatLng(intersection['lat'], intersection['lon'], weight)) - 1);
     };
 
     this._calcIntersectionWeight = function(intersection) {
         //console.log(intersection);
-        var weight = intersection['crimes'].length + intersection['reports'].length;
-        return weight;
+        return intersection['crimes'].length + intersection['reports'].length;
     };
 
+    this._newLatLng = function(lat, lon, weight) {
+        return {location: new google.maps.LatLng(lat, lon), weight: weight};
+    }
+
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
-        console.log("Updating weight for", intersection_id);
-        var index = _this.index_map[intersection_id];
         var intersection = intersections[intersection_id];
-        var newLatLng = new google.maps.LatLng(intersection['lat'], intersection['lon'], _this._calcIntersectionWeight(intersection));
+        var weight = _this._calcIntersectionWeight(intersection);
+        console.log("Updating weight for", intersection_id, 'to', weight);
+        var index = _this.index_map[intersection_id];
+        var newLatLng = _this._newLatLng(intersection['lat'], intersection['lon'], weight);
         _this.MVCArray.setAt(index, newLatLng);
     });
 
