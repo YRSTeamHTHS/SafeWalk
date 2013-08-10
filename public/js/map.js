@@ -691,7 +691,6 @@ function _updateScrollbars() {
         callbacks:{
             onTotalScroll:function(){
                 if (totalScrollCall == true) {
-                console.log("scrolled to bottom");
                     totalScrollCall = false;
                 nLoaded = $(".feed-item").length
                 $.ajax({
@@ -707,7 +706,6 @@ function _updateScrollbars() {
                         });
                         $("#live-feed").mCustomScrollbar("update");
                         totalScrollCall = true;
-                        console.log(data);
                         }
                     })
                 }
