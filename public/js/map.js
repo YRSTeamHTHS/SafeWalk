@@ -1,37 +1,4 @@
 $(document).ready(function () {
-    /*document.ontouchstart = function(e){
-        e.preventDefault();
-    }*/
-
-    /*$('.addwebcam').bind('click', function(e) {
-        $('#cameraformwebcam').show(); //opens up a new form
-        $('.addwebcam').hide(); //now hide the button
-    });*/
-
-    //load appropriate map and also prepopulate from and to fields
-
-    /*var ScrollFix = function(elem) {
-        // Variables to track inputs
-        var startY, startTopScroll;
-
-        elem = elem || document.querySelector(elem);
-
-        // If there is no element, then do nothing
-        if(!elem)
-            return;
-
-        // Handle the start of interactions
-        elem.addEventListener('touchstart', function(event){
-            startY = event.touches[0].pageY;
-            startTopScroll = elem.scrollTop;
-
-            if(startTopScroll <= 0)
-                elem.scrollTop = 1;
-
-            if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
-                elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
-        }, false);
-    };*/
 
     var param = _getParameters();
     switch (param.type) {
@@ -182,17 +149,6 @@ $(document).ready(function () {
 
             $(document).mousemove(function(e){
 
-                /*$(document).mouseup(function(e){
-                 if (Math.abs(e.pageY) - latestHeight >60) {
-                 $("#map-content").removeClass("collapsed");
-                 _closeMobileSidebar();
-                 $(document).unbind("mousemove");
-                 }
-                 else {
-                 $("#map-content").height(latestHeight);
-                 }
-                 });*/
-
                 if (e.which ===1 &&
                     $("#map-content").hasClass("collapsed") &&
                     e.pageY < $(window).height() &&
@@ -273,17 +229,6 @@ $(document).ready(function () {
 
                 e.preventDefault();
                 var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-
-                /*$(document).mouseup(function(e){
-                 if (Math.abs(e.pageY) - latestHeight >60) {
-                 $("#map-content").removeClass("collapsed");
-                 _closeMobileSidebar();
-                 $(document).unbind("mousemove");
-                 }
-                 else {
-                 $("#map-content").height(latestHeight);
-                 }
-                 });*/
 
                 if (
                     $("#map-content").hasClass("collapsed") &&

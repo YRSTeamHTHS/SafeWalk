@@ -19,6 +19,9 @@ function sizeBackground() {
     $('#background-wrapper').css('backgroundSize', dim);
 }
 
+/**
+ * retrieves the weather and changes the background accordingly
+ */
 $.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%3D%2212695841%22&format=json&u=c', function(data) {
     var thing=data.query.results.channel.item.condition;
     var temperature=Math.round(5/9*(parseInt(thing.temp)-32))+'&#176; C';
@@ -60,13 +63,16 @@ $(document).ready(function(){
     //adjust size of background image
     var count = 0;//running count of bubbles on the screen
 
-    //connect to socket.io
+    /**
+     * connect to socketio
+     */
     try {
         var socket = io.connect('/');
         socket.on('livereport', function (data) {
             newBubble(data.report)//@todo poopy nested report
         });
     } catch(err) {
+        console.log("Unable to open socket");
 
     }
 
