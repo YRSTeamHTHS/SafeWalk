@@ -340,51 +340,44 @@ $(document).ready(function () {
      * switch to the feed tab on click
      */
     $("#feed-btn").click(function() {
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#directions").fadeOut();
-            $("#feed").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-            clearBadge();
-        }
+        $("#directions").fadeOut();
+        $("#feed").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+        clearBadge();
+
     });
 
     $("#feed-btn").bind('touchstart',function(e) {
         e.preventDefault();
-
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#directions").fadeOut();
-            $("#feed").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-            clearBadge();
-        }
+        $("#directions").fadeOut();
+        $("#feed").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+        clearBadge();
     });
 
     /**
      *
      */
     $("#dir-btn").click(function() {
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#feed").fadeOut();
-            $("#directions").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-        }
+        $("#feed").fadeOut();
+        $("#directions").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+
     });
 
     $("#dir-btn").bind('touchstart', function(e) {
         e.preventDefault();
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#feed").fadeOut();
-            $("#directions").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-        }
+        $("#feed").fadeOut();
+        $("#directions").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
     });
 
     /**
