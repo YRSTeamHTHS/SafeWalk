@@ -4,20 +4,25 @@ intersections_model = require('../models/intersections_model')
 connections = map_model.connections
 
 astar = (start, end) ->
+  console.log 'navigate_route', start, end
   # Copy the array of intersections
-  nodes = []
+  nodes = {}
   foundStart = false
   foundEnd = false
-  for node in intersections_model.intersections
+  count = 0
+  intersections_model.intersections.each (node) ->
+    count++
     if node['id'] == start then foundStart = true
     if node['id'] == end then foundEnd = true
     new_node = {}
-    for prop, val of node
-      new_node[prop] = val
-    new_node.closed = false
+    new_node['id'] = node['id']
+    new_node['reports'] = node['reports']
+    new_node['crimes'] = node['crimes']
+    new_node['lat'] = node['loc']['coordinates'][1]
+    new_node['lon'] = node['loc']['coordinates'][0]
+    new_node['closed'] = false
     nodes[node['id']] = new_node
-
-  if !(foundStart and foundEnd) then return false
+  #if !(foundStart and foundEnd) then return false
   open_nodes = [start]
   start_node = nodes[start]
   end_node = nodes[end]
@@ -27,6 +32,7 @@ astar = (start, end) ->
   count = 0
   while open_nodes.length > 0
     count++
+#    console.log 'navigate_route', open_nodes.length
     # Sort the working nodes by f
     open_nodes.sort (idA, idB) ->
       fA = nodes[idA].f
@@ -82,11 +88,12 @@ reconstructRoute = (nodes, start, end) ->
   current_road = -1
   for item in route
     if item.path? then path = path.concat(item.path)
-    basic_item =
-      id: item['id']
-      lat: item['loc']['coordinates'][1]
-      lon: item['loc']['coordinates'][0]
-    path.push(basic_item)
+#    basic_item =
+#      id: item['id']
+#      lat: item['loc']['coordinates'][1]
+#      lon: item['loc']['coordinates'][0]
+#    path.push(basic_item)
+    path.push(item)
     if item.road_id? and item.road_id != current_road
       roads.push({'id': item.road_id, 'name': item.road_name})
       current_road = item.road_id
@@ -117,17 +124,22 @@ exports.nav = (req, res) ->
   res.send(astar(start, end))
 
 exports.navCoordinates = (req, res) ->
-  lat1 = req.body.lat1
-  lon1 = req.body.lon1
-  lat2 = req.body.lat2
-  lon2 = req.body.lon2
+  lat1 = parseFloat(req.body.lat1)
+  lon1 = parseFloat(req.body.lon1)
+  lat2 = parseFloat(req.body.lat2)
+  lon2 = parseFloat(req.body.lon2)
 
   # Search for nearest intersection to each
   intersections_model.getNearest lat1, lon1, (result) ->
     from = result
     intersections_model.getNearest lat2, lon2, (result) ->
       to = result
-      res.send(astar(from['id'], to['id']))
+      if from?.id? and to?.id?
+        console.log from.id, to.id
+        route = astar(from.id, to.id)
+        route.start = from.id
+        route.end = to.id
+        res.send(route)
 
 exports.searchmap = (req,res) ->
   search = (req.query.search);

@@ -17,26 +17,25 @@ intersectionSchema = new Schema({
 })
 model = mongoose.model('intersections', intersectionSchema)
 readyListeners = []
-data = null
 
-model.find {}, (err, intersections) ->
-  if (err || intersections.length == 0)
-    console.log err
-  else
-    console.log "Loaded saved intersection data"
-    data = new IntersectionsData(intersections)
-    exports.intersections = data.data
-    for callback in readyListeners
-      callback()
+#model.find {}, (err, intersections) ->
+#  if (err || intersections.length == 0)
+#    console.log err
+#  else
+#    console.log "Loaded saved intersection data of length", intersections.length
+#    data = new IntersectionsData(intersections)
+#    exports.intersections = data.data
+#    for callback in readyListeners
+#      callback()
 
-
-exports.onReady = (callback) ->
-  readyListeners.push callback
-
-exports.addMultiple = (intersectionArray, callback) ->
+exports.import = (intersectionArray, callback) ->
   model.create intersectionArray, (err) ->
     console.log err
+    exports.intersections = new IntersectionsData(intersectionArray)
     callback()
+
+exports.importSkipDatbase = (intersectionArray) ->
+  exports.intersections = new IntersectionsData(intersectionArray)
 
 exports.getNearest = (lat, lon, callback) ->
   selector =
@@ -49,7 +48,10 @@ exports.getNearest = (lat, lon, callback) ->
     callback result
 
 exports.update = (intersection_id, update, callback) ->
-  data.update intersection_id, update
+  # Push to local cache
+  exports.intersections.update intersection_id, update
+
+  # Push to database
   model.update {id: intersection_id}, {$pushAll: update}, (err) ->
     if callback?
       callback err
