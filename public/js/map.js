@@ -155,13 +155,7 @@ $(document).ready(function () {
     $("#feed-btn, #dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
-        if ($("#directions").is(":visible") ) {
-            $("#dir-btn").addClass("on");
-            $("#feed-btn").removeClass("on");
-        } else if ($("#feed").is(":visible") ) {
-            $("#feed-btn").addClass("on");
-            $("#dir-btn").removeClass("on");
-        }
+        _highlightActiveSideContent();
 
         if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
 
@@ -182,10 +176,7 @@ $(document).ready(function () {
                     $("#map-content").height(e.pageY);
 
                 }
-                return;
-
             });
-            return;
         }
         if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
@@ -195,16 +186,6 @@ $(document).ready(function () {
 
             $(document).mousemove(function(e){
 
-                /*$(document).mouseup(function(e){
-                 if (Math.abs(e.pageY) - latestHeight >60) {
-                 $("#map-content").removeClass("collapsed");
-                 _closeMobileSidebar();
-                 $(document).unbind("mousemove");
-                 }
-                 else {
-                 $("#map-content").height(latestHeight);
-                 }
-                 });*/
 
                 if (e.which ===1 &&
                     $("#map-content").hasClass("collapsed") &&
@@ -217,12 +198,8 @@ $(document).ready(function () {
                     if (Math.abs(e.pageY) - latestHeight <60){
                         $("#map-content").height('20%');
                     }
-
-
                 }
-                return;
             });
-            return;
         }
     });
 
@@ -252,13 +229,7 @@ $(document).ready(function () {
 
 
         //highlight based on which content is already shown
-        if ($("#directions").is(":visible") ) {
-            $("#dir-btn").addClass("on");
-            $("#feed-btn").removeClass("on");
-        } else if ($("#feed").is(":visible") ) {
-            $("#feed-btn").addClass("on");
-            $("#dir-btn").removeClass("on");
-        }
+        _highlightActiveSideContent();
 
         if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
             $(document).bind('touchmove', function(e){
@@ -268,18 +239,16 @@ $(document).ready(function () {
 
                 if (
                     $("#map-content").hasClass("normal") &&
-                    touch.pageY < $(window).height() &&
-                    touch.pageY > 0 &&
-                    touch.pageX < $(window).width() &&
-                    touch.pageX > 0
+                        touch.pageY < $(window).height() &&
+                        touch.pageY > 0 &&
+                        touch.pageX < $(window).width() &&
+                        touch.pageX > 0
                     ) {
                     $("#map-content").height(touch.pageY);
 
                 }
-                return;
 
             });
-            return;
         }
         if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
@@ -290,17 +259,6 @@ $(document).ready(function () {
 
                 e.preventDefault();
                 var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-
-                /*$(document).mouseup(function(e){
-                 if (Math.abs(e.pageY) - latestHeight >60) {
-                 $("#map-content").removeClass("collapsed");
-                 _closeMobileSidebar();
-                 $(document).unbind("mousemove");
-                 }
-                 else {
-                 $("#map-content").height(latestHeight);
-                 }
-                 });*/
 
                 if (
                     $("#map-content").hasClass("collapsed") &&
@@ -314,9 +272,7 @@ $(document).ready(function () {
                         $("#map-content").height('20%');
                     }
                 }
-                return;
             });
-            return;
         }
 
     });
@@ -393,22 +349,7 @@ $(document).ready(function () {
         }
 
         //highlight based on which content is already shown
-        if ($("#directions").is(":visible") ) {
-            $("#dir-btn").addClass("on");
-            $("#feed-btn").removeClass("on");
-        } else if ($("#feed").is(":visible") ) {
-            $("#feed-btn").addClass("on");
-            $("#dir-btn").removeClass("on");
-        }
-    });
-
-    /**
-     * show the feed tab in the sidebar on click
-     */
-    $("#feed-btn").click(function() {
-        $("#directions").hide();
-        $("#feed").fadeIn();
-        _updateScrollbars();
+        _highlightActiveSideContent();
     });
 
     /**
@@ -479,18 +420,6 @@ function _createFeedItem(time,type,comment, pending) {
     html.removeClass('feed-item-hidden',300);
 }
 
-/**
- * switch to the mobile sidebar
- * @param bool normal       whether in normal state
- */
-function changeMobileSidebar(normal) {
-    if(normal && $(window).width() < 768) {
-        _openMobileSidebar(500);
-        //click anywhere to exit list
-        // TODO: assign in initialization, have check state
-
-    }
-}
 
 /**
  * close the mobile sidebar
@@ -541,7 +470,6 @@ function _closeWindowSidebar() {
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
     },500);
-
 }
 
 /**
@@ -708,7 +636,7 @@ function _updateScrollbars() {
             onTotalScroll:function(){
                 if (totalScrollCall == true) {
                     totalScrollCall = false;
-                nLoaded = $(".feed-item").length
+                nLoaded = $(".feed-item").length;
                 $.ajax({
                     url: "/report/getLimitSkip",
                     data: {skip: nLoaded},
@@ -757,5 +685,17 @@ function _formatNumber(number) {
 }
 
 function _scrollBottom(data) {
+
+}
+
+
+function _highlightActiveSideContent() {
+    if ($("#directions").is(":visible") ) {
+        $("#dir-btn").addClass("on");
+        $("#feed-btn").removeClass("on");
+    } else if ($("#feed").is(":visible") ) {
+        $("#feed-btn").addClass("on");
+        $("#dir-btn").removeClass("on");
+    }
 
 }
