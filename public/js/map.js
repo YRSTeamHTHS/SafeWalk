@@ -33,34 +33,16 @@ $(document).ready(function () {
         }, false);
     };*/
 
-    /*var param = _getParameters();
+    var param = _getParameters();
     switch (param.type) {
         case "search":
-            $.ajax({
-                url: "/navigate/search",
-                data: {
-                    search: param.search
-                },
-                success: function (data) {
-                    $("#map-wrapper").html(data);
                     $("#map-directions-end").val(param.search);
-                }
-            });
             break;
         case "directions":
-            $.ajax({
-                url: "/navigate/nav",
-                data: {
-                    from: param.from,
-                    to: param.to
-                },
-                success: function (data) {
                     $("#map-directions-start").val(param.from);
                     $("#map-directions-end").val(param.to);
-                    $("#map-wrapper").html(data);
-                }
-            });
-    }*/
+            break;
+    }
 
     /**
      * preload some feed items
@@ -99,13 +81,14 @@ $(document).ready(function () {
     // begin directions search using the parameters
     var params = _getParameters();
     var geocoder = new google.maps.Geocoder();
+
     switch (params['type']) {
         case 'directions':
             geocoder.geocode({'address': params['from']}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     var lat1 = results[0].geometry.location.lat();
                     var lon1 = results[0].geometry.location.lng();
-                    geocoder.geocoder({'address': params['to']}, function(results, status) {
+                    geocoder.geocode({'address': params['to']}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
                             var lat2 = results[0].geometry.location.lat();
                             var lon2 = results[0].geometry.location.lng();
@@ -243,6 +226,7 @@ $(document).ready(function () {
                 $(document).unbind('mousemove');
             }
         }
+        $(document).unbind('mousemove');
     });
 
 
@@ -332,18 +316,21 @@ $(document).ready(function () {
                 $(document).unbind('touchmove');
             }
         }
+        $(document).unbind('touchmove');
     });
 
     /**
      * switch to the feed tab on click
      */
     $("#feed-btn").click(function() {
-        $("#directions").fadeOut();
-        $("#feed").fadeIn();
-        _updateScrollbars();
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
-        clearBadge();
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#directions").fadeOut();
+            $("#feed").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+            clearBadge();
+        }
     });
 
     /**
@@ -351,35 +338,42 @@ $(document).ready(function () {
      */
     $("#feed-btn").bind('touchstart',function(e) {
         e.preventDefault();
-        $("#directions").fadeOut();
-        $("#feed").fadeIn();
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
-        clearBadge();
+
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#directions").fadeOut();
+            $("#feed").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+            clearBadge();
+        }
     });
 
     /**
      * switch to directions tab on click (desktop)
      */
     $("#dir-btn").click(function() {
-        $("#feed").fadeOut();
-        $("#directions").fadeIn();
-        _updateScrollbars();
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#feed").fadeOut();
+            $("#directions").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+        }
     });
 
     /**
      * switch to directions tab on click (phone)
      */
     $("#dir-btn").bind('touchstart', function(e) {
-
         e.preventDefault();
-        $("#feed").fadeOut();
-        $("#directions").fadeIn();
-        _updateScrollbars();
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#feed").fadeOut();
+            $("#directions").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+        }
     });
 
     /**
@@ -572,16 +566,18 @@ window.map = new function() {
         };
         _this.gmap = new google.maps.Map(document.getElementById("map-content"), myOptions);
 
-        window.directions.get('344234568', '2345009892');
+        // Demo directions
+        // window.directions.get('344234568', '2345009892');
 
         $.getJSON('/intersections/all', function(data) {
             console.log("Got intersections data");
-            window.intersections = new IntersectionsData(data);
+            window.intersections = new IntersectionsData(data.data);
             _this.LiveMVCArray = new LiveMVCArray(window.intersections);
             console.log("LiveMVCArray", _this.LiveMVCArray);
             window.heatmap = new google.maps.visualization.HeatmapLayer({
                 data: _this.LiveMVCArray.MVCArray
             });
+            console.log('heatmap', window.heatmap);
             window.heatmap.setMap(window.map.gmap);
         });
     };
@@ -602,7 +598,8 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     };
 
     this._calcIntersectionWeight = function(intersection) {
-        return intersection['crimes'].length + intersection['reports'].length;
+        return Math.random();
+//        return intersection['crimes'].length + intersection['reports'].length;
     };
 
     this._newLatLng = function(intersection) {
@@ -614,7 +611,7 @@ var LiveMVCArray = function(IntersectionsDataObject) {
 
     IntersectionsDataObject.addUpdateListener(function(intersection_id) {
         var intersection = intersections.get(intersection_id);
-        console.log("Updating weight for", intersection_id, 'to', weight);
+        console.log("Updating weight for", intersection_id);
         var index = _this.index_map[intersection_id];
         var newLatLng = _this._newLatLng(intersection);
         _this.MVCArray.setAt(index, newLatLng);
@@ -659,22 +656,18 @@ function _isEqual(a, b) {
 }
 
 window.directions = new function() {
-    /**
-     * get directions by request
-     * @param start     start location
-     * @param end       end location
-     */
     this.get = function(lat1, lon1, lat2, lon2) {
+        console.log('Getting directions', lat1, lon1, lat2, lon2);
         $.post('/navigate/navCoordinates', {lat1: lat1, lon1: lon1, lat2: lat2, lon2: lon2}, function(data) {
             console.log('Directions data:', data);
-            window.directions.renderList(start, end, data['roads']);
+            window.directions.renderList(data.start, data.end, data['roads']);
             window.directions.renderMap(data['path']);
         });
     };
 
     this.directionsPanel = $("#directions .side-content");
     this.renderList = function(start, end, roads) {
-        start='<div class="nav-dir-icon start">&#xf0aa;</div></div><strong>Start</strong><br />'+start;
+        start='<div class="nav-dir-icon start">&#xf0aa;</div></div><strong>Start</strong><br />';
         var startElem = $('<div class="departure"></div>');
         startElem.html(start).appendTo(this.directionsPanel);
         var directionsList = $('<ol class="directions"></ol>');
@@ -697,7 +690,7 @@ window.directions = new function() {
             roadElem.html(turnIcon+'Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList).show(5000);
         }
 
-        end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />'+ end;
+        end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />';
         var endElem = $('<div class="arrival"></div>');
         endElem.html(end).appendTo(this.directionsPanel);
         _updateScrollbars();

@@ -24,7 +24,7 @@ exports.index = (req, res)->
 
 ###
 exports.submit = (req, res) ->
-  id = req.body.id;
+  id = req.body.code;
   type = req.body.type;
   comment = req.body.comment;
 
