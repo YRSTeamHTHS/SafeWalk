@@ -64,31 +64,39 @@ window.reportForm = new function() {
                 _this.$modal.removeClass('loading').removeClass('done');
         }
     };
-    var regex = /^\d+$/;
-    function _checkFields() {
-        var code = $('#form-code').val();
-        return code!="" && $('#form-type').val()!=null && regex.test(code);
-    }
 
-    $('#form-code').keyup(function() {
-        if(_checkFields()) {
-            $('#report-submit-btn').removeClass('disabled');
+    /**
+     * counts the characters in the comment input field
+     */
+    $('#char-count').text(140 + ' characters left');
+    $('#form-comment').keyup(function () {
+        var max = 140;
+        var len = $(this).val().length;
+        if (len > max) {
+            $('#char-count').text((len-max) + ' characters over');
         } else {
-            $('#report-submit-btn').addClass('disabled');
-    }
-    });
-    $('#form-type').click(function() {
-        if(_checkFields()) {
-            $('#report-submit-btn').removeClass('disabled');
-        } else {
-            $('#report-submit-btn').addClass('disabled');
+            var char = max - len;
+            $('#char-count').text(char + ' characters left');
         }
     });
+
+    /**
+     * validates form-code field
+     */
     setInterval(function() {
         if(_checkFields()) {
             $('#report-submit-btn').removeClass('disabled');
         } else {
             $('#report-submit-btn').addClass('disabled');
         }
-    }, 100);
+    }, 200);
+
+    /**
+     * validates forms
+     */
+    var regex = /^\d+$/;
+    function _checkFields() {
+        var code = $('#form-code').val();
+        return ( code != "" && $('#form-type').val()!=null && regex.test(code) ) && $("#form-comment").text().length <=250;
+    }
 };
