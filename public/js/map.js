@@ -534,7 +534,8 @@ function _openMobileSidebar(t) {
  * close the main desktop sidebar
  */
 function _closeWindowSidebar() {
-    $("#shrink-arrow").data('type', 'open').html('&#59237;');
+    $("#shrink-arrow").data('type', 'open')
+    $("#shrink-arrow-icon").html('&#xf053;');
     $("#map-content").css('width','100%');
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
@@ -546,7 +547,8 @@ function _closeWindowSidebar() {
  * open the main desktop sidebar
  */
 function _openWindowSidebar() {
-    $("#shrink-arrow").data('type', 'close').html('&#59238;');
+    $("#shrink-arrow").data('type', 'close');
+    $("#shrink-arrow-icon").html('&#xf054;');
     $("#map-content").css('width','');
 }
 
