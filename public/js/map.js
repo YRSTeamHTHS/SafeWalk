@@ -1,10 +1,3 @@
-/**
- * @see google
- */
-//var google;
-
-
-
 $(document).ready(function () {
     /*document.ontouchstart = function(e){
         e.preventDefault();
@@ -51,7 +44,10 @@ $(document).ready(function () {
             break;
     }
 
-    //preload some feed items
+    /**
+     * preload some feed items
+     * iterates throough fetched data and generates feed items
+     */
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
             var time = _processDate(new Date(val.time));
@@ -116,10 +112,12 @@ $(document).ready(function () {
             break;
     }
 
-    var isWindowSize = ($(window).width() >= 768);
 
-
-    //connect to socket.io
+    /**
+     * connect to socket io - reports
+     *
+     * dynamically update list of
+     */
     try {
         var socket = io.connect('/');
         socket.on('livereport', function (data) {
@@ -131,27 +129,27 @@ $(document).ready(function () {
             window.intersections.update(report['id'], {'reports': [report]});
         });
     } catch(err) {
-
+    console.log("Unable to connect to socket");
     }
+
 
     /**
      * dragging collapsed sidebar
+     *
+     * Scrolling works like this:
+     * Starting from clicking down the mouse,
+     * while the mouse moves when it is held down,
+     * The sidebar will follow the mouse...
+     * Once released, onClick and onUp functions will occur
+     * onClick loads the right data based on whichever button was clicked
+     * onUp checks whether the sidebar is up (#map-content.class(isUp)),
+     * and then animates correct animation.
+     * Once animation is done the isUp class will update so the new clickDown
+     * function will correctly respond.
      */
-
-    //Scrolling works like this:
-    //Starting from clicking down the mouse,
-    //while the mouse moves when it is held down,
-    //The sidebar will follow the mouse...
-    //Once released, onClick and onUp functions will occur
-    //onClick loads the right data based on whichever button was clicked
-    //onUp checks whether the sidebar is up (#map-content.class(isUp)),
-    //and then animates correct animation.
-    //Once animation is done the isUp class will update so the new clickDown
-    //function will correctly respond.
-
-
-    //var isSlideUp=0;
+    var isWindowSize = ($(window).width() >= 768);
     var latestHeight;
+
     $("#feed-btn, #dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
@@ -165,13 +163,7 @@ $(document).ready(function () {
 
         if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
 
-            //alert(2);
-            //isSlideUp =1;
-
-
             $(document).mousemove(function(e){
-
-
                 if (e.which===1 &&
                     $("#map-content").hasClass("normal") &&
                     e.pageY < $(window).height() &&
@@ -182,15 +174,10 @@ $(document).ready(function () {
                     $("#map-content").height(e.pageY);
 
                 }
-                return;
-
             });
-            return;
         }
-        if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
-            //alert(3);
-            //isSlideUp =-1;
+        if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
             latestHeight = $("#map-content").height();
 
             $(document).mousemove(function(e){
@@ -213,20 +200,20 @@ $(document).ready(function () {
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
-                    $("#map-content").height(e.pageY);
-                    if (Math.abs(e.pageY) - latestHeight <60){
-                        $("#map-content").height('20%');
+                        $("#map-content").height(e.pageY);
+                        if (Math.abs(e.pageY) - latestHeight <60){
+                            $("#map-content").height('20%');
+                        }
+
+
                     }
-
-
-                }
-                return;
             });
-            return;
         }
     });
 
-
+    /**
+     * dragging mobile sidebar (desktop)
+     */
     $("#feed-btn,#dir-btn").mouseup(function() {
         if ($(window).width() < 768){
             //alert(3);
@@ -239,16 +226,16 @@ $(document).ready(function () {
                 $(document).unbind('mousemove');
             }
         }
+        $(document).unbind('mousemove');
     });
 
 
     /**
-     * dragging mobile sidebar
+     * dragging mobile sidebar (phone)
      */
     $("#feed-btn,#dir-btn").bind('touchstart', function(e){
 
         e.preventDefault();
-
 
         //highlight based on which content is already shown
         if ($("#directions").is(":visible") ) {
@@ -275,13 +262,10 @@ $(document).ready(function () {
                     $("#map-content").height(touch.pageY);
 
                 }
-                return;
-
             });
-            return;
+
         }
         if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
-
 
             latestHeight = $("#map-content").height();
 
@@ -300,7 +284,7 @@ $(document).ready(function () {
                  $("#map-content").height(latestHeight);
                  }
                  });*/
-
+\
                 if (
                     $("#map-content").hasClass("collapsed") &&
                     touch.pageY < $(window).height() &&
@@ -313,16 +297,16 @@ $(document).ready(function () {
                         $("#map-content").height('20%');
                     }
                 }
-                return;
             });
-            return;
         }
 
     });
 
+    /**
+     * expands or collapses the sidebar (phone)
+     */
     $("#feed-btn,#dir-btn").bind('touchend', function() {
         if ($(window).width() < 768){
-            //alert(3);
             if (!($("#map-content").hasClass("isUp"))) {
                 _openMobileSidebar(500);
                 $(document).unbind('touchmove');
@@ -332,50 +316,64 @@ $(document).ready(function () {
                 $(document).unbind('touchmove');
             }
         }
+        $(document).unbind('touchmove');
     });
 
     /**
      * switch to the feed tab on click
      */
     $("#feed-btn").click(function() {
-        $("#directions").fadeOut();
-        $("#feed").fadeIn();
-        _updateScrollbars();
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
-        clearBadge();
-    });
-
-    $("#feed-btn").bind('touchstart',function(e) {
-        e.preventDefault();
-
-        $("#directions").fadeOut();
-        $("#feed").fadeIn();
-
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
-        clearBadge();
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#directions").fadeOut();
+            $("#feed").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+            clearBadge();
+        }
     });
 
     /**
-     *
+     * switch to tab feed on click (phone)
      */
-    $("#dir-btn").click(function() {
-        $("#feed").fadeOut();
-        $("#directions").fadeIn();
-        _updateScrollbars();
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
+    $("#feed-btn").bind('touchstart',function(e) {
+        e.preventDefault();
+
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#directions").fadeOut();
+            $("#feed").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+            clearBadge();
+        }
     });
 
-    $("#dir-btn").bind('touchstart', function(e) {
+    /**
+     * switch to directions tab on click (desktop)
+     */
+    $("#dir-btn").click(function() {
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#feed").fadeOut();
+            $("#directions").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+        }
+    });
 
+    /**
+     * switch to directions tab on click (phone)
+     */
+    $("#dir-btn").bind('touchstart', function(e) {
         e.preventDefault();
-        $("#feed").fadeOut();
-        $("#directions").fadeIn();
-        _updateScrollbars();
-        $("#sidebar .btn").removeClass("on");
-        $(this).addClass("on");
+        if (!($("#map-content").hasClass("isUp"))) {
+            $("#feed").fadeOut();
+            $("#directions").fadeIn();
+            _updateScrollbars();
+            $("#sidebar .btn").removeClass("on");
+            $(this).addClass("on");
+        }
     });
 
     /**
@@ -449,6 +447,9 @@ $(document).ready(function () {
 
 });
 
+/**
+ * increase the badge count in the live feed tab and in the html title tag
+ */
 function incrementBadge(){
     if (!($('#feed-btn').hasClass('on'))) {
         newFeeds = parseInt($('#feed-badge').html())+1;
@@ -457,6 +458,9 @@ function incrementBadge(){
     }
 }
 
+/**
+ * clears the badge count in the live feed and the title tag
+ */
 function clearBadge(){
     $('#feed-badge').html(0).css("background-color","");
     $('title').text("SafeWalk");
@@ -620,11 +624,18 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     });
 };
 
-function removeDuplicates(a) {
+/**
+ * removes duplicate object entries in an array
+ * @see _isEqual
+ * @param a             array to run check on
+ * @returns {Array}     array with duplicates removed
+ * @private
+ */
+function _removeDuplicates(a) {
     var isAdded, arr=[];
     for(var i = 0; i < a.length; i++) {
         isAdded = arr.some(function(v) {//custom array callback function
-            return isEqual(v, a[i]);
+            return _isEqual(v, a[i]);
         });
         if( !isAdded ) {
             arr.push(a[i]);
@@ -632,7 +643,14 @@ function removeDuplicates(a) {
     }
     return arr;
 }
-function isEqual(a, b) {
+/**
+ * checks whether two objects are equal by comparing their name parameters
+ * @param a                 first object to compare
+ * @param b                 second object to compare
+ * @returns {boolean}       whether same or different
+ * @private
+ */
+function _isEqual(a, b) {
     if(a.name!== b.name) {
         return false;
     }
@@ -655,7 +673,7 @@ window.directions = new function() {
         var startElem = $('<div class="departure"></div>');
         startElem.html(start).appendTo(this.directionsPanel);
         var directionsList = $('<ol class="directions"></ol>');
-        roads=removeDuplicates(roads);
+        roads=_removeDuplicates(roads);
         directionsList.appendTo(this.directionsPanel);
         for (var i=0; i<roads.length; i++) {
             var name = roads[i]['name'];
@@ -696,6 +714,15 @@ window.directions = new function() {
     }
 };
 
+/**
+ * disables scrollbars and recreates them when called
+ * scrollbars require divs to not have display:none property to be created
+ * retrieves more items in the live feed when scrolled to bottom
+ *
+ * @todo
+ * @return void
+ * @private
+ */
 var totalScrollCall = true;
 function _updateScrollbars() {
     $("#live-feed,#directions-scrollbar").mCustomScrollbar("destroy");
@@ -754,8 +781,4 @@ function _formatNumber(number) {
         return "0" + number;
     }
     else return number;
-}
-
-function _scrollBottom(data) {
-
 }
