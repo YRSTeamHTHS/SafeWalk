@@ -8,6 +8,7 @@ io = undefined
 Schema = mongoose.Schema;
 
 #Collection to hold users
+#500MB cap
 reportSchema = new Schema({
   id: { type: Number, required: true, trim: true },
   type: { type: String, required: true, trim: true },
@@ -15,7 +16,6 @@ reportSchema = new Schema({
   time: {type: Date, "default": Date.now}},
   { capped: { size : 104857600, max : 10000, autoIndexId: true } }
 #versionKey: false,
-#500mb cap
 );
 
 #Creates the Model for the User Schema
@@ -83,7 +83,15 @@ exports.getReports = (limit, callback) ->
       callback(result)
   )
 
-  #TODO combine with above
+
+###
+  gets (limit) reports starting with (skip)
+  @usedin         retrieval of older reports in live feed
+  @param limit    max reports to retrieve
+  @param skip     row to start retrieving reports from
+  @return false of reports
+  #TODO combine with getReports
+###
 exports.getReportsSkip = (limit, skip, callback) ->
   query = ReportModel.find({},{code:0})
   query.sort({_id:-1}).limit(limit).skip(skip)
@@ -94,6 +102,11 @@ exports.getReportsSkip = (limit, skip, callback) ->
       callback(result)
   )
 
+###
+  gets all reports in the database
+  @param callback   callback function to execute on complettion
+  @return false or reports
+###
 exports.getAllReports = (callback) ->
   query = ReportModel.find {}, (err, reports) ->
     if (err || reports.length == 0)

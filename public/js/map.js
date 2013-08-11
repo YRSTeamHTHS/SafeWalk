@@ -723,6 +723,8 @@ window.directions = new function() {
  * disables scrollbars and recreates them when called
  * scrollbars require divs to not have display:none property to be created
  * retrieves more items in the live feed when scrolled to bottom
+ *
+ * @todo
  * @return void
  * @private
  */

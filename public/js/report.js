@@ -1,5 +1,11 @@
+/**
+ * report functions bound to window object
+ */
 window.reportForm = new function() {
     var _this = this;
+    /**
+     * form initialization
+     */
     $(function() {
         _this.$modal = $("#report-modal");
         _this.$form = $("#report-form");
@@ -12,10 +18,26 @@ window.reportForm = new function() {
         });
     });
 
+    /**
+     * show the modal
+     */
     this.show = function() {
         this.$modal.modal('show');
     };
 
+    /**
+     * hide the modal
+     */
+    this.hide = function() {
+        this.$modal.modal('hide');
+        $("#form-code").val("");
+        $("#form-type").val("");
+        $("#form-comment").val("");
+    };
+
+    /**
+     * submit the form
+     */
     this.submit = function() {
         _this.state('loading');
         $.post(_this.$form.attr('action'), _this.$form.serialize(), function(data) {
@@ -24,13 +46,10 @@ window.reportForm = new function() {
         });
     };
 
-    this.hide = function() {
-        this.$modal.modal('hide');
-        $("#form-code").val("");
-        $("#form-type").val("");
-        $("#form-comment").val("");
-    };
-
+    /**
+     * current modal state to display
+     * @param state     state to toggle to
+     */
     this.state = function(state) {
         switch (state) {
             case 'loading':
