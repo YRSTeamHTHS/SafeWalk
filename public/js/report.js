@@ -69,7 +69,7 @@ window.reportForm = new function() {
      * counts the characters in the comment input field
      */
     $('#char-count').text(140 + ' characters left');
-    $('#form-comment').keyup(function () {
+    $('#form-comment').keydown(function () {
         var max = 140;
         var len = $(this).val().length;
         if (len > max) {
@@ -97,6 +97,12 @@ window.reportForm = new function() {
     var regex = /^\d+$/;
     function _checkFields() {
         var code = $('#form-code').val();
-        return ( code != "" && $('#form-type').val()!=null && regex.test(code) ) && $("#form-comment").text().length <=250;
+        var commentLength=$("#form-comment").val().length;
+        if (commentLength > 140) {
+            $('#char-count').css('color','red');
+        } else {
+            $('#char-count').css('color','gray');
+        }
+        return ( code != "" && $('#form-type').val()!=null && regex.test(code) ) && commentLength<=140;
     }
 };
