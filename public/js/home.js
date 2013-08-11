@@ -48,8 +48,8 @@ $.getJSON('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weathe
         imgUrl = imgUrl .substring(4, imgUrl.length-1);
         return imgUrl;
     }).load(function(){
-        sizeBackground();
-    });
+            sizeBackground();
+        });
 
     $('#weather').html(temperature + ' – ' + condition);
 });
@@ -109,4 +109,8 @@ $(document).ready(function(){
         sizeBackground();
     });
 
+    /**
+     * show disclaimer on page load
+     */
+    $('#disclaimer-modal').modal();
 });
