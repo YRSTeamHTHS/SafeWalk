@@ -163,6 +163,7 @@ $(document).ready(function () {
      * dragging mobile sidebar (desktop)
      */
     $("#feed-btn,#dir-btn").mouseup(function() {
+        $(document).unbind('mousemove');
         if ($(window).width() < 768){
             //alert(3);
             if (!($("#map-content").hasClass("isUp"))) {
@@ -174,7 +175,6 @@ $(document).ready(function () {
                 $(document).unbind('mousemove');
             }
         }
-        $(document).unbind('mousemove');
     });
 
 
@@ -237,6 +237,7 @@ $(document).ready(function () {
      * expands or collapses the sidebar (phone)
      */
     $("#feed-btn,#dir-btn").bind('touchend', function() {
+        $(document).unbind('touchmove');
         if ($(window).width() < 768){
             if (!($("#map-content").hasClass("isUp"))) {
                 _openMobileSidebar(500);
@@ -247,7 +248,6 @@ $(document).ready(function () {
                 $(document).unbind('touchmove');
             }
         }
-        $(document).unbind('touchmove');
     });
 
     /**
@@ -424,6 +424,7 @@ function _openMobileSidebar(t) {
             _closeMobileSidebar();
         });
     });
+    _highlightActiveSideContent();
     $(".navbar").css("background-color", "#223044");
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
