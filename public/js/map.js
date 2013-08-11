@@ -1,44 +1,4 @@
-/**
- * @see google
- */
-//var google;
-
-
-
 $(document).ready(function () {
-    /*document.ontouchstart = function(e){
-        e.preventDefault();
-    }*/
-
-    /*$('.addwebcam').bind('click', function(e) {
-        $('#cameraformwebcam').show(); //opens up a new form
-        $('.addwebcam').hide(); //now hide the button
-    });*/
-
-    //load appropriate map and also prepopulate from and to fields
-
-    /*var ScrollFix = function(elem) {
-        // Variables to track inputs
-        var startY, startTopScroll;
-
-        elem = elem || document.querySelector(elem);
-
-        // If there is no element, then do nothing
-        if(!elem)
-            return;
-
-        // Handle the start of interactions
-        elem.addEventListener('touchstart', function(event){
-            startY = event.touches[0].pageY;
-            startTopScroll = elem.scrollTop;
-
-            if(startTopScroll <= 0)
-                elem.scrollTop = 1;
-
-            if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
-                elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
-        }, false);
-    };*/
 
     var param = _getParameters();
     switch (param.type) {
@@ -51,7 +11,10 @@ $(document).ready(function () {
             break;
     }
 
-    //preload some feed items
+    /**
+     * preload some feed items
+     * iterates throough fetched data and generates feed items
+     */
     $.getJSON('/report/getall', function (data) {
         $.each(data, function (key, val) {
             var time = _processDate(new Date(val.time));
@@ -116,10 +79,12 @@ $(document).ready(function () {
             break;
     }
 
-    var isWindowSize = ($(window).width() >= 768);
 
-
-    //connect to socket.io
+    /**
+     * connect to socket io - reports
+     *
+     * dynamically update list of
+     */
     try {
         var socket = io.connect('/');
         socket.on('livereport', function (data) {
@@ -131,27 +96,27 @@ $(document).ready(function () {
             window.intersections.update(report['id'], {'reports': [report]});
         });
     } catch(err) {
-
+    console.log("Unable to connect to socket");
     }
+
 
     /**
      * dragging collapsed sidebar
+     *
+     * Scrolling works like this:
+     * Starting from clicking down the mouse,
+     * while the mouse moves when it is held down,
+     * The sidebar will follow the mouse...
+     * Once released, onClick and onUp functions will occur
+     * onClick loads the right data based on whichever button was clicked
+     * onUp checks whether the sidebar is up (#map-content.class(isUp)),
+     * and then animates correct animation.
+     * Once animation is done the isUp class will update so the new clickDown
+     * function will correctly respond.
      */
-
-    //Scrolling works like this:
-    //Starting from clicking down the mouse,
-    //while the mouse moves when it is held down,
-    //The sidebar will follow the mouse...
-    //Once released, onClick and onUp functions will occur
-    //onClick loads the right data based on whichever button was clicked
-    //onUp checks whether the sidebar is up (#map-content.class(isUp)),
-    //and then animates correct animation.
-    //Once animation is done the isUp class will update so the new clickDown
-    //function will correctly respond.
-
-
-    //var isSlideUp=0;
+    var isWindowSize = ($(window).width() >= 768);
     var latestHeight;
+
     $("#feed-btn, #dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
@@ -159,13 +124,7 @@ $(document).ready(function () {
 
         if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
 
-            //alert(2);
-            //isSlideUp =1;
-
-
             $(document).mousemove(function(e){
-
-
                 if (e.which===1 &&
                     $("#map-content").hasClass("normal") &&
                     e.pageY < $(window).height() &&
@@ -178,14 +137,11 @@ $(document).ready(function () {
                 }
             });
         }
-        if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
-            //alert(3);
-            //isSlideUp =-1;
+        if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
             latestHeight = $("#map-content").height();
 
             $(document).mousemove(function(e){
-
 
                 if (e.which ===1 &&
                     $("#map-content").hasClass("collapsed") &&
@@ -203,7 +159,9 @@ $(document).ready(function () {
         }
     });
 
-
+    /**
+     * dragging mobile sidebar (desktop)
+     */
     $("#feed-btn,#dir-btn").mouseup(function() {
         if ($(window).width() < 768){
             //alert(3);
@@ -221,12 +179,11 @@ $(document).ready(function () {
 
 
     /**
-     * dragging mobile sidebar
+     * dragging mobile sidebar (phone)
      */
     $("#feed-btn,#dir-btn").bind('touchstart', function(e){
 
         e.preventDefault();
-
 
         //highlight based on which content is already shown
         _highlightActiveSideContent();
@@ -252,7 +209,6 @@ $(document).ready(function () {
         }
         if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
-
             latestHeight = $("#map-content").height();
 
             $(document).bind('touchmove', function(e){
@@ -277,9 +233,11 @@ $(document).ready(function () {
 
     });
 
+    /**
+     * expands or collapses the sidebar (phone)
+     */
     $("#feed-btn,#dir-btn").bind('touchend', function() {
         if ($(window).width() < 768){
-            //alert(3);
             if (!($("#map-content").hasClass("isUp"))) {
                 _openMobileSidebar(500);
                 $(document).unbind('touchmove');
@@ -305,6 +263,9 @@ $(document).ready(function () {
 
     });
 
+    /**
+     * switch to tab feed on click (phone)
+     */
     $("#feed-btn").bind('touchstart',function(e) {
         e.preventDefault();
         $("#directions").fadeOut();
@@ -316,7 +277,7 @@ $(document).ready(function () {
     });
 
     /**
-     *
+     * switch to directions tab on click (desktop)
      */
     $("#dir-btn").click(function() {
         $("#feed").fadeOut();
@@ -327,6 +288,9 @@ $(document).ready(function () {
 
     });
 
+    /**
+     * switch to directions tab on click (phone)
+     */
     $("#dir-btn").bind('touchstart', function(e) {
         e.preventDefault();
         $("#feed").fadeOut();
@@ -392,6 +356,9 @@ $(document).ready(function () {
 
 });
 
+/**
+ * increase the badge count in the live feed tab and in the html title tag
+ */
 function incrementBadge(){
     if (!($('#feed-btn').hasClass('on'))) {
         newFeeds = parseInt($('#feed-badge').html())+1;
@@ -400,6 +367,9 @@ function incrementBadge(){
     }
 }
 
+/**
+ * clears the badge count in the live feed and the title tag
+ */
 function clearBadge(){
     $('#feed-badge').html(0).css("background-color","");
     $('title').text("SafeWalk");
@@ -465,7 +435,8 @@ function _openMobileSidebar(t) {
  * close the main desktop sidebar
  */
 function _closeWindowSidebar() {
-    $("#shrink-arrow").data('type', 'open').html('&#59237;');
+    $("#shrink-arrow").data('type', 'open')
+    $("#shrink-arrow-icon").html('&#xf053;');
     $("#map-content").css('width','100%');
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
@@ -476,7 +447,8 @@ function _closeWindowSidebar() {
  * open the main desktop sidebar
  */
 function _openWindowSidebar() {
-    $("#shrink-arrow").data('type', 'close').html('&#59238;');
+    $("#shrink-arrow").data('type', 'close');
+    $("#shrink-arrow-icon").html('&#xf054;');
     $("#map-content").css('width','');
 }
 
@@ -548,11 +520,18 @@ var LiveMVCArray = function(IntersectionsDataObject) {
     });
 };
 
-function removeDuplicates(a) {
+/**
+ * removes duplicate object entries in an array
+ * @see _isEqual
+ * @param a             array to run check on
+ * @returns {Array}     array with duplicates removed
+ * @private
+ */
+function _removeDuplicates(a) {
     var isAdded, arr=[];
     for(var i = 0; i < a.length; i++) {
         isAdded = arr.some(function(v) {//custom array callback function
-            return isEqual(v, a[i]);
+            return _isEqual(v, a[i]);
         });
         if( !isAdded ) {
             arr.push(a[i]);
@@ -560,7 +539,14 @@ function removeDuplicates(a) {
     }
     return arr;
 }
-function isEqual(a, b) {
+/**
+ * checks whether two objects are equal by comparing their name parameters
+ * @param a                 first object to compare
+ * @param b                 second object to compare
+ * @returns {boolean}       whether same or different
+ * @private
+ */
+function _isEqual(a, b) {
     if(a.name!== b.name) {
         return false;
     }
@@ -583,7 +569,7 @@ window.directions = new function() {
         var startElem = $('<div class="departure"></div>');
         startElem.html(start).appendTo(this.directionsPanel);
         var directionsList = $('<ol class="directions"></ol>');
-        roads=removeDuplicates(roads);
+        roads=_removeDuplicates(roads);
         directionsList.appendTo(this.directionsPanel);
         for (var i=0; i<roads.length; i++) {
             var name = roads[i]['name'];
@@ -624,6 +610,15 @@ window.directions = new function() {
     }
 };
 
+/**
+ * disables scrollbars and recreates them when called
+ * scrollbars require divs to not have display:none property to be created
+ * retrieves more items in the live feed when scrolled to bottom
+ *
+ * @todo
+ * @return void
+ * @private
+ */
 var totalScrollCall = true;
 function _updateScrollbars() {
     $("#live-feed,#directions-scrollbar").mCustomScrollbar("destroy");
