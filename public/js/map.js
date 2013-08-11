@@ -284,7 +284,7 @@ $(document).ready(function () {
                  $("#map-content").height(latestHeight);
                  }
                  });*/
-\
+
                 if (
                     $("#map-content").hasClass("collapsed") &&
                     touch.pageY < $(window).height() &&
