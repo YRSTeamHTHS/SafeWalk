@@ -256,6 +256,7 @@ $(document).ready(function () {
                 $(document).unbind('mousemove');
             }
         }
+        $(document).unbind('mousemove');
     });
 
 
@@ -349,6 +350,7 @@ $(document).ready(function () {
                 $(document).unbind('touchmove');
             }
         }
+        $(document).unbind('touchmove');
     });
 
     /**
