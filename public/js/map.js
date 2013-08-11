@@ -40,34 +40,16 @@ $(document).ready(function () {
         }, false);
     };*/
 
-    /*var param = _getParameters();
+    var param = _getParameters();
     switch (param.type) {
         case "search":
-            $.ajax({
-                url: "/navigate/search",
-                data: {
-                    search: param.search
-                },
-                success: function (data) {
-                    $("#map-wrapper").html(data);
                     $("#map-directions-end").val(param.search);
-                }
-            });
             break;
         case "directions":
-            $.ajax({
-                url: "/navigate/nav",
-                data: {
-                    from: param.from,
-                    to: param.to
-                },
-                success: function (data) {
                     $("#map-directions-start").val(param.from);
                     $("#map-directions-end").val(param.to);
-                    $("#map-wrapper").html(data);
-                }
-            });
-    }*/
+            break;
+    }
 
     //preload some feed items
     $.getJSON('/report/getall', function (data) {
@@ -103,6 +85,7 @@ $(document).ready(function () {
     // begin directions search using the parameters
     var params = _getParameters();
     var geocoder = new google.maps.Geocoder();
+
     switch (params['type']) {
         case 'directions':
             geocoder.geocode({'address': params['from']}, function(results, status) {
@@ -666,7 +649,7 @@ window.directions = new function() {
 
     this.directionsPanel = $("#directions .side-content");
     this.renderList = function(start, end, roads) {
-        start='<div class="nav-dir-icon start">&#xf0aa;</div></div><strong>Start</strong><br />'+start;
+        start='<div class="nav-dir-icon start">&#xf0aa;</div></div><strong>Start</strong><br />';
         var startElem = $('<div class="departure"></div>');
         startElem.html(start).appendTo(this.directionsPanel);
         var directionsList = $('<ol class="directions"></ol>');
@@ -689,7 +672,7 @@ window.directions = new function() {
             roadElem.html(turnIcon+'Turn '+dir+' onto <b>'+name+'</b>'+timeTo).appendTo(directionsList).show(5000);
         }
 
-        end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />'+ end;
+        end='<div class="nav-dir-icon end">&#xf0ab;</div></div><strong>End</strong><br />';
         var endElem = $('<div class="arrival"></div>');
         endElem.html(end).appendTo(this.directionsPanel);
         _updateScrollbars();

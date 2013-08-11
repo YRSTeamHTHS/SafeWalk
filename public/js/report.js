@@ -50,13 +50,20 @@ window.reportForm = new function() {
             $('#report-submit-btn').removeClass('disabled');
         } else {
             $('#report-submit-btn').addClass('disabled');
-        }x
+        }
     });
     $('#form-type').click(function() {
         if($('#form-code').val()!="" && $('#form-type').val()!=null) {
             $('#report-submit-btn').removeClass('disabled');
         } else {
-
+            $('#report-submit-btn').addClass('disabled');
         }
     });
+    setInterval(function() {
+        if($('#form-code').val()!="" && $('#form-type').val()!=null) {
+            $('#report-submit-btn').removeClass('disabled');
+        } else {
+            $('#report-submit-btn').addClass('disabled');
+        }
+    }, 100);
 };
