@@ -35,7 +35,7 @@
 
         this.update = function(intersection_id, update) {
             var intersection = _this.get(intersection_id);
-            if (intersection != null) {
+            if (intersection != null && update != null) {
                 for (var i=0; i<update['reports'].length; i++) {
                     intersection['reports'].push(update['reports'][i]);
                 }
