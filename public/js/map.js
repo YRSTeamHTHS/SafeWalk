@@ -120,13 +120,7 @@ $(document).ready(function () {
     $("#feed-btn, #dir-btn").mousedown(function(e){
 
         //highlight based on which content is already shown
-        if ($("#directions").is(":visible") ) {
-            $("#dir-btn").addClass("on");
-            $("#feed-btn").removeClass("on");
-        } else if ($("#feed").is(":visible") ) {
-            $("#feed-btn").addClass("on");
-            $("#dir-btn").removeClass("on");
-        }
+        _highlightActiveSideContent();
 
         if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
 
@@ -156,13 +150,11 @@ $(document).ready(function () {
                     e.pageX < $(window).width() &&
                     e.pageX > 0
                     ) {
-                        $("#map-content").height(e.pageY);
-                        if (Math.abs(e.pageY) - latestHeight <60){
-                            $("#map-content").height('20%');
-                        }
-
-
+                    $("#map-content").height(e.pageY);
+                    if (Math.abs(e.pageY) - latestHeight <60){
+                        $("#map-content").height('20%');
                     }
+                }
             });
         }
     });
@@ -171,6 +163,7 @@ $(document).ready(function () {
      * dragging mobile sidebar (desktop)
      */
     $("#feed-btn,#dir-btn").mouseup(function() {
+        $(document).unbind('mousemove');
         if ($(window).width() < 768){
             //alert(3);
             if (!($("#map-content").hasClass("isUp"))) {
@@ -182,7 +175,6 @@ $(document).ready(function () {
                 $(document).unbind('mousemove');
             }
         }
-        $(document).unbind('mousemove');
     });
 
 
@@ -194,13 +186,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         //highlight based on which content is already shown
-        if ($("#directions").is(":visible") ) {
-            $("#dir-btn").addClass("on");
-            $("#feed-btn").removeClass("on");
-        } else if ($("#feed").is(":visible") ) {
-            $("#feed-btn").addClass("on");
-            $("#dir-btn").removeClass("on");
-        }
+        _highlightActiveSideContent();
 
         if($(window).width() < 768 && !($("#map-content").hasClass("isUp"))) {
             $(document).bind('touchmove', function(e){
@@ -210,16 +196,16 @@ $(document).ready(function () {
 
                 if (
                     $("#map-content").hasClass("normal") &&
-                    touch.pageY < $(window).height() &&
-                    touch.pageY > 0 &&
-                    touch.pageX < $(window).width() &&
-                    touch.pageX > 0
+                        touch.pageY < $(window).height() &&
+                        touch.pageY > 0 &&
+                        touch.pageX < $(window).width() &&
+                        touch.pageX > 0
                     ) {
                     $("#map-content").height(touch.pageY);
 
                 }
-            });
 
+            });
         }
         if($(window).width() < 768 && $("#map-content").hasClass("isUp")) {
 
@@ -251,6 +237,7 @@ $(document).ready(function () {
      * expands or collapses the sidebar (phone)
      */
     $("#feed-btn,#dir-btn").bind('touchend', function() {
+        $(document).unbind('touchmove');
         if ($(window).width() < 768){
             if (!($("#map-content").hasClass("isUp"))) {
                 _openMobileSidebar(500);
@@ -261,21 +248,19 @@ $(document).ready(function () {
                 $(document).unbind('touchmove');
             }
         }
-        $(document).unbind('touchmove');
     });
 
     /**
      * switch to the feed tab on click
      */
     $("#feed-btn").click(function() {
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#directions").fadeOut();
-            $("#feed").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-            clearBadge();
-        }
+        $("#directions").fadeOut();
+        $("#feed").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+        clearBadge();
+
     });
 
     /**
@@ -283,28 +268,24 @@ $(document).ready(function () {
      */
     $("#feed-btn").bind('touchstart',function(e) {
         e.preventDefault();
-
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#directions").fadeOut();
-            $("#feed").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-            clearBadge();
-        }
+        $("#directions").fadeOut();
+        $("#feed").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+        clearBadge();
     });
 
     /**
      * switch to directions tab on click (desktop)
      */
     $("#dir-btn").click(function() {
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#feed").fadeOut();
-            $("#directions").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-        }
+        $("#feed").fadeOut();
+        $("#directions").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
+
     });
 
     /**
@@ -312,13 +293,11 @@ $(document).ready(function () {
      */
     $("#dir-btn").bind('touchstart', function(e) {
         e.preventDefault();
-        if (!($("#map-content").hasClass("isUp"))) {
-            $("#feed").fadeOut();
-            $("#directions").fadeIn();
-            _updateScrollbars();
-            $("#sidebar .btn").removeClass("on");
-            $(this).addClass("on");
-        }
+        $("#feed").fadeOut();
+        $("#directions").fadeIn();
+        _updateScrollbars();
+        $("#sidebar .btn").removeClass("on");
+        $(this).addClass("on");
     });
 
     /**
@@ -334,22 +313,7 @@ $(document).ready(function () {
         }
 
         //highlight based on which content is already shown
-        if ($("#directions").is(":visible") ) {
-            $("#dir-btn").addClass("on");
-            $("#feed-btn").removeClass("on");
-        } else if ($("#feed").is(":visible") ) {
-            $("#feed-btn").addClass("on");
-            $("#dir-btn").removeClass("on");
-        }
-    });
-
-    /**
-     * show the feed tab in the sidebar on click
-     */
-    $("#feed-btn").click(function() {
-        $("#directions").hide();
-        $("#feed").fadeIn();
-        _updateScrollbars();
+        _highlightActiveSideContent();
     });
 
     /**
@@ -426,18 +390,6 @@ function _createFeedItem(time,type,comment, pending) {
     html.removeClass('feed-item-hidden',300);
 }
 
-/**
- * switch to the mobile sidebar
- * @param bool normal       whether in normal state
- */
-function changeMobileSidebar(normal) {
-    if(normal && $(window).width() < 768) {
-        _openMobileSidebar(500);
-        //click anywhere to exit list
-        // TODO: assign in initialization, have check state
-
-    }
-}
 
 /**
  * close the mobile sidebar
@@ -472,6 +424,7 @@ function _openMobileSidebar(t) {
             _closeMobileSidebar();
         });
     });
+    _highlightActiveSideContent();
     $(".navbar").css("background-color", "#223044");
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
@@ -489,7 +442,6 @@ function _closeWindowSidebar() {
     setTimeout(function(){
         google.maps.event.trigger(map, 'resize');
     },500);
-
 }
 
 /**
@@ -680,7 +632,7 @@ function _updateScrollbars() {
             onTotalScroll:function(){
                 if (totalScrollCall == true) {
                     totalScrollCall = false;
-                nLoaded = $(".feed-item").length
+                nLoaded = $(".feed-item").length;
                 $.ajax({
                     url: "/report/getLimitSkip",
                     data: {skip: nLoaded},
@@ -726,4 +678,20 @@ function _formatNumber(number) {
         return "0" + number;
     }
     else return number;
+}
+
+function _scrollBottom(data) {
+
+}
+
+
+function _highlightActiveSideContent() {
+    if ($("#directions").is(":visible") ) {
+        $("#dir-btn").addClass("on");
+        $("#feed-btn").removeClass("on");
+    } else if ($("#feed").is(":visible") ) {
+        $("#feed-btn").addClass("on");
+        $("#dir-btn").removeClass("on");
+    }
+
 }
