@@ -2,6 +2,8 @@ mongoose = require('mongoose')
 
 if process.env.MONGO_URL?
   url = process.env.MONGO_URL
+else if process.env.MONGOLAB_URI?
+  url = process.env.MONGOLAB_URI
 else
   url = 'mongodb://localhost/brittyscenes'
 
