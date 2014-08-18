@@ -38,7 +38,7 @@ require('./data/import')(() ->
   app.use(express.bodyParser()); #retrieve json body
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(require('less-middleware')({ src: __dirname + '/public' }));
+  app.use(require('less-middleware')(path.join(__dirname, 'public')));
   app.use(express.static(path.join(__dirname, 'public')));
   app.use('/shared', express.static(path.join(__dirname, 'shared')));
 
